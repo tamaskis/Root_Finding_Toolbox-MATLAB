@@ -37,4 +37,4 @@ The toolbox can be downloaded from [File Exchange]() or [GitHub](https://github.
 
 ## Note
 
-All these functions have been published on GitHub and MATLAB File Exhange individually. The purpose of this toolbox is to provide an easy way to "install" these functions into MATLAB (i.e. add these functions to the MATLAB search path) so they are always available for use.
+All of these functions have been published on GitHub and MATLAB File Exhange individually. The purpose of this toolbox is to provide an easy way to "install" these functions into MATLAB (i.e. add these functions to the MATLAB search path) so they are always available for use.
