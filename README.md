@@ -1,2 +1,3 @@
-# root_finding_toolbox-MATLAB
-Collection of root-finding methods.
+# Root Finding Toolbox
+
+Root-finding methods for univariate, scalar-valued functions (Newton's, secant, and bisection methods) and multivariate, vector-valued functions 
