@@ -25,15 +25,18 @@ Click [here](https://tamaskis.github.io/files/Root_Finding_Methods.pdf) to acces
 
 ## Installation
 
-The toolbox can be downloaded from [File Exchange]() or [GitHub](https://github.com/tamaskis/Root_Finding_Toolbox-MATLAB). The downloaded zip folder contains the following:
+**Installing as a toolbox:**
+1. Download the toolbox from [File Exchange]() or [GitHub](https://github.com/tamaskis/Root_Finding_Toolbox-MATLAB).
+2. Double-click on (open) `INSTALL/Root-Finding Toolbox.mltbx`.
+3. MATLAB will automatically perform the installation and add all the functions included in the toolbox to the MATLAB search path.
+
+**Downloaded zip folder contents:**
   - **INSTALL** → Contains the toolbox installer (Root Finding Toolbox.mltbx).
   - **licenses** → Contains the software licenses.
   - **README.md** → Markdown documentation for GitHub repository.
   - **Technical Documentation** → Contains the technical documentation (Root_Finding_Methods.pdf) for the various algorithms.
   - **toolbox** → Contains all the functions specific to this toolbox.
-
-**To install as a toolbox**, simply open "Root-Finding Toolbox.mltbx" in the "INSTALL" folder. MATLAB will automatically perform the installation and add all the functions included in the toolbox to the MATLAB search path.
-
+  
 
 ## Note
 
