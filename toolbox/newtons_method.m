@@ -11,7 +11,7 @@
 % See also fzero, bisection_method, secant_method.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-07-06
+% Last Update: 2022-10-16
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -73,6 +73,12 @@ function [x,k,x_all] = newtons_method(f,df,x0,opts)
     % Newton's method.
     % ----------------
     
+    % returns initial guess if it is a root of f(x)
+    if f(x0) == 0
+        x = x0;
+        return
+    end
+    
     % root estimate at first iteration
     x_curr = x0;
     
@@ -81,7 +87,7 @@ function [x,k,x_all] = newtons_method(f,df,x0,opts)
         x_all = zeros(1,k_max+1);
     end
     
-    % Newton's method
+    % iteration
     for k = 1:k_max
         
         % stores results in arrays
@@ -89,8 +95,20 @@ function [x,k,x_all] = newtons_method(f,df,x0,opts)
             x_all(k) = x_curr;
         end
         
+        % evaluates derivative at current root estimate
+        df_curr = df(x_curr);
+        
+        % perturbs current root estimate if derivative is 0
+        if df_curr == 0
+            if x_curr ~= 0
+                x_curr = x_curr*(1+100*TOL*abs(x_curr));
+            else
+                x_curr = 100*TOL;
+            end
+        end
+        
         % updates root estimate
-        x_next = x_curr-f(x_curr)/df(x_curr);
+        x_next = x_curr-f(x_curr)/df_curr;
         
         % terminates solver if converged
         if (abs(x_next-x_curr) < TOL)

@@ -11,7 +11,7 @@
 % See also fzero, bisection_method, secant_method.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-07-06
+% Last Update: 2022-10-16
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -72,9 +72,19 @@ function [x,k,x_all] = secant_method(f,x0,opts)
     % Secant method.
     % --------------
     
+    % returns initial guess if it is a root of f(x)
+    if f(x0) == 0
+        x = x0;
+        return
+    end
+    
     % root estimates at first and second iterations
     x_prev = x0;
-    x_curr = x0+0.001;
+    if x0 ~= 0
+        x_curr = x0*(1+100*TOL*abs(x0));
+    else
+        x_curr = 100*TOL;
+    end
     
     % function evaluation at first iteration
     f_prev = f(x0);
@@ -85,7 +95,7 @@ function [x,k,x_all] = secant_method(f,x0,opts)
         x_all(1) = x_prev;
     end
     
-    % secant method
+    % iteration
     for k = 2:k_max
         
         % stores results in arrays
@@ -95,6 +105,16 @@ function [x,k,x_all] = secant_method(f,x0,opts)
         
         % function evaluation at current iteration
         f_curr = f(x_curr);
+        
+        % perturbs current root estimate if function evaluation is same
+        if f_curr == f_prev
+            if x_curr ~= 0
+                x_curr = x_curr*(1+100*TOL*abs(x_curr));
+            else
+                x_curr = 100*TOL;
+            end
+            f_curr = f(x_curr);
+        end
         
         % updates root estimate
         x_next = (x_prev*f_curr-x_curr*f_prev)/(f_curr-f_prev);
