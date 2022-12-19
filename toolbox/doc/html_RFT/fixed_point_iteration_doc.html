@@ -1,0 +1,421 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>fixed_point_iteration</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-11-26"><meta name="DC.source" content="fixed_point_iteration_doc.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1><tt>fixed_point_iteration</tt></h1><!--introduction--><p>Fixed-point iteration for finding the fixed point of a univariate, scalar-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input/Output Parameters</a></li><li><a href="#4">Example #1: Fixed point of a simple function.</a></li><li><a href="#6">Example #2: Plot of fixed point estimates at each iteration.</a></li><li><a href="#9">Example #3: Root-finding via fixed-point iteration.</a></li><li><a href="#12">Example #4a: Pipe flow problem (simple solution).</a></li><li><a href="#14">Example #4b: Pipe flow problem (long solution).</a></li><li><a href="#17">gV Function for Example #4a</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">c = fixed_point_iteration(f,x0)
+c = fixed_point_iteration(f,x0,opts)
+[c,k] = fixed_point_iteration(__)
+[c,k,x_all] = fixed_point_iteration(__)
+</pre><h2 id="2">Description</h2><p><tt>c = fixed_point_iteration(f,x0)</tt> returns the fixed point of a function <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> specified by the function handle <tt>f</tt>, where <tt>x0</tt> is an initial guess of the fixed point.</p><p><tt>c = fixed_point_iteration(f,x0,opts)</tt> does the same as the syntax above, but allows for the specification of optional solver parameters. <tt>opts</tt> is a structure with fields detailed in the "Input/Output Parameters" section below.</p><p><tt>[c,k] = fixed_point_iteration(...)</tt> also returns the number of iterations (<tt>k</tt>) performed of fixed-point iteration.</p><p><tt>[c,k,c_all] = fixed_point_iteration(...)</tt> does the same as the previous syntaxes, but also returns an array (<tt>c_all</tt>) storing the fixed point estimates at each iteration. This syntax requires that <tt>opts.return_all</tt> be set to <tt>true</tt>.</p><h2 id="3">Input/Output Parameters</h2><p>
+  <table border=1>
+      <tr>
+          <td></td>
+          <td style="text-align:center"><b>Variable</b></td>
+          <td style="text-align:center"><b>Symbol</b></td>
+          <td style="text-align:center"><b>Description</b></td>
+          <td style="text-align:center"><b>Format</b></td>
+      </tr>
+      <tr>
+          <td rowspan="3" style="text-align:center"><b>Input</b></td>
+          <td style="text-align:center"><TT>f</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
+          <td>univariate, scalar-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;f:\mathbb{R}\rightarrow\mathbb{R}" title="" />)</td>
+          <td style="text-align:center">1×1<BR>function_handle</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>x0</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x_{0}" title="" /></td>
+          <td>initial guess for fixed point</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>opts</TT></td>
+          <td style="text-align:center">-</td>
+          <td>(OPTIONAL) solver options with fields:
+              <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
+              <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
+              </td>
+          <td style="text-align:center">1×1<BR>struct</td>
+      </tr>
+      <tr>
+          <td rowspan="3" style="text-align:center"><b>Output</b></td>
+          <td style="text-align:center"><TT>c</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;c" title="" /></td>
+          <td>fixed point of <img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>k</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+          <td>number of solver iterations</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>c_all</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{c}_{\mathrm{all}}" title="" /></td>
+          <td>fixed point estimates at all iterations</td>
+          <td style="text-align:center">1×(k+1)<BR>double</td>
+      </tr>
+  </table>
+</p><h2 id="4">Example #1: Fixed point of a simple function.</h2><p><i>Find the fixed point of <img src="fixed_point_iteration_doc_eq11761872606585372319.png" alt="$f(x)=\sqrt{x}$" style="width:52px;height:12px;">.</i></p><p>Defining <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;">,</p><pre class="codeinput">f = @(x) sqrt(x);
+</pre><p>To demonstrate the fact that, for this specific function, the fixed-point iteration can converge even with an initial guess very far from the true fixed point, we use an initial guess of <img src="fixed_point_iteration_doc_eq02270424679605373033.png" alt="$x_{0}=10^{10}$" style="width:44px;height:11px;">.</p><pre class="codeinput">c = fixed_point_iteration(f,10^10)
+</pre><pre class="codeoutput">
+c =
+
+    1.0000
+
+</pre><h2 id="6">Example #2: Plot of fixed point estimates at each iteration.</h2><p><i>In Example #1, we found the fixed point of <img src="fixed_point_iteration_doc_eq11761872606585372319.png" alt="$f(x)=\sqrt{x}$" style="width:52px;height:12px;"> using fixed-point iteration with an initial guess of <img src="fixed_point_iteration_doc_eq02270424679605373033.png" alt="$x_{0}=10^{10}$" style="width:44px;height:11px;">. Now, produce a plot of all fixed point estimates obtained by the <tt>fixed_point_iteration</tt> function during its solution procedure, this time using an initial guess of <img src="fixed_point_iteration_doc_eq07707265420665401723.png" alt="$x_{0}=100$" style="width:42px;height:10px;">.</i></p><p>First, we define <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> in MATLAB like before.</p><pre class="codeinput">f = @(x) sqrt(x);
+</pre><p>To obtain the fixed point estimates at all iterations, we simply need to define the <tt>opts</tt> structure, set its <tt>return_all</tt> field to <tt>true</tt>, and pass it to the <tt>fixed_point_iteration</tt> function.</p><pre class="codeinput">opts.return_all = true;
+[~,~,c_all] = fixed_point_iteration(f,100,opts);
+</pre><p>Plotting the fixed point estimates at each iteration,</p><pre class="codeinput">figure;
+plot(c_all,<span class="string">'k*'</span>,<span class="string">'MarkerSize'</span>,9,<span class="string">'LineWidth'</span>,1.5);
+grid <span class="string">on</span>;
+xlabel(<span class="string">'Iteration'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
+ylabel(<span class="string">'Fixed Point Estimate'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
+</pre><img vspace="5" hspace="5" src="fixed_point_iteration_doc_01.png" alt=""> <h2 id="9">Example #3: Root-finding via fixed-point iteration.</h2><p><i>Use fixed-point iteration to find the root of <img src="fixed_point_iteration_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;"> in the interval <img src="fixed_point_iteration_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">.</i></p><p>Finding a root of <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> is equivalent to finding a fixed point of <img src="fixed_point_iteration_doc_eq17899401298700311304.png" alt="$g(x)=x-f(x)$" style="width:76px;height:11px;">. Therefore, we define</p><p><img src="fixed_point_iteration_doc_eq15812098963129241247.png" alt="$$g(x)=x-f(x)=x-(x^{2}-1)$$" style="width:148px;height:13px;"></p><p><img src="fixed_point_iteration_doc_eq18366603560150103711.png" alt="$$g(x)=-x^{2}+x+1$$" style="width:93px;height:13px;"></p><p>Defining <img src="fixed_point_iteration_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> in MATLAB,</p><pre class="codeinput">g = @(x) -x^2+x+1;
+</pre><p>Since we want the positive root of <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;">, we pick an initial guess of <img src="fixed_point_iteration_doc_eq15704505072916824238.png" alt="$x_{0}=1.9$" style="width:39px;height:10px;">. Finding the positive root of <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> by finding the fixed point of <img src="fixed_point_iteration_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">,</p><pre class="codeinput">root = fixed_point_iteration(g,1.9)
+</pre><pre class="codeoutput">
+root =
+
+    1.0475
+
+</pre><p>While we obtain a result close to the true result of 1, the fixed-point iteration never converges to within the default tolerance (TOL = <img src="fixed_point_iteration_doc_eq12703663663327922707.png" alt="$10^{-10}$" style="width:24px;height:10px;">). Additionally, this example is quite sensitive to the initial guess and can often fail to converge.</p><h2 id="12">Example #4a: Pipe flow problem (simple solution).</h2><p><i>Consider a pipe flow problem where the velocity of the fluid, <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">, is a function of the friction factor, <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;">.</i></p><p><img src="fixed_point_iteration_doc_eq17020913655420828442.png" alt="$\displaystyle V=\sqrt{\frac{3000}{700f+10}}\;\mathrm{ft/s}\quad\quad(1)$" style="width:140px;height:27px;"></p><p><i>The Reynolds number, <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;">, is dependent on the velocity as</i></p><p><img src="fixed_point_iteration_doc_eq11975472056285339965.png" alt="$\mathrm{Re}=600000V\quad\quad(2)$" style="width:105px;height:11px;"></p><p><i>Finally, <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;"> is a function of <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;"> (assuming a smooth pipe).</i></p><p><img src="fixed_point_iteration_doc_eq18313590366946773653.png" alt="$\displaystyle \frac{1}{\sqrt{f}}=-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\quad\quad(3)$" style="width:149px;height:27px;"></p><p><i>Find the velocity of the flow through the pipe.</i></p><p>Let's begin by solving Eq. (3) for <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;">.</p><p><img src="fixed_point_iteration_doc_eq18020093615197494743.png" alt="$\displaystyle f=\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}\quad\quad(4)$" style="width:162px;height:29px;"></p><p>Equations (1), (2), and (4) must be satisfied simultaneously. While we have three equations in three unknowns, we cannot solve this system of equations algebraically due to the nonlinearities in the equations for <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> and <img src="fixed_point_iteration_doc_eq15363666303272660127.png" alt="$f^{-1/2}$" style="width:24px;height:13px;">. However, note that we can form a calculation procedure that maps <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> to itself:</p><div><ol><li>From Eq. (1), we can get <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> from <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;">.</li><li>From Eq. (3), we can get <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;"> from <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;">.</li><li>From Eq. (2), we can get <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;"> from <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">.</li></ol></div><p>This calculation procedure essentially gives us a function <img src="fixed_point_iteration_doc_eq14863431247792601681.png" alt="$V=g(V)$" style="width:45px;height:11px;">.</p><p><img src="fixed_point_iteration_doc_eq06411696675767855785.png" alt="$$g:V\rightarrow\mathrm{Re}\rightarrow f\rightarrow V$$" style="width:103px;height:10px;"></p><p>Therefore, the flow velocity, <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">, is simply the fixed point of <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> (since <img src="fixed_point_iteration_doc_eq08202502916237421757.png" alt="$g$" style="width:6px;height:8px;"> maps <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> to itself).</p><p>We <i>could</i> use function composition to define <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> using a single expression (in fact, this is exactly what we do in Example #4b below). However, it is quicker/easier to define a <i>computational</i> function that evaluates <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> in a <i>sequential</i> fashion. We define <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> as the MATLAB function <tt>gV</tt> at the bottom of this page under the "gV Function for Example #4a" section.* To define <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> as an anonymous function, we assign it a function handle:</p><pre class="codeinput">g = @(V) gV(V);
+</pre><p>Solving for <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> using an initial guess of <img src="fixed_point_iteration_doc_eq17987095433038559994.png" alt="$V_{0}=1\;\mathrm{ft/s}$" style="width:51px;height:11px;">,</p><pre class="codeinput">V = fixed_point_iteration(g,1)
+</pre><h2 id="14">Example #4b: Pipe flow problem (long solution).</h2><p><i>Consider a pipe flow problem where the velocity of the fluid, <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">, is a function of the friction factor, <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;">.</i></p><p><img src="fixed_point_iteration_doc_eq17020913655420828442.png" alt="$\displaystyle V=\sqrt{\frac{3000}{700f+10}}\;\mathrm{ft/s}\quad\quad(1)$" style="width:140px;height:27px;"></p><p><i>The Reynolds number, <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;">, is dependent on the velocity as</i></p><p><img src="fixed_point_iteration_doc_eq11975472056285339965.png" alt="$\mathrm{Re}=600000V\quad\quad(2)$" style="width:105px;height:11px;"></p><p><i>Finally, <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;"> is a function of <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;"> (assuming a smooth pipe).</i></p><p><img src="fixed_point_iteration_doc_eq18313590366946773653.png" alt="$\displaystyle \frac{1}{\sqrt{f}}=-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\quad\quad(3)$" style="width:149px;height:27px;"></p><p><i>Find the velocity of the flow through the pipe.</i></p><p>While we have three equations in three unknowns, we cannot solve this system of equations algebraically due to the nonlinearities in the equations for <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> and <img src="fixed_point_iteration_doc_eq15363666303272660127.png" alt="$f^{-1/2}$" style="width:24px;height:13px;">. Let's begin by solving Eq. (3) for <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;">.</p><p><img src="fixed_point_iteration_doc_eq18020093615197494743.png" alt="$\displaystyle f=\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}\quad\quad(4)$" style="width:162px;height:29px;"></p><p>Now, we can think of Eqs. (1), (2), and (4) in the following way:</p><p><img src="fixed_point_iteration_doc_eq06962998314106748317.png" alt="$$V=\phi_{1}(f)$$" style="width:48px;height:11px;"></p><p><img src="fixed_point_iteration_doc_eq11332420027147146926.png" alt="$$\mathrm{Re}=\phi_{2}(V)$$" style="width:55px;height:11px;"></p><p><img src="fixed_point_iteration_doc_eq12598800161162463067.png" alt="$$f=\phi_{3}(\mathrm{Re})$$" style="width:52px;height:11px;"></p><p>We know we can use fixed-point iteration to find the fixed point <img src="fixed_point_iteration_doc_eq15359261557981590372.png" alt="$x=c$" style="width:26px;height:6px;"> of a function <img src="fixed_point_iteration_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> (i.e. <img src="fixed_point_iteration_doc_eq14365163157691587393.png" alt="$f(c)=c$" style="width:39px;height:11px;">). Therefore, our goal is to develop a function where both the input and output are <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">. Then, we can use fixed-point iteration to solve for <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">. Since we can get <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> from <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;">, get <img src="fixed_point_iteration_doc_eq02527148203711597490.png" alt="$f$" style="width:6px;height:10px;"> from <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;">, and get <img src="fixed_point_iteration_doc_eq14440351489399681040.png" alt="$\mathrm{Re}$" style="width:13px;height:8px;"> from <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;"> (i.e. <img src="fixed_point_iteration_doc_eq05987792746633967647.png" alt="$V\rightarrow\mathrm{Re}\rightarrow f\rightarrow V$" style="width:88px;height:10px;">), we can determine such a function using function composition:</p><p><img src="fixed_point_iteration_doc_eq02607007144130355983.png" alt="$V=\phi_{1}(\phi_{3}(\phi_{2}(V)))$" style="width:90px;height:11px;"></p><p>Mathematically, this involves substituting Eq. (2) into Eq. (4), and then substituting the result into Eq. (1).</p><p><img src="fixed_point_iteration_doc_eq17961275183730123112.png" alt="$$\displaystyle f=\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}\quad\rightarrow\quad V=\sqrt{\frac{3000}{700\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}+10}}$$" style="width:335px;height:34px;"></p><p>Now, let's define the function <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> as the right hand side of the equation above for <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">.</p><p><img src="fixed_point_iteration_doc_eq09201543250713719956.png" alt="$$\displaystyle g(V)=\sqrt{\frac{3000}{700\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}+10}}$$" style="width:185px;height:34px;"></p><p>Since we have essentially let <img src="fixed_point_iteration_doc_eq16255561058349863972.png" alt="$g(V)=V$" style="width:47px;height:11px;">, the velocity of the flow through the pipe, <img src="fixed_point_iteration_doc_eq15661758725296196826.png" alt="$V$" style="width:8px;height:8px;">, is simply the fixed point of <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;">. Defining <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;"> in MATLAB,</p><pre class="codeinput">g = @(V) sqrt(3000/(700*(-1.8*log10(6.9/(600000*V)))^(-2)+10));
+</pre><p>Obtaining the flow velocity by finding the fixed point of <img src="fixed_point_iteration_doc_eq07663292187998812317.png" alt="$g(V)$" style="width:22px;height:11px;">, using an initial guess of <img src="fixed_point_iteration_doc_eq17987095433038559994.png" alt="$V_{0}=1\;\mathrm{ft/s}$" style="width:51px;height:11px;">,</p><pre class="codeinput">V = fixed_point_iteration(g,1)
+</pre><pre class="codeoutput">
+V =
+
+   13.7583
+
+</pre><p><i>Clearly, this method is more difficult than that presented in Example #4a, even for such a simple problem.</i></p><h2 id="17">gV Function for Example #4a</h2><pre class="codeinput"><span class="keyword">function</span> V = gV(V)
+    Re = 600000*V;
+    f = (-1.8*log10(6.9./Re)).^(-2);
+    V = sqrt(3000./(700*f+10));
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+V =
+
+   13.7583
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% |fixed_point_iteration|
+% Fixed-point iteration for finding the fixed point of a univariate, 
+% scalar-valued function.
+% 
+% <index.html Back to Root-Finding Toolbox Contents>.
+%% Syntax
+%   c = fixed_point_iteration(f,x0)
+%   c = fixed_point_iteration(f,x0,opts)
+%   [c,k] = fixed_point_iteration(__)
+%   [c,k,x_all] = fixed_point_iteration(__)
+%% Description
+% |c = fixed_point_iteration(f,x0)| returns the fixed point of a function 
+% $f(x)$ specified by the function handle |f|, where |x0| is an initial 
+% guess of the fixed point.
+%
+% |c = fixed_point_iteration(f,x0,opts)| does the same as the syntax above,
+% but allows for the specification of optional solver parameters. |opts| is
+% a structure with fields detailed in the "Input/Output Parameters" section
+% below.
+%
+% |[c,k] = fixed_point_iteration(...)| also returns the number of 
+% iterations (|k|) performed of fixed-point iteration.
+%
+% |[c,k,c_all] = fixed_point_iteration(...)| does the same as the previous 
+% syntaxes, but also returns an array (|c_all|) storing the fixed point 
+% estimates at each iteration. This syntax requires that |opts.return_all| 
+% be set to |true|.
+%% Input/Output Parameters
+% <html>
+%   <table border=1>
+%       <tr>
+%           <td></td>
+%           <td style="text-align:center"><b>Variable</b></td>
+%           <td style="text-align:center"><b>Symbol</b></td>
+%           <td style="text-align:center"><b>Description</b></td>
+%           <td style="text-align:center"><b>Format</b></td>
+%       </tr>
+%       <tr>
+%           <td rowspan="3" style="text-align:center"><b>Input</b></td>
+%           <td style="text-align:center"><TT>f</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
+%           <td>univariate, scalar-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;f:\mathbb{R}\rightarrow\mathbb{R}" title="" />)</td>
+%           <td style="text-align:center">1×1<BR>function_handle</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>x0</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x_{0}" title="" /></td>
+%           <td>initial guess for fixed point</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>opts</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>(OPTIONAL) solver options with fields:
+%               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
+%               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
+%               </td>
+%           <td style="text-align:center">1×1<BR>struct</td>
+%       </tr>
+%       <tr>
+%           <td rowspan="3" style="text-align:center"><b>Output</b></td>
+%           <td style="text-align:center"><TT>c</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;c" title="" /></td>
+%           <td>fixed point of <img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>k</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%           <td>number of solver iterations</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>c_all</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{c}_{\mathrm{all}}" title="" /></td>
+%           <td>fixed point estimates at all iterations</td>
+%           <td style="text-align:center">1×(k+1)<BR>double</td>
+%       </tr>
+%   </table>
+% </html>
+%
+%% Example #1: Fixed point of a simple function.
+% _Find the fixed point of $f(x)=\sqrt{x}$._
+%
+% Defining $f(x)$,
+f = @(x) sqrt(x);
+%%
+% To demonstrate the fact that, for this specific function, the fixed-point
+% iteration can converge even with an initial guess very far from the true
+% fixed point, we use an initial guess of $x_{0}=10^{10}$.
+c = fixed_point_iteration(f,10^10)
+%% Example #2: Plot of fixed point estimates at each iteration.
+% _In Example #1, we found the fixed point of $f(x)=\sqrt{x}$ using 
+% fixed-point iteration with an initial guess of $x_{0}=10^{10}$. Now, 
+% produce a plot of all fixed point estimates obtained by the 
+% |fixed_point_iteration| function during its solution procedure, this time
+% using an initial guess of $x_{0}=100$._
+%
+% First, we define $f(x)$ in MATLAB like before.
+f = @(x) sqrt(x);
+%%
+% To obtain the fixed point estimates at all iterations, we simply need to 
+% define the |opts| structure, set its |return_all| field to |true|, and 
+% pass it to the |fixed_point_iteration| function.
+opts.return_all = true;
+[~,~,c_all] = fixed_point_iteration(f,100,opts);
+%%
+% Plotting the fixed point estimates at each iteration,
+figure;
+plot(c_all,'k*','MarkerSize',9,'LineWidth',1.5);
+grid on;
+xlabel('Iteration','Interpreter','latex','FontSize',18);
+ylabel('Fixed Point Estimate','Interpreter','latex','FontSize',18);
+%% Example #3: Root-finding via fixed-point iteration.
+% _Use fixed-point iteration to find the root of $f(x)=x^{2}-1$ in the 
+% interval $[0,\infty)$._
+%
+% Finding a root of $f(x)$ is equivalent to finding a fixed point of 
+% $g(x)=x-f(x)$. Therefore, we define
+%
+% $$g(x)=x-f(x)=x-(x^{2}-1)$$
+%
+% $$g(x)=-x^{2}+x+1$$
+%
+% Defining $g(x)$ in MATLAB,
+g = @(x) -x^2+x+1;
+%%
+% Since we want the positive root of $f(x)$, we pick an initial guess of 
+% $x_{0}=1.9$. Finding the positive root of $f(x)$ by finding the fixed 
+% point of $g(x)$,
+root = fixed_point_iteration(g,1.9)
+%%
+% While we obtain a result close to the true result of 1, the fixed-point 
+% iteration never converges to within the default tolerance 
+% (TOL = $10^{-10}$). Additionally, this example is quite sensitive to the
+% initial guess and can often fail to converge.
+%% Example #4a: Pipe flow problem (simple solution).
+% _Consider a pipe flow problem where the velocity of the fluid, $V$, is a
+% function of the friction factor, $f$._
+%
+% $\displaystyle V=\sqrt{\frac{3000}{700f+10}}\;\mathrm{ft/s}\quad\quad(1)$
+%
+% _The Reynolds number, $\mathrm{Re}$, is dependent on the velocity as_
+%
+% $\mathrm{Re}=600000V\quad\quad(2)$
+%
+% _Finally, $f$ is a function of $\mathrm{Re}$ (assuming a smooth pipe)._
+%
+% $\displaystyle \frac{1}{\sqrt{f}}=-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\quad\quad(3)$
+%
+% _Find the velocity of the flow through the pipe._
+%
+% Let's begin by solving Eq. (3) for $f$.
+%
+% $\displaystyle f=\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}\quad\quad(4)$
+%
+% Equations (1), (2), and (4) must be satisfied simultaneously. While we
+% have three equations in three unknowns, we cannot solve this system of 
+% equations algebraically due to the nonlinearities in the equations for 
+% $V$ and $f^{-1/2}$. However, note that we can form a calculation 
+% procedure that maps $V$ to itself:
+%
+% # From Eq. (1), we can get $V$ from $f$.
+% # From Eq. (3), we can get $f$ from $\mathrm{Re}$.
+% # From Eq. (2), we can get $\mathrm{Re}$ from $V$.
+%
+% This calculation procedure essentially gives us a function $V=g(V)$.
+%
+% $$g:V\rightarrow\mathrm{Re}\rightarrow f\rightarrow V$$
+%
+% Therefore, the flow velocity, $V$, is simply the fixed point of $g(V)$ 
+% (since $g$ maps $V$ to itself).
+%
+% We _could_ use function composition to define $g(V)$ using a single 
+% expression (in fact, this is exactly what we do in Example #4b below). 
+% However, it is quicker/easier to define a _computational_ function that 
+% evaluates $g(V)$ in a _sequential_ fashion. We define $g(V)$ as the 
+% MATLAB function |gV| at the bottom of this page under the "gV Function 
+% for Example #4a" section.* To define $g(V)$ as an anonymous function, we
+% assign it a function handle:
+g = @(V) gV(V);
+%%
+% Solving for $V$ using an initial guess of $V_{0}=1\;\mathrm{ft/s}$,
+V = fixed_point_iteration(g,1)
+%% Example #4b: Pipe flow problem (long solution).
+% _Consider a pipe flow problem where the velocity of the fluid, $V$, is a
+% function of the friction factor, $f$._
+%
+% $\displaystyle V=\sqrt{\frac{3000}{700f+10}}\;\mathrm{ft/s}\quad\quad(1)$
+%
+% _The Reynolds number, $\mathrm{Re}$, is dependent on the velocity as_
+%
+% $\mathrm{Re}=600000V\quad\quad(2)$
+%
+% _Finally, $f$ is a function of $\mathrm{Re}$ (assuming a smooth pipe)._
+%
+% $\displaystyle \frac{1}{\sqrt{f}}=-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\quad\quad(3)$
+%
+% _Find the velocity of the flow through the pipe._
+%
+% While we have three equations in three unknowns, we cannot solve this 
+% system of equations algebraically due to the nonlinearities in the 
+% equations for $V$ and $f^{-1/2}$. Let's begin by solving Eq. (3) for $f$.
+%
+% $\displaystyle f=\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}\quad\quad(4)$
+%
+% Now, we can think of Eqs. (1), (2), and (4) in the following way:
+%
+% $$V=\phi_{1}(f)$$
+%
+% $$\mathrm{Re}=\phi_{2}(V)$$
+%
+% $$f=\phi_{3}(\mathrm{Re})$$
+%
+% We know we can use fixed-point iteration to find the fixed point $x=c$ of
+% a function $f(x)$ (i.e. $f(c)=c$). Therefore, our goal is to develop a 
+% function where both the input and output are $V$. Then, we can use 
+% fixed-point iteration to solve for $V$. Since we can get $V$ from $f$, 
+% get $f$ from $\mathrm{Re}$, and get $\mathrm{Re}$ from $V$ (i.e. 
+% $V\rightarrow\mathrm{Re}\rightarrow f\rightarrow V$), we can determine 
+% such a function using function composition:
+%
+% $V=\phi_{1}(\phi_{3}(\phi_{2}(V)))$
+%
+% Mathematically, this involves substituting Eq. (2) into Eq. (4), and then
+% substituting the result into Eq. (1).
+%
+% $$\displaystyle f=\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}\quad\rightarrow\quad V=\sqrt{\frac{3000}{700\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}+10}}$$
+%
+% Now, let's define the function $g(V)$ as the right hand side of the equation above for $V$.
+%
+% $$\displaystyle g(V)=\sqrt{\frac{3000}{700\left[-1.8\log_{10}{\left(\frac{6.9}{\mathrm{Re}}\right)}\right]^{-2}+10}}$$
+%
+% Since we have essentially let $g(V)=V$, the velocity of the flow through 
+% the pipe, $V$, is simply the fixed point of $g(V)$. Defining $g(V)$ in 
+% MATLAB,
+g = @(V) sqrt(3000/(700*(-1.8*log10(6.9/(600000*V)))^(-2)+10));
+%%
+% Obtaining the flow velocity by finding the fixed point of $g(V)$, using 
+% an initial guess of $V_{0}=1\;\mathrm{ft/s}$,
+V = fixed_point_iteration(g,1)
+%%
+% _Clearly, this method is more difficult than that presented in Example 
+% #4a, even for such a simple problem._
+%% gV Function for Example #4a
+function V = gV(V)
+    Re = 600000*V;
+    f = (-1.8*log10(6.9./Re)).^(-2);
+    V = sqrt(3000./(700*f+10));
+end
+##### SOURCE END #####
+--></body></html>

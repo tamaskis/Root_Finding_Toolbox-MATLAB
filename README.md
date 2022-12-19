@@ -1,4 +1,4 @@
-# Root Finding Toolbox [![View Root-Finding Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/119168-root-finding-toolbox)
+# Root-Finding Toolbox [![View Root-Finding Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/119168-root-finding-toolbox)
 
 This toolbox provides root-finding methods for both univariate, scalar-valued functions (Newton's, secant, and bisection methods) and multivariate, vector-valued functions (Newton's method).
 
