@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>root_newton</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-11"><meta name="DC.source" content="root_newton_doc.m"><style type="text/css">
+      --><title>root_newton</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-02"><meta name="DC.source" content="root_newton_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -103,9 +103,9 @@ x = root_newton(f,df,x0,opts)
           <td style="text-align:center"><TT>opts</TT></td>
           <td style="text-align:center">-</td>
           <td>(OPTIONAL) solver options with fields:
+              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
-              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
               </td>
           <td style="text-align:center">1×1<BR>struct</td>
       </tr>
@@ -165,7 +165,7 @@ hold <span class="string">off</span>;
 grid <span class="string">on</span>;
 xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 ylabel(<span class="string">'$y$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
-legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\sin{(x)}$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,14,<span class="keyword">...</span>
+legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\cos{(x)}$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,14,<span class="keyword">...</span>
     <span class="string">'Location'</span>,<span class="string">'northwest'</span>);
 </pre><img vspace="5" hspace="5" src="root_newton_doc_02.png" alt=""> <p>Finding the intersection of the two functions is equivalent to finding the root of their difference. Therefore, we can use Newton's method on <img src="root_newton_doc_eq16350898542025216418.png" alt="$y=\cos{x}-x^{2}$" style="width:67px;height:12px;"> with an initial guess of <img src="root_newton_doc_eq02423912343679602649.png" alt="$x_{0}=0.8$" style="width:39px;height:10px;"> (picked using the plot above) to find the intersection.</p><pre class="codeinput">x_int = root_newton(@(x) y2(x)-y1(x),@(x) dy2(x)-dy1(x),0.8)
 </pre><pre class="codeoutput">
@@ -182,7 +182,7 @@ hold <span class="string">off</span>;
 grid <span class="string">on</span>;
 xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 ylabel(<span class="string">'$y$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
-legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\sin{(x)}$'</span>,<span class="string">'intersection'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="keyword">...</span>
+legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\cos{(x)}$'</span>,<span class="string">'intersection'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="keyword">...</span>
     <span class="string">'FontSize'</span>,14,<span class="string">'Location'</span>,<span class="string">'northwest'</span>);
 </pre><img vspace="5" hspace="5" src="root_newton_doc_03.png" alt=""> <h2 id="13">See also</h2><p><a href="root_bisection_doc.html"><tt>root_bisection</tt></a> | <a href="root_brent_dekker_doc.html"><tt>root_brent_dekker</tt></a> | <a href="root_iteration_doc.html"><tt>root_iteration</tt></a> | <a href="root_itp_doc.html"><tt>root_itp</tt></a> | <a href="root_secant_doc.html"><tt>root_secant</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -247,9 +247,9 @@ legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\sin{(x)
 %           <td style="text-align:center"><TT>opts</TT></td>
 %           <td style="text-align:center">-</td>
 %           <td>(OPTIONAL) solver options with fields:
+%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
 %               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
 %               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
-%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
 %               </td>
 %           <td style="text-align:center">1×1<BR>struct</td>
 %       </tr>
@@ -339,7 +339,7 @@ hold off;
 grid on;
 xlabel('$x$','Interpreter','latex','FontSize',18);
 ylabel('$y$','Interpreter','latex','FontSize',18);
-legend('$y=x^{2}$','$y=\sin{(x)}$','Interpreter','latex','FontSize',14,...
+legend('$y=x^{2}$','$y=\cos{(x)}$','Interpreter','latex','FontSize',14,...
     'Location','northwest');
 %%
 % Finding the intersection of the two functions is equivalent to finding 
@@ -358,7 +358,7 @@ hold off;
 grid on;
 xlabel('$x$','Interpreter','latex','FontSize',18);
 ylabel('$y$','Interpreter','latex','FontSize',18);
-legend('$y=x^{2}$','$y=\sin{(x)}$','intersection','Interpreter','latex',...
+legend('$y=x^{2}$','$y=\cos{(x)}$','intersection','Interpreter','latex',...
     'FontSize',14,'Location','northwest');
 %% See also
 % <root_bisection_doc.html |root_bisection|> | 

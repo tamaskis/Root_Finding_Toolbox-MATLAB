@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>fixed_point_n</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-11"><meta name="DC.source" content="fixed_point_n_doc.m"><style type="text/css">
+      --><title>fixed_point_n</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-02"><meta name="DC.source" content="fixed_point_n_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><tt>fixed_point_n</tt></h1><!--introduction--><p>Fixed-point iteration for finding the fixed point of a multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input/Output Parameters</a></li><li><a href="#4">See also</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">c = fixed_point_n(f,x0)
+  </style></head><body><div class="content"><h1><tt>fixed_point_n</tt></h1><!--introduction--><p>Fixed-point iteration for finding the fixed point of a multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input/Output Parameters</a></li><li><a href="#4">Example</a></li><li><a href="#7">See also</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">c = fixed_point_n(f,x0)
 c = fixed_point_n(f,x0,opts)
 [c,k] = fixed_point_n(__)
 [c,k,x_all] = fixed_point_n(__)
@@ -84,7 +84,7 @@ c = fixed_point_n(f,x0,opts)
           <td rowspan="3" style="text-align:center"><b>Input</b></td>
           <td style="text-align:center"><TT>f</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
-          <td>univariate, scalar-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
+          <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
           <td style="text-align:center">1×1<BR>function_handle</td>
       </tr>
       <tr>
@@ -97,9 +97,9 @@ c = fixed_point_n(f,x0,opts)
           <td style="text-align:center"><TT>opts</TT></td>
           <td style="text-align:center">-</td>
           <td>(OPTIONAL) solver options with fields:
+              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
-              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
               </td>
           <td style="text-align:center">1×1<BR>struct</td>
       </tr>
@@ -123,7 +123,25 @@ c = fixed_point_n(f,x0,opts)
           <td style="text-align:center">n×(k+1)<BR>double</td>
       </tr>
   </table>
-</p><h2 id="4">See also</h2><p><a href="fixed_point_doc.html"><tt>fixed_point</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+</p><h2 id="4">Example</h2><p><i>Find a fixed point of the function</i></p><p><img src="fixed_point_n_doc_eq05700109045399721654.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{x_{1}^{2}-0.5 \cr x_{2}^{2}-0.5}$$" style="width:91px;height:27px;"></p><p>Defining <img src="fixed_point_n_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [x(1)^2-0.5;
+          x(2)^2-0.5];
+</pre><p>Solving for a fixed point of <img src="fixed_point_n_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> with an initial guess of <img src="fixed_point_n_doc_eq11232774989772967262.png" alt="$\mathbf{x}_{0}=\mathbf{0}$" style="width:32px;height:9px;">,</p><pre class="codeinput">c = fixed_point_n(f,[0;0])
+</pre><pre class="codeoutput">
+c =
+
+   -0.3660
+   -0.3660
+
+</pre><p>Verifying that <img src="fixed_point_n_doc_eq15782549470783439529.png" alt="$\mathbf{f}(\mathbf{c})=\mathbf{c}$" style="width:39px;height:11px;">,</p><pre class="codeinput">f(c)-c
+</pre><pre class="codeoutput">
+ans =
+
+   1.0e-10 *
+
+    0.4230
+    0.4230
+
+</pre><h2 id="7">See also</h2><p><a href="fixed_point_doc.html"><tt>fixed_point</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% |fixed_point_n|
 % Fixed-point iteration for finding the fixed point of a multivariate, 
@@ -167,7 +185,7 @@ c = fixed_point_n(f,x0,opts)
 %           <td rowspan="3" style="text-align:center"><b>Input</b></td>
 %           <td style="text-align:center"><TT>f</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
-%           <td>univariate, scalar-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
+%           <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
 %           <td style="text-align:center">1×1<BR>function_handle</td>
 %       </tr>
 %       <tr>
@@ -180,9 +198,9 @@ c = fixed_point_n(f,x0,opts)
 %           <td style="text-align:center"><TT>opts</TT></td>
 %           <td style="text-align:center">-</td>
 %           <td>(OPTIONAL) solver options with fields:
+%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
 %               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
 %               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
-%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
 %               </td>
 %           <td style="text-align:center">1×1<BR>struct</td>
 %       </tr>
@@ -207,7 +225,21 @@ c = fixed_point_n(f,x0,opts)
 %       </tr>
 %   </table>
 % </html>
+%% Example
+% _Find a fixed point of the function_
 %
+% $$\mathbf{f}(\mathbf{x})=\pmatrix{x_{1}^{2}-0.5 \cr x_{2}^{2}-0.5}$$
+%
+% Defining $\mathbf{f}(\mathbf{x})$ in MATLAB,
+f = @(x) [x(1)^2-0.5;
+          x(2)^2-0.5];
+%%
+% Solving for a fixed point of $\mathbf{f}(\mathbf{x})$ with an initial
+% guess of $\mathbf{x}_{0}=\mathbf{0}$,
+c = fixed_point_n(f,[0;0])
+%%
+% Verifying that $\mathbf{f}(\mathbf{c})=\mathbf{c}$,
+f(c)-c
 %% See also
 % <fixed_point_doc.html |fixed_point|>
 ##### SOURCE END #####

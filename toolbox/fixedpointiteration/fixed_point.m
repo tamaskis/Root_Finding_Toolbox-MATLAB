@@ -68,7 +68,7 @@ function [c,k,c_all] = fixed_point(f,x0,opts)
     end
     
     % returns initial guess if it is a fixed point of f(x)
-    if f(x0) == x0
+    if abs(f(x0)-x0) < TOL
         c = x0;
         return
     end

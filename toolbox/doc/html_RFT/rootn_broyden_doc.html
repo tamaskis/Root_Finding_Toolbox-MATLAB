@@ -1,0 +1,356 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>rootn_broyden</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-02"><meta name="DC.source" content="rootn_broyden_doc.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1><tt>rootn_broyden</tt></h1><!--introduction--><p>Broyden's method for finding the root of a multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input/Output Parameters</a></li><li><a href="#4">Example #1: Solution of a nonlinear system with a known Jacobian.</a></li><li><a href="#8">Example #2: Solution of a nonlinear system with an unknown Jacobian.</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">x = rootn_broyden(f,J,x0)
+x = rootn_broyden(f,J,x0,opts)
+[x,k] = rootn_broyden(__)
+[x,k,x_all] = rootn_broyden(__)
+</pre><h2 id="2">Description</h2><p><tt>rootn_broyden(f,J,x0)</tt> returns the root of a multivariate, vector-valued function <img src="rootn_broyden_doc_eq03762135078817208834.png" alt="$\mathbf{f}:\mathbf{R}^{n}\to\mathbf{R}^{n}$" style="width:60px;height:8px;"> specified by the function handle <tt>f</tt>, where <tt>J</tt> is the Jacobian of <img src="rootn_broyden_doc_eq15898890414513100043.png" alt="$\mathbf{f}$" style="width:5px;height:8px;"> with respect to <img src="rootn_broyden_doc_eq00785960591862624874.png" alt="$\mathbf{x}\in\mathbf{R}^{n}$" style="width:34px;height:9px;"> (i.e. <img src="rootn_broyden_doc_eq05906221514986673409.png" alt="$\mathbf{J}(\mathbf{x})=\partial\mathbf{f}/\partial\mathbf{x}$" style="width:67px;height:11px;">) and where <tt>x0</tt> (<img src="rootn_broyden_doc_eq08867998257892264900.png" alt="$\mathbf{x}_{0}\in\mathbf{R}^{n}$" style="width:39px;height:10px;">) is an initial guess of the root.</p><p><tt>x = rootn_broyden(f,df,x0,opts)</tt> does the same as the syntax above, but allows for the specification of optional solver parameters. <tt>opts</tt> is a structure with fields detailed in the "Input/Output Parameters" section below.</p><p><tt>[x,k] = rootn_broyden(...)</tt> also returns the number of iterations (<tt>k</tt>) performed of Broyden's method.</p><p><tt>[x,k,x_all] = rootn_broyden(...)</tt> does the same as the previous syntaxes, but also returns an array (<tt>x_all</tt>) storing the root estimates at each iteration. This syntax requires that <tt>opts.return_all</tt> be set to <tt>true</tt>.</p><h2 id="3">Input/Output Parameters</h2><p>
+  <table border=1>
+      <tr>
+          <td></td>
+          <td style="text-align:center"><b>Variable</b></td>
+          <td style="text-align:center"><b>Symbol</b></td>
+          <td style="text-align:center"><b>Description</b></td>
+          <td style="text-align:center"><b>Format</b></td>
+      </tr>
+      <tr>
+          <td rowspan="4" style="text-align:center"><b>Input</b></td>
+          <td style="text-align:center"><TT>f</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
+          <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
+          <td style="text-align:center">1×1<BR>function_handle</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>J</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{J}(\mathbf{x})" title="" /></td>
+          <td>Jacobian of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}" title="" /> with respect to <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}" title="" /> (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{J}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n\times n}" title="" />)</td>
+          <td style="text-align:center">1×1<BR>function_handle</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>x0</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
+          <td>initial guess for root</td>
+          <td style="text-align:center">n×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>opts</TT></td>
+          <td style="text-align:center">-</td>
+          <td>(OPTIONAL) solver options with fields:
+              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
+              <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
+              <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+              </td>
+          <td style="text-align:center">1×1<BR>struct</td>
+      </tr>
+      <tr>
+          <td rowspan="3" style="text-align:center"><b>Output</b></td>
+          <td style="text-align:center"><TT>x</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}" title="" /></td>
+          <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
+          <td style="text-align:center">n×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>k</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+          <td>number of solver iterations</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>x_all</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
+          <td>root estimates at all iterations</td>
+          <td style="text-align:center">n×(k+1)<BR>double</td>
+      </tr>
+  </table>
+</p><h2 id="4">Example #1: Solution of a nonlinear system with a known Jacobian.</h2><p><i>Solve the nonlinear system of equations</i></p><p><img src="rootn_broyden_doc_eq12769423785797363804.png" alt="$$2x_{1}+x_{2}=e^{-x_{1}}$$" style="width:73px;height:10px;"></p><p><img src="rootn_broyden_doc_eq08467020168964910977.png" alt="$$-x_{1}+2x_{2}=e^{-x_{2}}$$" style="width:81px;height:10px;"></p><p><i>for <img src="rootn_broyden_doc_eq13265528917168105125.png" alt="$\mathbf{x}=(x_{1},x_{2})^{T}$" style="width:62px;height:13px;">.</i></p><p>First, we rearrange the equations:</p><p><img src="rootn_broyden_doc_eq12936571647856729445.png" alt="$$2x_{1}+x_{2}-e^{-x_{1}}=0$$" style="width:93px;height:10px;"></p><p><img src="rootn_broyden_doc_eq09031891318334526546.png" alt="$$-x_{1}+2x_{2}-e^{-x_{2}}=0$$" style="width:101px;height:10px;"></p><p>Then we can write</p><p><img src="rootn_broyden_doc_eq11515302238102053623.png" alt="$$\mathbf{f}(\mathbf{x})=\mathbf{0}$$" style="width:41px;height:11px;"></p><p>where</p><p><img src="rootn_broyden_doc_eq18394398937053041947.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{2x_{1}+x_{2}-e^{-x_{1}} \cr -x_{1}+2x_{2}-e^{-x_{2}}}$$" style="width:135px;height:27px;"></p><p>Finding the Jacobian of <img src="rootn_broyden_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;">,</p><p><img src="rootn_broyden_doc_eq06603305053782619159.png" alt="$$\mathbf{J}(\mathbf{x})=\pmatrix{2+e^{-x_{1}} &amp; 1 \cr -1 &amp; 2+e^{-x_{2}}}$$" style="width:142px;height:27px;"></p><p>Defining <img src="rootn_broyden_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> and <img src="rootn_broyden_doc_eq06920639922208877098.png" alt="$\mathbf{J}(\mathbf{x})$" style="width:21px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [2*x(1)+x(2)-exp(-x(1));
+          -x(1)+2*x(2)-exp(-x(2))];
+J = @(x) [ 2+exp(-x(1))   1;
+          -1              2+exp(-x(2))];
+</pre><p>Solving for <img src="rootn_broyden_doc_eq17274866754917724950.png" alt="$\mathbf{x}$" style="width:7px;height:5px;"> using Broyden's method with an initial guess of <img src="rootn_broyden_doc_eq02784244745151364558.png" alt="$\mathbf{x}_{0}=(0,1)^{T}$" style="width:56px;height:13px;">,</p><pre class="codeinput">x0 = [0;
+      1];
+x = rootn_broyden(f,x0)
+</pre><pre class="codeoutput">
+x =
+
+    0.1976
+    0.4255
+
+</pre><p>Verifying that <img src="rootn_broyden_doc_eq12491170118498722541.png" alt="$\mathbf{f}(\mathbf{x})=\mathbf{0}$" style="width:41px;height:11px;">,</p><pre class="codeinput">f(x)
+</pre><pre class="codeoutput">
+ans =
+
+   1.0e-14 *
+
+   -0.1221
+    0.0111
+
+</pre><p><i>This example was adapted from</i> <a href="https://www.mathworks.com/help/optim/ug/fsolve.html">https://www.mathworks.com/help/optim/ug/fsolve.html</a>.</p><h2 id="8">Example #2: Solution of a nonlinear system with an unknown Jacobian.</h2><p><i>Solve the nonlinear system of equations</i></p><p><img src="rootn_broyden_doc_eq16521589506848017553.png" alt="$$e^{-e^{x_{1}+x_{2}}}=x_{2}(1+x_{1}^{2})$$" style="width:96px;height:14px;"></p><p><img src="rootn_broyden_doc_eq02788477407052199104.png" alt="$$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}=\frac{1}{2}$$" style="width:113px;height:23px;"></p><p><i>for <img src="rootn_broyden_doc_eq13265528917168105125.png" alt="$\mathbf{x}=(x_{1},x_{2})^{T}$" style="width:62px;height:13px;">.</i></p><p>First, we rearrange the equations:</p><p><img src="rootn_broyden_doc_eq00382665128709647138.png" alt="$$e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2})=0$$" style="width:115px;height:14px;"></p><p><img src="rootn_broyden_doc_eq16235977731623300962.png" alt="$$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}=0$$" style="width:133px;height:23px;"></p><p>Then we can write</p><p><img src="rootn_broyden_doc_eq11515302238102053623.png" alt="$$\mathbf{f}(\mathbf{x})=\mathbf{0}$$" style="width:41px;height:11px;"></p><p>where</p><p><img src="rootn_broyden_doc_eq08658437215635572675.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2}) \cr x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}}$$" style="width:165px;height:27px;"></p><p>Defining <img src="rootn_broyden_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [exp(-exp(-(x(1)+x(2))))-x(2)*(1+x(1)^2);
+          x(1)*cos(x(2))+x(2)*sin(x(1))-0.5];
+</pre><p>While we <i>could</i> calculate the Jacobian of <img src="rootn_broyden_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> quite easily, for the purposes of this example, we will assume it is unknown. Therefore, we approximate the Jacobian using the <tt>ijacobian</tt> function of the <a href="https://www.mathworks.com/matlabcentral/fileexchange/97267-numerical-differentiation-toolbox"><i>Numerical Differentiation Toolbox</i></a>.</p><pre class="codeinput">J = @(x) ijacobian(f,x);
+</pre><p>Solving for <img src="rootn_broyden_doc_eq17274866754917724950.png" alt="$\mathbf{x}$" style="width:7px;height:5px;"> using Broyden's method with an initial guess of <img src="rootn_broyden_doc_eq10456302100254128035.png" alt="$\mathbf{x}=(0,0)^{T}$" style="width:51px;height:13px;">,</p><pre class="codeinput">x0 = [0;
+      0];
+x = rootn_broyden(f,x0)
+</pre><pre class="codeoutput">
+x =
+
+    0.3532
+    0.6061
+
+</pre><p>Verifying that <img src="rootn_broyden_doc_eq12491170118498722541.png" alt="$\mathbf{f}(\mathbf{x})=\mathbf{0}$" style="width:41px;height:11px;">,</p><pre class="codeinput">f(x)
+</pre><pre class="codeoutput">
+ans =
+
+     0
+     0
+
+</pre><p><i>This example was adapted from</i> <a href="https://www.mathworks.com/help/optim/ug/fsolve.html">https://www.mathworks.com/help/optim/ug/fsolve.html</a>.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% |rootn_broyden|
+% Broyden's method for finding the root of a multivariate, vector-valued 
+% function.
+% 
+% <index.html Back to Root-Finding Toolbox Contents>.
+%% Syntax
+%   x = rootn_broyden(f,J,x0)
+%   x = rootn_broyden(f,J,x0,opts)
+%   [x,k] = rootn_broyden(__)
+%   [x,k,x_all] = rootn_broyden(__)
+%% Description
+% |rootn_broyden(f,J,x0)| returns the root of a multivariate, 
+% vector-valued function 
+% $\mathbf{f}:\mathbf{R}^{n}\to\mathbf{R}^{n}$ specified by the function 
+% handle |f|, where |J| is the Jacobian of $\mathbf{f}$ with respect to
+% $\mathbf{x}\in\mathbf{R}^{n}$ (i.e. 
+% $\mathbf{J}(\mathbf{x})=\partial\mathbf{f}/\partial\mathbf{x}$) and where
+% |x0| ($\mathbf{x}_{0}\in\mathbf{R}^{n}$) is an initial guess of the root.
+%
+% |x = rootn_broyden(f,df,x0,opts)| does the same as the syntax above, 
+% but allows for the specification of optional solver parameters. |opts| is
+% a structure with fields detailed in the "Input/Output Parameters" section
+% below.
+%
+% |[x,k] = rootn_broyden(...)| also returns the number of iterations 
+% (|k|) performed of Broyden's method.
+%
+% |[x,k,x_all] = rootn_broyden(...)| does the same as the previous 
+% syntaxes, but also returns an array (|x_all|) storing the root estimates 
+% at each iteration. This syntax requires that |opts.return_all| be set to 
+% |true|.
+%% Input/Output Parameters
+% <html>
+%   <table border=1>
+%       <tr>
+%           <td></td>
+%           <td style="text-align:center"><b>Variable</b></td>
+%           <td style="text-align:center"><b>Symbol</b></td>
+%           <td style="text-align:center"><b>Description</b></td>
+%           <td style="text-align:center"><b>Format</b></td>
+%       </tr>
+%       <tr>
+%           <td rowspan="4" style="text-align:center"><b>Input</b></td>
+%           <td style="text-align:center"><TT>f</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
+%           <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
+%           <td style="text-align:center">1×1<BR>function_handle</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>J</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{J}(\mathbf{x})" title="" /></td>
+%           <td>Jacobian of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}" title="" /> with respect to <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}" title="" /> (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{J}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n\times n}" title="" />)</td>
+%           <td style="text-align:center">1×1<BR>function_handle</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>x0</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
+%           <td>initial guess for root</td>
+%           <td style="text-align:center">n×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>opts</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>(OPTIONAL) solver options with fields:
+%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
+%               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
+%               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+%               </td>
+%           <td style="text-align:center">1×1<BR>struct</td>
+%       </tr>
+%       <tr>
+%           <td rowspan="3" style="text-align:center"><b>Output</b></td>
+%           <td style="text-align:center"><TT>x</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}" title="" /></td>
+%           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
+%           <td style="text-align:center">n×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>k</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%           <td>number of solver iterations</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>x_all</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
+%           <td>root estimates at all iterations</td>
+%           <td style="text-align:center">n×(k+1)<BR>double</td>
+%       </tr>
+%   </table>
+% </html>
+%
+%% Example #1: Solution of a nonlinear system with a known Jacobian.
+% _Solve the nonlinear system of equations_
+%
+% $$2x_{1}+x_{2}=e^{-x_{1}}$$
+%
+% $$-x_{1}+2x_{2}=e^{-x_{2}}$$
+%
+% _for $\mathbf{x}=(x_{1},x_{2})^{T}$._
+%
+% First, we rearrange the equations:
+%
+% $$2x_{1}+x_{2}-e^{-x_{1}}=0$$
+%
+% $$-x_{1}+2x_{2}-e^{-x_{2}}=0$$
+%
+% Then we can write
+%
+% $$\mathbf{f}(\mathbf{x})=\mathbf{0}$$
+%
+% where
+%
+% $$\mathbf{f}(\mathbf{x})=\pmatrix{2x_{1}+x_{2}-e^{-x_{1}} \cr -x_{1}+2x_{2}-e^{-x_{2}}}$$
+%
+% Finding the Jacobian of $\mathbf{f}(\mathbf{x})$,
+%
+% $$\mathbf{J}(\mathbf{x})=\pmatrix{2+e^{-x_{1}} & 1 \cr -1 & 2+e^{-x_{2}}}$$
+%
+% Defining $\mathbf{f}(\mathbf{x})$ and $\mathbf{J}(\mathbf{x})$ in MATLAB,
+f = @(x) [2*x(1)+x(2)-exp(-x(1));
+          -x(1)+2*x(2)-exp(-x(2))];
+J = @(x) [ 2+exp(-x(1))   1;
+          -1              2+exp(-x(2))];
+%%
+% Solving for $\mathbf{x}$ using Broyden's method with an initial guess of
+% $\mathbf{x}_{0}=(0,1)^{T}$,
+x0 = [0;
+      1];
+x = rootn_broyden(f,x0)
+%%
+% Verifying that $\mathbf{f}(\mathbf{x})=\mathbf{0}$,
+f(x)
+%%
+% _This example was adapted from_ 
+% https://www.mathworks.com/help/optim/ug/fsolve.html.
+%% Example #2: Solution of a nonlinear system with an unknown Jacobian.
+% _Solve the nonlinear system of equations_
+%
+% $$e^{-e^{x_{1}+x_{2}}}=x_{2}(1+x_{1}^{2})$$
+%
+% $$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}=\frac{1}{2}$$
+%
+% _for $\mathbf{x}=(x_{1},x_{2})^{T}$._
+%
+% First, we rearrange the equations:
+%
+% $$e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2})=0$$
+%
+% $$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}=0$$
+%
+% Then we can write
+%
+% $$\mathbf{f}(\mathbf{x})=\mathbf{0}$$
+%
+% where
+%
+% $$\mathbf{f}(\mathbf{x})=\pmatrix{e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2}) \cr x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}}$$
+%
+% Defining $\mathbf{f}(\mathbf{x})$ in MATLAB,
+f = @(x) [exp(-exp(-(x(1)+x(2))))-x(2)*(1+x(1)^2);
+          x(1)*cos(x(2))+x(2)*sin(x(1))-0.5];
+%%
+% While we _could_ calculate the Jacobian of $\mathbf{f}(\mathbf{x})$ quite
+% easily, for the purposes of this example, we will assume it is unknown. 
+% Therefore, we approximate the Jacobian using the |ijacobian| function of 
+% the <https://www.mathworks.com/matlabcentral/fileexchange/97267-numerical-differentiation-toolbox _Numerical Differentiation Toolbox_>.
+J = @(x) ijacobian(f,x);
+%%
+% Solving for $\mathbf{x}$ using Broyden's method with an initial guess of
+% $\mathbf{x}=(0,0)^{T}$,
+x0 = [0;
+      0];
+x = rootn_broyden(f,x0)
+%%
+% Verifying that $\mathbf{f}(\mathbf{x})=\mathbf{0}$,
+f(x)
+%%
+% _This example was adapted from_ 
+% https://www.mathworks.com/help/optim/ug/fsolve.html.
+##### SOURCE END #####
+--></body></html>

@@ -46,21 +46,21 @@
 function [x,k,x_all] = rootn_newton(f,J,x0,opts)
     
     % sets tolerance (defaults to 10⁻¹⁰)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
+    if (nargin < 4) || isempty(opts) || ~isfield(opts,'TOL')
         TOL = 1e-10;
     else
         TOL = opts.TOL;
     end
     
     % sets maximum number of iterations (defaults to 200)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
+    if (nargin < 4) || isempty(opts) || ~isfield(opts,'k_max')
         k_max = 200;
     else
         k_max = opts.k_max;
     end
     
     % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
+    if (nargin < 4) || isempty(opts) || ~isfield(opts,'return_all')
         return_all = false;
     else
         return_all = opts.return_all;
