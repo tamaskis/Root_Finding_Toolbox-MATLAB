@@ -9,7 +9,7 @@
 %   [x,k,x_all] = rootn_broyden(__)
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-24
+% Last Update: 2023-01-07
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
