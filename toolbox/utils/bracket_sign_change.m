@@ -5,9 +5,10 @@
 %   [a,b] = bracket_sign_change(f,x0)
 %   [a,b] = bracket_sign_change(f,[a0,b0])
 %   [a,b] = bracket_sign_change(__,kappa,k_max)
+%   [a,b,f_count] = bracket_sign_change(__)
 %
 % Copyright © 2022 Tamas Kis
-% Last Update: 2022-12-11
+% Last Update: 2023-01-05
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -35,9 +36,10 @@
 % -------
 %   a       - (1×1 double) lower bound of interval containing sign change
 %   b       - (1×1 double) lower bound of interval containing sign change
+%   f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [a,b] = bracket_sign_change(f,x0,kappa,k_max)
+function [a,b,f_count] = bracket_sign_change(f,x0,kappa,k_max)
     
     % sets the initial interval
     if length(x0) == 2
@@ -82,6 +84,7 @@ function [a,b] = bracket_sign_change(f,x0,kappa,k_max)
         a = c-wh;
         b = c+wh;
         if f(a)*f(b) < 0
+            f_count = 2+2*k;
             return;
         end
     end

@@ -6,14 +6,13 @@
 %   x = root_brent_dekker(f,[a,b])
 %   x = root_brent_dekker(f,x0)
 %   x = root_brent_dekker(__,opts)
-%   [x,k] = root_brent_dekker(__)
-%   [x,k,x_all] = root_brent_dekker(__)
+%   [x,output] = root_brent_dekker(__)
 %
 % See also root_brent_dekker, root_iteration, root_itp, root_newton, 
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-24
+% Last Update: 2023-01-07
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -50,11 +49,13 @@
 % OUTPUT:
 % -------
 %   x       - (1×1 double) root of f(x)
-%   k       - (1×1 double) number of solver iterations
-%   x_all   - (1×(k+1) double) root estimates at all iterations
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (1×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [x,k,x_all] = root_brent_dekker(f,x0,opts)
+function [x,output] = root_brent_dekker(f,x0,opts)
     
     % sets tolerance (defaults to 10⁻¹⁰)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
@@ -86,33 +87,39 @@ function [x,k,x_all] = root_brent_dekker(f,x0,opts)
     
     % obtains bracketing interval
     if length(x0) == 1
-        [a,b] = bracket_sign_change(f,x0);
+        [a,b,f_count_1] = bracket_sign_change(f,x0);
         rebracket = false;
     else
         a = x0(1);
         b = x0(2);
+        f_count_1 = 0;
     end
     
     % updates bracketing interval if requested
     if rebracket
-        [a,b] = bracket_sign_change(f,[a,b]);
+        [a,b,f_count_2] = bracket_sign_change(f,[a,b]);
+    else
+        f_count_2 = 0;
     end
     
-    % returns midpoint of bracketing interval if it is a root of f(x)
-    if f((a+b)/2) == 0
-        x = (a+b)/2;
+    % function evaluation at right endpoint of bracketing interval
+    fb = f(b);
+    
+    % returns right endpoint of bracketing interval if it is a root of f(x)
+    if fb == 0
+        x = b;
+        output.k = 0;
+        output.f_count = f_count_1+f_count_2+2;
         return
     end
     
-    % function evaluations at left and right endpoints of bracketing 
-    % interval
+    % function evaluations at left endpoint of bracketing interval
     fa = f(a);
-    fb = f(b);
     
     % initializes function evaluation at previous root estimate
     fc = fb;
     
-    % preallocates array to store all intermediate solutions
+    % preallocates arrays to store all intermediate solutions
     if return_all
         x_all = zeros(1,k_max+1);
     end
@@ -188,7 +195,7 @@ function [x,k,x_all] = root_brent_dekker(f,x0,opts)
             end
             
         end
-
+        
         % determines whether to keep results of interpolation or to revert
         % to performing bisection instead
         s = e;
@@ -224,5 +231,10 @@ function [x,k,x_all] = root_brent_dekker(f,x0,opts)
         x_all(k+1) = x;
         x_all = x_all(1:(k+1));
     end
+    
+    % output structure
+    if return_all, output.x_all = x_all; end
+    output.k = k;
+    output.f_count = f_count_1+f_count_2+2+k;
     
 end

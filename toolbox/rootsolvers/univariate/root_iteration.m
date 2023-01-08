@@ -5,14 +5,13 @@
 %
 %   x = root_iteration(f,x0)
 %   x = root_iteration(f,x0,opts)
-%   [x,k] = root_iteration(__)
-%   [x,k,x_all] = root_iteration(__)
+%   [x,output] = root_iteration(__)
 %
 % See also root_bisection, root_brent_dekker, root_itp, root_newton, 
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-11
+% Last Update: 2023-01-04
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -41,35 +40,27 @@
 % OUTPUT:
 % -------
 %   x       - (1×1 double) root of f(x)
-%   k       - (1×1 double) number of iterations
-%   x_all   - (1×(k+1) double) root estimates at all iterations
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (1×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [x,k,x_all] = root_iteration(f,x0,opts)
+function [x,output] = root_iteration(f,x0,opts)
     
-    % sets tolerance (defaults to 10⁻¹⁰)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
-        opts.TOL = 1e-10;
-    end
-    
-    % sets maximum number of iterations (defaults to 200)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
-        opts.k_max = 200;
-    end
-    
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        opts.return_all = false;
+    % defaults opts to empty array if not input
+    if (nargin < 3)
+        opts = [];
     end
     
     % defines the auxiliary function
     g = @(x) x-f(x);
     
     % solves for the root of f(x) using fixed-point iteration on g(x)
-    if opts.return_all
-        [x,k,x_all] = fixed_point(g,x0,opts);
-    else
-        [x,k] = fixed_point(g,x0,opts);
-    end
+    [x,output] = fixed_point(g,x0,opts);
+    
+    % renames "c_all" field of output to "x_all"
+    output.x_all = output.c_all;
+    output = rmfield(output,'c_all');
     
 end

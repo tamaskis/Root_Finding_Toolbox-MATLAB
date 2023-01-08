@@ -5,13 +5,12 @@
 %
 %   x = rootn_iteration(f,x0)
 %   x = rootn_iteration(f,x0,opts)
-%   [x,k] = rootn_iteration(__)
-%   [x,k,x_all] = rootn_iteration(__)
+%   [x,output] = rootn_iteration(__)
 %
 % See also TODO.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-18
+% Last Update: 2022-01-04
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -28,7 +27,7 @@
 % ------
 %   f       - (1×1 function_handle) multivariate, vector-valued function,
 %             f(x) (f : ℝⁿ → ℝⁿ)
-%   x0      - (1×1 double) initial guess for root
+%   x0      - (n×1 double) initial guess for root
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
@@ -39,36 +38,28 @@
 % -------
 % OUTPUT:
 % -------
-%   x       - (1×1 double) root of f(x)
-%   k       - (1×1 double) number of iterations
-%   x_all   - (1×(k+1) double) root estimates at all iterations
+%   x       - (n×1 double) root of f(x)
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (n×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [x,k,x_all] = rootn_iteration(f,x0,opts)
+function [x,output] = rootn_iteration(f,x0,opts)
     
-    % sets tolerance (defaults to 10⁻¹⁰)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
-        opts.TOL = 1e-10;
-    end
-    
-    % sets maximum number of iterations (defaults to 200)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
-        opts.k_max = 200;
-    end
-    
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        opts.return_all = false;
+   % defaults opts to empty array if not input
+    if (nargin < 3)
+        opts = [];
     end
     
     % defines the auxiliary function
     g = @(x) x-f(x);
     
     % solves for the root of f(x) using fixed-point iteration on g(x)
-    if opts.return_all
-        [x,k,x_all] = fixed_point_n(g,x0,opts);
-    else
-        [x,k] = fixed_point_n(g,x0,opts);
-    end
+    [x,output] = fixed_point(g,x0,opts);
+    
+    % renames "c_all" field of output to "x_all"
+    output.x_all = output.c_all;
+    output = rmfield(output,'c_all');
     
 end

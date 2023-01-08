@@ -5,14 +5,13 @@
 %
 %   x = root_newton(f,df,x0)
 %   x = root_newton(f,df,x0,opts)
-%   [x,k] = root_newton(__)
-%   [x,k,x_all] = root_newton(__)
+%   [x,output] = root_newton(__)
 %
 % See also root_bisection, root_brent_dekker, root_iteration, root_itp,
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-11
+% Last Update: 2022-01-04
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -42,11 +41,14 @@
 % OUTPUT:
 % -------
 %   x       - (1×1 double) root of f(x)
-%   k       - (1×1 double) number of solver iterations
-%   x_all   - (1×(k+1) double) root estimates at all iterations
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (1×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
+%       • d_count - (1×1 double) number of derivative evaluations
 %
 %==========================================================================
-function [x,k,x_all] = root_newton(f,df,x0,opts)
+function [x,output] = root_newton(f,df,x0,opts)
     
     % sets tolerance (defaults to 10⁻¹⁰)
     if (nargin < 4) || isempty(opts) || ~isfield(opts,'TOL')
@@ -77,6 +79,9 @@ function [x,k,x_all] = root_newton(f,df,x0,opts)
     
     % root estimate at first iteration
     x_curr = x0;
+    
+    % initializes root estimate at next iteration
+    x_next = 0;
     
     % preallocates array to store all intermediate solutions
     if return_all
@@ -124,5 +129,11 @@ function [x,k,x_all] = root_newton(f,df,x0,opts)
         x_all(k+1) = x;
         x_all = x_all(1:(k+1));
     end
+    
+    % output structure
+    if return_all, output.x_all = x_all; end
+    output.k = k;
+    output.f_count = k+1;
+    output.d_count = k;
     
 end

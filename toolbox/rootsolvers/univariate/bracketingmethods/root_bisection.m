@@ -6,14 +6,13 @@
 %   x = root_bisection(f,[a,b])
 %   x = root_bisection(f,x0)
 %   x = root_bisection(__,opts)
-%   [x,k] = root_bisection(__)
-%   [x,k,x_all] = root_bisection(__)
+%   [x,output] = root_bisection(__)
 %
 % See also root_brent_dekker, root_iteration, root_itp, root_newton, 
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-11
+% Last Update: 2023-01-05
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -51,10 +50,17 @@
 % -------
 %   x       - (1×1 double) root of f(x)
 %   k       - (1×1 double) number of solver iterations
-%   x_all   - (1×(k+1) double) root estimates at all iterations
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (1×(k+1) double) root estimates at all iterations
+%       • a_all   - (1×(k+1) double) bracketing interval lower bounds at 
+%                   all iterations
+%       • b_all   - (1×(k+1) double) bracketing interval upper bounds at 
+%                   all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [x,k,x_all] = root_bisection(f,x0,opts)
+function [x,output] = root_bisection(f,x0,opts)
     
     % sets tolerance (defaults to 10⁻¹⁰)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
@@ -86,16 +92,19 @@ function [x,k,x_all] = root_bisection(f,x0,opts)
     
     % obtains bracketing interval
     if length(x0) == 1
-        [a,b] = bracket_sign_change(f,x0);
+        [a,b,f_count_1] = bracket_sign_change(f,x0);
         rebracket = false;
     else
         a = x0(1);
         b = x0(2);
+        f_count_1 = 0;
     end
     
     % updates bracketing interval if requested
     if rebracket
-        [a,b] = bracket_sign_change(f,[a,b]);
+        [a,b,f_count_2] = bracket_sign_change(f,[a,b]);
+    else
+        f_count_2 = 0;
     end
     
     % root estimate at first iteration
@@ -111,9 +120,11 @@ function [x,k,x_all] = root_bisection(f,x0,opts)
     fa = f(a);
     fc = f(c);
     
-    % preallocates array to store all intermediate solutions
+    % preallocates arrays to store all intermediate solutions
     if return_all
         x_all = zeros(1,k_max+1);
+        a_all = zeros(1,k_max+1);
+        b_all = zeros(1,k_max+1);
     end
     
     % iteration
@@ -122,6 +133,8 @@ function [x,k,x_all] = root_bisection(f,x0,opts)
         % stores results
         if return_all
             x_all(k) = c;
+            a_all(k) = a;
+            b_all(k) = b;
         end
         
         % updates interval
@@ -150,10 +163,23 @@ function [x,k,x_all] = root_bisection(f,x0,opts)
     % converged root
     x = c;
     
-    % stores converged result and trims array
+    % stores converged result and trims arrays
     if return_all
         x_all(k+1) = x;
+        a_all(k+1) = a;
+        b_all(k+1) = b;
         x_all = x_all(1:(k+1));
+        a_all = a_all(1:(k+1));
+        b_all = b_all(1:(k+1));
     end
+    
+    % output structure
+    if return_all
+        output.x_all = x_all;
+        output.a_all = a_all;
+        output.b_all = b_all;
+    end
+    output.k = k;
+    output.f_count = f_count_1+f_count_2+k+2;
     
 end

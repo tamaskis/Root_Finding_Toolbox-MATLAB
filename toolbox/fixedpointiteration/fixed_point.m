@@ -5,13 +5,12 @@
 %
 %   c = fixed_point(f,x0)
 %   c = fixed_point(f,x0,opts)
-%   [c,k] = fixed_point(__)
-%   [c,k,c_all] = fixed_point(__)
+%   [c,output] = fixed_point(__)
 %
 % See also fixed_point_n.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-12-11
+% Last Update: 2023-01-04
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -40,11 +39,14 @@
 % OUTPUT:
 % -------
 %   c       - (1×1 double) fixed point of f(x)
-%   k       - (1×1 double) number of iterations
-%   c_all   - (1×(k+1) double) fixed point estimates at all iterations
+%   output  - (1×1 struct) algorithm outputs
+%       • c_all   - (1×(k+1) double) fixed point estimates at all 
+%                   iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [c,k,c_all] = fixed_point(f,x0,opts)
+function [c,output] = fixed_point(f,x0,opts)
     
     % sets maximum number of iterations (defaults to 200)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
@@ -110,5 +112,10 @@ function [c,k,c_all] = fixed_point(f,x0,opts)
         c_all(k+1) = c;
         c_all = c_all(1:(k+1));
     end
+    
+    % output structure
+    if return_all, output.c_all = c_all; end
+    output.k = k;
+    output.f_count = k+1;
     
 end
