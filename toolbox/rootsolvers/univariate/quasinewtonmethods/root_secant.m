@@ -60,16 +60,19 @@ function [x,output] = root_secant(f,x0,opts)
         k_max = opts.k_max;
     end
     
-    % function evaluation at first iteration
+    % evaluates function at initial guess
     f_prev = f(x0);
     
     % returns initial guess if it is a root of f(x)
     if f_prev == 0
         x = x0;
+        output.x_all = x;
+        output.k = 0;
+        output.f_count = 0;
         return
     end
     
-    % root estimates at first and second iterations
+    % initializes previous and current root estimates
     x_prev = x0;
     if x0 ~= 0
         x_curr = x0*(1+100*TOL*abs(x0));
@@ -77,12 +80,12 @@ function [x,output] = root_secant(f,x0,opts)
         x_curr = 100*TOL;
     end
     
-    % preallocates array to store all intermediate solutions and stores 
-    % estimate at 1st iteration
-    if return_all
-        x_all = zeros(1,k_max+1);
-        x_all(1) = x_prev;
-    end
+    % preallocates array to store all intermediate solutions
+    x_all = zeros(1,k_max+1);
+    
+    % stores initial guess and root estimate at 1st iteration
+    x_all(1) = x0;
+    x_all(2) = x_curr;
     
     % counter for number of times current root estimate is perturbed
     n_perturb = 0;
@@ -90,12 +93,7 @@ function [x,output] = root_secant(f,x0,opts)
     % iteration
     for k = 2:k_max
         
-        % stores results
-        if return_all
-            x_all(k) = x_curr;
-        end
-        
-        % function evaluation at current iteration
+        % evaluates function at current iteration
         f_curr = f(x_curr);
         
         % perturbs current root estimate if function evaluation is same
@@ -112,6 +110,9 @@ function [x,output] = root_secant(f,x0,opts)
         % updates root estimate
         x_next = (x_prev*f_curr-x_curr*f_prev)/(f_curr-f_prev);
         
+        % stores updated root estimate
+        x_all(k+1) = x_next;
+
         % terminates if converged
         if (abs(x_next-x_curr) < TOL)
             break;
@@ -129,14 +130,8 @@ function [x,output] = root_secant(f,x0,opts)
     % converged root
     x = x_next;
     
-    % stores converged result and trims array
-    if return_all
-        x_all(k+1) = x;
-        x_all = x_all(1:(k+1));
-    end
-    
-    % output structure
-    if return_all, output.x_all = x_all; end
+    % additional outputs
+    output.x_all = x_all(1:(k+1));
     output.k = k;
     output.f_count = k+n_perturb;
     
