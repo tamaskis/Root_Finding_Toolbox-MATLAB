@@ -11,7 +11,7 @@
 % root_newton.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-01-04
+% Last Update: 2023-01-07
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -33,8 +33,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %
 % -------
 % OUTPUT:
@@ -60,13 +58,6 @@ function [x,output] = root_secant(f,x0,opts)
         k_max = 200;
     else
         k_max = opts.k_max;
-    end
-    
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
     end
     
     % function evaluation at first iteration

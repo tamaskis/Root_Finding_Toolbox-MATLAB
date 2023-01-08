@@ -98,23 +98,25 @@ function [x,output] = root_bisection(f,x0,opts)
         f_count_2 = 0;
     end
     
-    % root estimate at first iteration
+    % initial guess for root
     c = (a+b)/2;
     
+    % evaluates function at initial guess
+    fc = f(c);
+    
     % returns root estimate at first iteration if it is a root of f(x)
-    if f(c) == 0
+    if fc == 0
         x = c;
         output.x_all = x;
         output.a_all = a;
         output.b_all = b;
         output.k = 0;
-        output.f_count = f_count_1+f_count2;
+        output.f_count = f_count_1+f_count_2+1;
         return
     end
     
-    % function evaluations at first iteration
+    % evaluates function at lower bound of initial bracketing interval
     fa = f(a);
-    fc = f(c);
     
     % preallocates arrays to store all intermediate solutions and
     % bracketing intervals

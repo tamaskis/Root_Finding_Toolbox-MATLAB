@@ -93,10 +93,11 @@ function [x,output] = root_brent_dekker(f,x0,opts)
         f_count_2 = 0;
     end
     
-    % function evaluation at right endpoint of bracketing interval
+    % evaluates function at upper bound of initial bracketing interval
     fb = f(b);
     
-    % returns right endpoint of bracketing interval if it is a root of f(x)
+    % returns upper bound of initial bracketing interval if it is a root of
+    % f(x)
     if fb == 0
         x = b;
         output.x_all = x;
@@ -105,7 +106,7 @@ function [x,output] = root_brent_dekker(f,x0,opts)
         return
     end
     
-    % function evaluations at left endpoint of bracketing interval
+    % evaluates function at lower bound of initial bracketing interval
     fa = f(a);
     
     % initializes function evaluation at previous root estimate

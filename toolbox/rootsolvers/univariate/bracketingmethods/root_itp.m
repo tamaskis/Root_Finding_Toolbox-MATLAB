@@ -135,7 +135,7 @@ function [x,output] = root_itp(f,x0,opts)
         output.a_all = a;
         output.b_all = b;
         output.k = 0;
-        output.f_count = f_count_1+f_count2;
+        output.f_count = f_count_1+f_count_2+1;
         return
     end
     
@@ -150,7 +150,7 @@ function [x,output] = root_itp(f,x0,opts)
     a_all(1) = a;
     b_all(1) = b;
     
-    % function evaluations at first iteration
+    % evaluates function at bounds of initial bracketing interval
     ya = f(a);
     yb = f(b);
     
