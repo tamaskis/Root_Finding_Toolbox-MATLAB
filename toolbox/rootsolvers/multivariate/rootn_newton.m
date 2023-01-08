@@ -31,8 +31,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %
 % -------
 % OUTPUT:
@@ -42,6 +40,7 @@
 %       • x_all   - (n×(k+1) double) root estimates at all iterations
 %       • k       - (1×1 double) number of solver iterations
 %       • f_count - (1×1 double) number of function evaluations
+%       • J_count - (1×1 double) number of Jacobian evaluations
 %
 %==========================================================================
 function [x,output] = rootn_newton(f,J,x0,opts)
@@ -60,29 +59,19 @@ function [x,output] = rootn_newton(f,J,x0,opts)
         k_max = opts.k_max;
     end
     
-    % determines if all intermediate estimates should be returned
-    if (nargin < 4) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
-    end
-    
     % turns singular matrix warning into error
     s = warning('error','MATLAB:singularMatrix');
     
     % dimension of x
     n = length(x0);
     
-    % counters for function and Jacobian evaluations
-    f_count = 0;
-    J_count = 0;
-    
-    % function evaluation at first iteration
-    f0 = f(x0); f_count = f_count+1;
-    
     % returns initial guess if it is a root of f(x)
-    if f0 == zeros(n,1)
+    if f(x0) == zeros(n,1)
         x = x0;
+        output.x_all = x;
+        output.k = 0;
+        output.f_count = 1;
+        output.J_count = 0;
         return
     end
     
@@ -96,24 +85,21 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     % initializes x_new so its scope isn't limited to the while loop
     x_next = zero_vector;
     
-    % preallocates array to store all intermediate solutions
-    if return_all
-        x_all = zeros(n,k_max+1);
-    end
+    % preallocates array to store all intermediate solutions and stores
+    % initial guess
+    x_all = zeros(1,k_max+1);
+    x_all(:,1) = x0;
     
+    % counter for number of times current root estimate is perturbed
+    n_perturb = 0;
+
     % iteration
     for k = 1:k_max
         
-        % stores results
-        if return_all
-            x_all(:,k) = x_curr;
-        end
-        
         % solves for y assuming Jacobian is nonsingular
         try
-            f_curr = f(x_curr); f_count = f_count+1;
-            J_curr = J(x_curr); J_count = J_count+1;
-            y = J_curr\(-f_curr);
+            f_curr = f(x_curr);
+            y = J(x_curr)\(-f_curr);
             
         % catch any error when solving linear system
         catch ME
@@ -122,6 +108,10 @@ function [x,output] = rootn_newton(f,J,x0,opts)
             % singularity
             if strcmpi(ME.identifier,'MATLAB:singularMatrix')
                 
+                % stores unperturbed current root estimate in case we need
+                % to return it
+                x_curr_unperturbed = x_curr;
+
                 % perturbs current root estimate
                 if x_curr ~= zero_vector
                     x_curr = x_curr*(1+100*TOL*abs(x_curr));
@@ -131,18 +121,15 @@ function [x,output] = rootn_newton(f,J,x0,opts)
                 
                 % tries to resolve system at perturbed root estimate
                 try
-                    f_count = f_count+1;
-                    J_count = J_count+1;
+                    n_perturb = n_perturb+1;
                     y = J(x_curr)\(-f(x_curr));
                     
                 % if solution of perturbed system fails, check whether the
                 % function evaluation at unperturbed system is near 0 
                 % (occasionally the Jacobian will be singular at the root)
-                %   --> TODO: note that f_curr is unperturbed
-                %   --> unperturbed x_curr needs to be tracked
                 catch ME
                     if f_curr < TOL
-                        x_next = x_curr;
+                        x_next = x_curr_unperturbed;
                         break;
                     else
                         rethrow(ME);
@@ -158,6 +145,9 @@ function [x,output] = rootn_newton(f,J,x0,opts)
         % updates root estimate
         x_next = x_curr+y;
         
+        % stores updated root estimate
+        x_all(:,k+1) = x_next;
+        
         % terminates solver if converged
         if (norm(y) < TOL)
             break;
@@ -171,17 +161,11 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     % converged root
     x = x_next;
     
-    % stores converged result and trims array
-    if return_all
-        x_all(:,k+1) = x;
-        x_all = x_all(:,1:(k+1));
-    end
-    
-    % output structure
-    if return_all, output.x_all = x_all; end
+    % additional outputs
+    output.x_all = x_all(:,1:(k+1));
     output.k = k;
-    output.f_count = f_count;
-    output.J_count = J_count;
+    output.f_count = k+n_perturb+1;
+    output.J_count = k+n_perturb;
     
     % resets singular matrix error to warning
     warning(s);
