@@ -39,8 +39,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %       • rebracket  - (1×1 double) true if initial bracket should be
 %                      updated to ensure sign change, false otherwise 
 %                      (defaults to false)
@@ -69,13 +67,6 @@ function [x,output] = root_brent_dekker(f,x0,opts)
         k_max = 200;
     else
         k_max = opts.k_max;
-    end
-    
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
     end
     
     % determines if the initial bracketing interval should be updated
@@ -108,6 +99,7 @@ function [x,output] = root_brent_dekker(f,x0,opts)
     % returns right endpoint of bracketing interval if it is a root of f(x)
     if fb == 0
         x = b;
+        output.x_all = x;
         output.k = 0;
         output.f_count = f_count_1+f_count_2+2;
         return
@@ -119,18 +111,13 @@ function [x,output] = root_brent_dekker(f,x0,opts)
     % initializes function evaluation at previous root estimate
     fc = fb;
     
-    % preallocates arrays to store all intermediate solutions
-    if return_all
-        x_all = zeros(1,k_max+1);
-    end
+    % preallocates array to store all intermediate solutions and stores
+    % initial guess
+    x_all = zeros(1,k_max+1);
+    x_all(1) = x0;
     
     % iteration
     for k = 1:k_max
-        
-        % stores results
-        if return_all
-            x_all(k) = b;
-        end
         
         % auxiliary parameters
         if (k == 1) || ((fb > 0) == (fc > 0))
@@ -218,7 +205,10 @@ function [x,output] = root_brent_dekker(f,x0,opts)
             b = b-delta;
         end
         
-        % function evaluation at updated root estimate
+        % stores updated root estimate
+        x_all(k+1) = b;
+        
+        % evaluates function at updated root estimate
         fb = f(b);
         
     end
@@ -226,14 +216,8 @@ function [x,output] = root_brent_dekker(f,x0,opts)
     % converged root
     x = b;
     
-    % stores converged result and trims array
-    if return_all
-        x_all(k+1) = x;
-        x_all = x_all(1:(k+1));
-    end
-    
-    % output structure
-    if return_all, output.x_all = x_all; end
+    % additional outputs
+    output.x_all = x_all(1:(k+1));
     output.k = k;
     output.f_count = f_count_1+f_count_2+2+k;
     

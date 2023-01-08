@@ -7,10 +7,10 @@
 %   c = fixed_point_n(f,x0,opts)
 %   [c,output] = fixed_point_n(__)
 %
-% See also fixed_point_iteration_n.
+% See also fixed_point.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2022-01-04
+% Last Update: 2022-01-07
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -32,8 +32,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %
 % -------
 % OUTPUT:
@@ -62,40 +60,35 @@ function [c,output] = fixed_point_n(f,x0,opts)
         k_max = opts.k_max;
     end
     
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
-    end
-    
     % returns initial guess if it is a fixed point of f(x)
     if norm(f(x0)-x0) < TOL
         c = x0;
+        output.c_all = c;
+        output.k = 0;
+        output.f_count = 0;
         return
     end
     
     % dimension of x
     n = length(x0);
     
-    % fixed point estimate at first iteration
+    % initializes current and next fixed point estimates
     x_curr = x0;
+    x_next = zeros(n,1);
     
-    % preallocates array to store all intermediate solutions
-    if return_all
-        c_all = zeros(n,k_max+1);
-    end
+    % preallocates array to store all intermediate solutions and stores
+    % initial guess
+    c_all = zeros(n,k_max+1);
+    c_all(:,1) = x0;
     
     % iteration
     for k = 1:k_max
         
-        % stores results
-        if return_all
-            c_all(:,k) = x_curr;
-        end
-        
         % updates fixed point estimate
         x_next = f(x_curr);
+        
+        % stores updated fixed point estimate
+        c_all(:,k+1) = x_next;
         
         % terminates if converged
         if (norm(x_next-x_curr) < TOL)
@@ -110,14 +103,8 @@ function [c,output] = fixed_point_n(f,x0,opts)
     % converged fixed point
     c = x_next;
     
-    % stores converged result and trims array
-    if return_all
-        c_all(:,k+1) = c;
-        c_all = c_all(:,1:(k+1));
-    end
-    
-    % output structure
-    if return_all, output.c_all = c_all; end
+    % additional outputs
+    output.c_all = c_all(:,1:(k+1));
     output.k = k;
     output.f_count = k+1;
     

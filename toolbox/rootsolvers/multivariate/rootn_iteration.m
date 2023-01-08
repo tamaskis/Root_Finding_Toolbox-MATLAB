@@ -32,8 +32,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %
 % -------
 % OUTPUT:

@@ -11,7 +11,7 @@
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-01-04
+% Last Update: 2023-01-07
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -33,8 +33,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %
 % -------
 % OUTPUT:

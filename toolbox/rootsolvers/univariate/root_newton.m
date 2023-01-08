@@ -34,8 +34,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %
 % -------
 % OUTPUT:
@@ -64,37 +62,27 @@ function [x,output] = root_newton(f,df,x0,opts)
         k_max = opts.k_max;
     end
     
-    % determines if all intermediate estimates should be returned
-    if (nargin < 4) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
-    end
-    
     % returns initial guess if it is a root of f(x)
     if f(x0) == 0
         x = x0;
+        output.x_all = x;
+        output.k = 0;
+        output.f_count = 0;
+        output.d_count = 0;
         return
     end
     
-    % root estimate at first iteration
+    % inititalizes current and next root estimates
     x_curr = x0;
-    
-    % initializes root estimate at next iteration
     x_next = 0;
     
-    % preallocates array to store all intermediate solutions
-    if return_all
-        x_all = zeros(1,k_max+1);
-    end
+    % preallocates array to store all intermediate solutions and stores
+    % initial guess
+    x_all = zeros(1,k_max+1);
+    x_all(1) = x0;
     
     % iteration
     for k = 1:k_max
-        
-        % stores results
-        if return_all
-            x_all(k) = x_curr;
-        end
         
         % evaluates derivative at current root estimate
         df_curr = df(x_curr);
@@ -111,6 +99,9 @@ function [x,output] = root_newton(f,df,x0,opts)
         % updates root estimate
         x_next = x_curr-f(x_curr)/df_curr;
         
+        % stores updated root estimate
+        x_all(k+1) = x_next;
+        
         % terminates if converged
         if (abs(x_next-x_curr) < TOL)
             break;
@@ -124,14 +115,8 @@ function [x,output] = root_newton(f,df,x0,opts)
     % converged root
     x = x_next;
     
-    % stores converged result and trims array
-    if return_all
-        x_all(k+1) = x;
-        x_all = x_all(1:(k+1));
-    end
-    
-    % output structure
-    if return_all, output.x_all = x_all; end
+    % additional outputs
+    output.x_all = x_all(1:(k+1));
     output.k = k;
     output.f_count = k+1;
     output.d_count = k;

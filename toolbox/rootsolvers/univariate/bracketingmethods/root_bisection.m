@@ -39,8 +39,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %       • rebracket  - (1×1 double) true if initial bracket should be
 %                      updated to ensure sign change, false otherwise 
 %                      (defaults to false)
@@ -76,13 +74,6 @@ function [x,output] = root_bisection(f,x0,opts)
         k_max = opts.k_max;
     end
     
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
-    end
-    
     % determines if the initial bracketing interval should be updated
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'rebracket')
         rebracket = false;
@@ -113,6 +104,11 @@ function [x,output] = root_bisection(f,x0,opts)
     % returns root estimate at first iteration if it is a root of f(x)
     if f(c) == 0
         x = c;
+        output.x_all = x;
+        output.a_all = a;
+        output.b_all = b;
+        output.k = 0;
+        output.f_count = f_count_1+f_count2;
         return
     end
     
@@ -120,22 +116,19 @@ function [x,output] = root_bisection(f,x0,opts)
     fa = f(a);
     fc = f(c);
     
-    % preallocates arrays to store all intermediate solutions
-    if return_all
-        x_all = zeros(1,k_max+1);
-        a_all = zeros(1,k_max+1);
-        b_all = zeros(1,k_max+1);
-    end
+    % preallocates arrays to store all intermediate solutions and
+    % bracketing intervals
+    x_all = zeros(1,k_max+1);
+    a_all = zeros(1,k_max+1);
+    b_all = zeros(1,k_max+1);
+    
+    % stores initial guess and bracketing interval
+    x_all(1) = x0;
+    a_all(1) = a;
+    b_all(1) = b;
     
     % iteration
     for k = 1:k_max
-        
-        % stores results
-        if return_all
-            x_all(k) = c;
-            a_all(k) = a;
-            b_all(k) = b;
-        end
         
         % updates interval
         if fc == 0
@@ -150,12 +143,17 @@ function [x,output] = root_bisection(f,x0,opts)
         % updates root estimate
         c = (a+b)/2;
         
+        % stores updated root estimate and bracketing interval
+        x_all(k+1) = c;
+        a_all(k+1) = a;
+        b_all(k+1) = b;
+        
         % terminates if converged
         if ((b-a) < TOL)
             break;
         end
         
-        % function evaluation at updated root estimate
+        % evaluates function at updated root estimate
         fc = f(c);
         
     end
@@ -163,23 +161,11 @@ function [x,output] = root_bisection(f,x0,opts)
     % converged root
     x = c;
     
-    % stores converged result and trims arrays
-    if return_all
-        x_all(k+1) = x;
-        a_all(k+1) = a;
-        b_all(k+1) = b;
-        x_all = x_all(1:(k+1));
-        a_all = a_all(1:(k+1));
-        b_all = b_all(1:(k+1));
-    end
-    
-    % output structure
-    if return_all
-        output.x_all = x_all;
-        output.a_all = a_all;
-        output.b_all = b_all;
-    end
+    % additional outputs
+    output.x_all = x_all(1:(k+1));
+    output.a_all = a_all(1:(k+1));
+    output.b_all = b_all(1:(k+1));
     output.k = k;
-    output.f_count = f_count_1+f_count_2+k+2;
+    output.f_count = f_count_1+f_count_2+2+k;
     
 end
