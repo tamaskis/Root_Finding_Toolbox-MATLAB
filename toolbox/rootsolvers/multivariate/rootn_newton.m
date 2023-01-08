@@ -92,7 +92,7 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     
     % counter for number of times current root estimate is perturbed
     n_perturb = 0;
-
+    
     % iteration
     for k = 1:k_max
         
@@ -111,7 +111,7 @@ function [x,output] = rootn_newton(f,J,x0,opts)
                 % stores unperturbed current root estimate in case we need
                 % to return it
                 x_curr_unperturbed = x_curr;
-
+                
                 % perturbs current root estimate
                 if x_curr ~= zero_vector
                     x_curr = x_curr*(1+100*TOL*abs(x_curr));

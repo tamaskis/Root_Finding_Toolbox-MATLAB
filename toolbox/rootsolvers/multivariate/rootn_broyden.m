@@ -5,8 +5,7 @@
 %
 %   x = rootn_broyden(f,J,x0)
 %   x = rootn_broyden(f,J,x0,opts)
-%   [x,k] = rootn_broyden(__)
-%   [x,k,x_all] = rootn_broyden(__)
+%   [x,output] = rootn_broyden(__)
 %
 % Copyright © 2021 Tamas Kis
 % Last Update: 2023-01-07
@@ -34,8 +33,6 @@
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • return_all - (1×1 logical) returns estimates at all iterations if
-%                      set to "true" (defaults to false)
 %       • J          - (1×1 function_handle) Jacobian of f(x) 
 %                      (J : ℝⁿ → ℝⁿˣⁿ) (defaults to using the Jacobian 
 %                      approximation provided by a differentiator object)
@@ -46,11 +43,13 @@
 % OUTPUT:
 % -------
 %   x       - (n×1 double) root of f(x)
-%   k       - (1×1 double) number of solver iterations
-%   x_all   - (n×(k+1) double) root estimates at all iterations
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (n×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [x,k,x_all] = rootn_broyden(f,x0,opts)
+function [x,output] = rootn_broyden(f,x0,opts)
     
     % sets tolerance (defaults to 10⁻¹⁰)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
@@ -64,13 +63,6 @@ function [x,k,x_all] = rootn_broyden(f,x0,opts)
         k_max = 200;
     else
         k_max = opts.k_max;
-    end
-    
-    % determines if all intermediate estimates should be returned
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'return_all')
-        return_all = false;
-    else
-        return_all = opts.return_all;
     end
     
     % determines if a Jacobian is input, and extracts it if it is
@@ -94,13 +86,19 @@ function [x,k,x_all] = rootn_broyden(f,x0,opts)
     % dimension of x
     n = length(x0);
     
+    % evaluates function at initial guess
+    f_prev = f(x0);
+    
     % returns initial guess if it is a root of f(x)
-    if f(x0) == zeros(n,1)
+    if f_prev == zeros(n,1)
         x = x0;
+        output.x_all = x;
+        output.k = 0;
+        output.f_count = 1;
         return
     end
     
-    % Jacobian of f(x) evaluated at the initial guess
+    % evaluates Jacobian of function at initial guess
     if jacobian_input
         J0 = J(x0);
     else
@@ -108,31 +106,26 @@ function [x,k,x_all] = rootn_broyden(f,x0,opts)
     end
     
     % inverse of the initial Jacobian
-    A = inv(J0);
-    
-    % function evaluation at the initial guess
-    f_prev = f(x0);
+    %A = inv(J0); TODO
+    A = J0\eye(n);
     
     % Newton step
     s = A*f_prev;
-
+    
     % root estimate at first iteration
     x_curr = x0+s;
     
     % preallocates array to store all intermediate solutions
-    if return_all
-        x_all = zeros(n,k_max+1);
-    end
+    x_all = zeros(1,k_max+1);
+    
+    % stores initial guess and root estimate at 1st iteration
+    x_all(:,1) = x0;
+    x_all(:,2) = x_curr;
     
     % iteration
     for k = 2:k_max
         
-        % stores results
-        if return_all
-            x_all(:,k) = x_curr;
-        end
-        
-        % function evaluation at current iteration
+        % evaluates function at current iteration
         f_curr = f(x_curr);
         
         % updates the inverse Jacobian via the Sherman-Morrison formula
@@ -147,6 +140,9 @@ function [x,k,x_all] = rootn_broyden(f,x0,opts)
         
         % updates root estimate
         x_next = x_curr+s;
+        
+        % stores updated root estimate
+        x_all(:,k+1) = x_next;
         
         % terminates solver if converged
         if (norm(s) < TOL)
@@ -163,10 +159,9 @@ function [x,k,x_all] = rootn_broyden(f,x0,opts)
     % converged root
     x = x_next;
     
-    % stores converged result and trims array
-    if return_all
-        x_all(:,k+1) = x;
-        x_all = x_all(:,1:(k+1));
-    end
+    % additional outputs
+    output.x_all = x_all(:,1:(k+1));
+    output.k = k;
+    output.f_count = k+1;
     
 end
