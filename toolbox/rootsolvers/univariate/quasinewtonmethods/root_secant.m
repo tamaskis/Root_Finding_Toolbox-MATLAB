@@ -28,7 +28,11 @@
 % ------
 %   f       - (1×1 function_handle) univariate, scalar-valued function, 
 %             f(x) (f : ℝ → ℝ)
-%   x0      - (1×1 double) initial guess for root
+%   x0      - (1×1 OR 1×2 double) two options:
+%               --> if x₀ ∈ ℝ, then initial guess is input
+%               --> if x₀ ∈ ℝ², then initial guess (1st element of x0) and
+%                   root estimate at first iteration (2nd element of x0) 
+%                   are input
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
@@ -60,31 +64,36 @@ function [x,output] = root_secant(f,x0,opts)
         k_max = opts.k_max;
     end
     
+    % initializes previous and current root estimates
+    if length(x0) == 2
+        x_prev = x0(1);
+        x_curr = x0(2);
+    else
+        x_prev = x0;
+        if x0 ~= 0
+            x_curr = x0*(1+100*TOL*abs(x0));
+        else
+            x_curr = 100*TOL;
+        end
+    end
+    
     % evaluates function at initial guess
-    f_prev = f(x0);
+    f_prev = f(x_prev);
     
     % returns initial guess if it is a root of f(x)
     if f_prev == 0
-        x = x0;
-        output.x_all = x;
-        output.k = 0;
-        output.f_count = 0;
+        x = x_prev;
+        output.x_all = [x_prev,x_curr];
+        output.k = 1;
+        output.f_count = 1;
         return
-    end
-    
-    % initializes previous and current root estimates
-    x_prev = x0;
-    if x0 ~= 0
-        x_curr = x0*(1+100*TOL*abs(x0));
-    else
-        x_curr = 100*TOL;
     end
     
     % preallocates array to store all intermediate solutions
     x_all = zeros(1,k_max+1);
     
     % stores initial guess and root estimate at 1st iteration
-    x_all(1) = x0;
+    x_all(1) = x_prev;
     x_all(2) = x_curr;
     
     % counter for number of times current root estimate is perturbed
@@ -112,7 +121,7 @@ function [x,output] = root_secant(f,x0,opts)
         
         % stores updated root estimate
         x_all(k+1) = x_next;
-
+        
         % terminates if converged
         if (abs(x_next-x_curr) < TOL)
             break;
@@ -133,6 +142,6 @@ function [x,output] = root_secant(f,x0,opts)
     % additional outputs
     output.x_all = x_all(1:(k+1));
     output.k = k;
-    output.f_count = k+n_perturb;
+    output.f_count = k+n_perturb+1;
     
 end

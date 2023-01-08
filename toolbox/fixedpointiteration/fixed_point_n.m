@@ -65,7 +65,7 @@ function [c,output] = fixed_point_n(f,x0,opts)
         c = x0;
         output.c_all = c;
         output.k = 0;
-        output.f_count = 0;
+        output.f_count = 1;
         return
     end
     

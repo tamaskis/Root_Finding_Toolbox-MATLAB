@@ -67,7 +67,7 @@ function [x,output] = root_newton(f,df,x0,opts)
         x = x0;
         output.x_all = x;
         output.k = 0;
-        output.f_count = 0;
+        output.f_count = 1;
         output.d_count = 0;
         return
     end
