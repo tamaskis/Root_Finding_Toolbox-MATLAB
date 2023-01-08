@@ -89,4 +89,7 @@ function [a,b,f_count] = bracket_sign_change(f,x0,kappa,k_max)
         end
     end
     
+    % raise warning if interval with sign change not found
+    warning('No interval was found with a sign change.');
+    
 end
