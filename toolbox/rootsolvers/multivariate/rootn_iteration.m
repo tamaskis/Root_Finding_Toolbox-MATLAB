@@ -10,7 +10,7 @@
 % See also TODO.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-01-07
+% Last Update: 2023-01-08
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -54,7 +54,7 @@ function [x,output] = rootn_iteration(f,x0,opts)
     g = @(x) x-f(x);
     
     % solves for the root of f(x) using fixed-point iteration on g(x)
-    [x,output] = fixed_point(g,x0,opts);
+    [x,output] = fixed_point_n(g,x0,opts);
     
     % renames "c_all" field of output to "x_all"
     output.x_all = output.c_all;

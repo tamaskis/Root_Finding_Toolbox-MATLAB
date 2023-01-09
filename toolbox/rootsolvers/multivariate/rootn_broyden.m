@@ -8,7 +8,7 @@
 %   [x,output] = rootn_broyden(__)
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-01-07
+% Last Update: 2023-01-08
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -19,7 +19,7 @@
 % https://tamaskis.github.io/files/Root_Finding_Methods.pdf
 %
 % DEPENDENCIES:
-%   • Numerical Differentiation Toolbox (https://www.mathworks.com/matlabcentral/fileexchange/97267-numerical-differentiation-toolbox)
+%   • Numerical Differentiation Toolbox (https://tamaskis.github.io/Numerical_Differentiation_Toolbox-MATLAB/)
 %
 %--------------------------------------------------------------------------
 %
@@ -34,10 +34,8 @@
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
 %       • J          - (1×1 function_handle) Jacobian of f(x) 
-%                      (J : ℝⁿ → ℝⁿˣⁿ) (defaults to using the Jacobian 
-%                      approximation provided by a differentiator object)
-%       • d          - (1×1 Differentiator) differentiator object (defaults
-%                      to a default differentiator object)
+%                      (J : ℝⁿ → ℝⁿˣⁿ) (defaults to using the central
+%                      difference approximation)
 %
 % -------
 % OUTPUT:
@@ -65,24 +63,6 @@ function [x,output] = rootn_broyden(f,x0,opts)
         k_max = opts.k_max;
     end
     
-    % determines if a Jacobian is input, and extracts it if it is
-    jacobian_input = (nargin == 3) && ~isempty(opts) && isfield(opts,'J');
-    if jacobian_input
-        J = opts.J;
-    end
-    
-    % determines if a differentiator object is input, and extracts it if it
-    % is
-    diff_input = (nargin == 3) && ~isempty(opts) && isfield(opts,'d');
-    if diff_input
-        d = opts.d;
-    end
-    
-    % creates a default differentiator object if needed
-    if ~jacobian_input && ~diff_input
-        d = Differentiator();
-    end
-    
     % dimension of x
     n = length(x0);
     
@@ -98,15 +78,17 @@ function [x,output] = rootn_broyden(f,x0,opts)
         return
     end
     
-    % evaluates Jacobian of function at initial guess
-    if jacobian_input
-        J0 = J(x0);
+    % evaluates Jacobian of function at initial guess (defaults to using 
+    % central difference approximation)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'J')
+        J0 = cjacobian(f,x0);
+        f_count_1 = 2*n;
     else
-        J0 = d.jacobian(f,x0);
+        J0 = opts.J(x0);
+        f_count_1 = 0;
     end
     
     % inverse of the initial Jacobian
-    %A = inv(J0); TODO
     A = J0\eye(n);
     
     % Newton step
@@ -162,6 +144,6 @@ function [x,output] = rootn_broyden(f,x0,opts)
     % additional outputs
     output.x_all = x_all(:,1:(k+1));
     output.k = k;
-    output.f_count = k+1;
+    output.f_count = f_count_1+k+1;
     
 end

@@ -1,0 +1,375 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>rootn_broyden</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-08"><meta name="DC.source" content="rootn_broyden.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%==========================================================================</span>
+<span class="comment">%</span>
+<span class="comment">% rootn_broyden  Broyden's method for finding the root of a multivariate,</span>
+<span class="comment">% vector-valued function.</span>
+<span class="comment">%</span>
+<span class="comment">%   x = rootn_broyden(f,J,x0)</span>
+<span class="comment">%   x = rootn_broyden(f,J,x0,opts)</span>
+<span class="comment">%   [x,output] = rootn_broyden(__)</span>
+<span class="comment">%</span>
+<span class="comment">% Copyright &copy; 2021 Tamas Kis</span>
+<span class="comment">% Last Update: 2023-01-08</span>
+<span class="comment">% Website: https://tamaskis.github.io</span>
+<span class="comment">% Contact: tamas.a.kis@outlook.com</span>
+<span class="comment">%</span>
+<span class="comment">% TOOLBOX DOCUMENTATION:</span>
+<span class="comment">% https://tamaskis.github.io/Root_Finding_Toolbox-MATLAB/</span>
+<span class="comment">%</span>
+<span class="comment">% TECHNICAL DOCUMENTATION:</span>
+<span class="comment">% https://tamaskis.github.io/files/Root_Finding_Methods.pdf</span>
+<span class="comment">%</span>
+<span class="comment">% DEPENDENCIES:</span>
+<span class="comment">%   &#8226; Numerical Differentiation Toolbox (https://tamaskis.github.io/Numerical_Differentiation_Toolbox-MATLAB/)</span>
+<span class="comment">%</span>
+<span class="comment">%--------------------------------------------------------------------------</span>
+<span class="comment">%</span>
+<span class="comment">% ------</span>
+<span class="comment">% INPUT:</span>
+<span class="comment">% ------</span>
+<span class="comment">%   f       - (1&times;1 function_handle) multivariate, vector-valued function,</span>
+<span class="comment">%             f(x) (f : &#8477;&#8319; &#8594; &#8477;&#8319;)</span>
+<span class="comment">%   x0      - (n&times;1 double) initial guess for root</span>
+<span class="comment">%   opts    - (OPTIONAL) (1&times;1 struct) solver options</span>
+<span class="comment">%       &#8226; TOL        - (1&times;1 double) tolerance (defaults to 10&#8315;&sup1;&#8304;)</span>
+<span class="comment">%       &#8226; k_max      - (1&times;1 double) maximimum number of iterations, k&#8344;&#8336;&#8339;</span>
+<span class="comment">%                      (defaults to 200)</span>
+<span class="comment">%       &#8226; J          - (1&times;1 function_handle) Jacobian of f(x)</span>
+<span class="comment">%                      (J : &#8477;&#8319; &#8594; &#8477;&#8319;&#739;&#8319;) (defaults to using the central</span>
+<span class="comment">%                      difference approximation)</span>
+<span class="comment">%</span>
+<span class="comment">% -------</span>
+<span class="comment">% OUTPUT:</span>
+<span class="comment">% -------</span>
+<span class="comment">%   x       - (n&times;1 double) root of f(x)</span>
+<span class="comment">%   output  - (1&times;1 struct) algorithm outputs</span>
+<span class="comment">%       &#8226; x_all   - (n&times;(k+1) double) root estimates at all iterations</span>
+<span class="comment">%       &#8226; k       - (1&times;1 double) number of solver iterations</span>
+<span class="comment">%       &#8226; f_count - (1&times;1 double) number of function evaluations</span>
+<span class="comment">%</span>
+<span class="comment">%==========================================================================</span>
+<span class="keyword">function</span> [x,output] = rootn_broyden(f,x0,opts)
+
+    <span class="comment">% sets tolerance (defaults to 10&#8315;&sup1;&#8304;)</span>
+    <span class="keyword">if</span> (nargin &lt; 3) || isempty(opts) || ~isfield(opts,<span class="string">'TOL'</span>)
+        TOL = 1e-10;
+    <span class="keyword">else</span>
+        TOL = opts.TOL;
+    <span class="keyword">end</span>
+
+    <span class="comment">% sets maximum number of iterations (defaults to 200)</span>
+    <span class="keyword">if</span> (nargin &lt; 3) || isempty(opts) || ~isfield(opts,<span class="string">'k_max'</span>)
+        k_max = 200;
+    <span class="keyword">else</span>
+        k_max = opts.k_max;
+    <span class="keyword">end</span>
+
+    <span class="comment">% dimension of x</span>
+    n = length(x0);
+
+    <span class="comment">% evaluates function at initial guess</span>
+    f_prev = f(x0);
+
+    <span class="comment">% returns initial guess if it is a root of f(x)</span>
+    <span class="keyword">if</span> f_prev == zeros(n,1)
+        x = x0;
+        output.x_all = x;
+        output.k = 0;
+        output.f_count = 1;
+        <span class="keyword">return</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% evaluates Jacobian of function at initial guess (defaults to using</span>
+    <span class="comment">% central difference approximation)</span>
+    <span class="keyword">if</span> (nargin &lt; 3) || isempty(opts) || ~isfield(opts,<span class="string">'J'</span>)
+        J0 = cjacobian(f,x0);
+        f_count_1 = 2*n;
+    <span class="keyword">else</span>
+        J0 = opts.J(x0);
+        f_count_1 = 0;
+    <span class="keyword">end</span>
+
+    <span class="comment">% inverse of the initial Jacobian</span>
+    A = J0\eye(n);
+
+    <span class="comment">% Newton step</span>
+    s = A*f_prev;
+
+    <span class="comment">% root estimate at first iteration</span>
+    x_curr = x0+s;
+
+    <span class="comment">% preallocates array to store all intermediate solutions</span>
+    x_all = zeros(n,k_max+1);
+
+    <span class="comment">% stores initial guess and root estimate at 1st iteration</span>
+    x_all(:,1) = x0;
+    x_all(:,2) = x_curr;
+
+    <span class="comment">% iteration</span>
+    <span class="keyword">for</span> k = 2:k_max
+
+        <span class="comment">% evaluates function at current iteration</span>
+        f_curr = f(x_curr);
+
+        <span class="comment">% updates the inverse Jacobian via the Sherman-Morrison formula</span>
+        y = f_curr-f_prev;
+        z = -A*y;
+        p = -s.'*z;
+        uT = s.'*A;
+        A = A+((s+z)*uT)/p;
+
+        <span class="comment">% Newton step</span>
+        s = -A*f_curr;
+
+        <span class="comment">% updates root estimate</span>
+        x_next = x_curr+s;
+
+        <span class="comment">% stores updated root estimate</span>
+        x_all(:,k+1) = x_next;
+
+        <span class="comment">% terminates solver if converged</span>
+        <span class="keyword">if</span> (norm(s) &lt; TOL)
+            <span class="keyword">break</span>;
+        <span class="keyword">end</span>
+
+        <span class="comment">% stores updated root estimate and current function evaluation for</span>
+        <span class="comment">% next iteration</span>
+        x_curr = x_next;
+        f_prev = f_curr;
+
+    <span class="keyword">end</span>
+
+    <span class="comment">% converged root</span>
+    x = x_next;
+
+    <span class="comment">% additional outputs</span>
+    output.x_all = x_all(:,1:(k+1));
+    output.k = k;
+    output.f_count = f_count_1+k+1;
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in rootn_broyden (line 67)
+    n = length(x0);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%==========================================================================
+%
+% rootn_broyden  Broyden's method for finding the root of a multivariate, 
+% vector-valued function.
+%
+%   x = rootn_broyden(f,J,x0)
+%   x = rootn_broyden(f,J,x0,opts)
+%   [x,output] = rootn_broyden(__)
+%
+% Copyright © 2021 Tamas Kis
+% Last Update: 2023-01-08
+% Website: https://tamaskis.github.io
+% Contact: tamas.a.kis@outlook.com
+%
+% TOOLBOX DOCUMENTATION:
+% https://tamaskis.github.io/Root_Finding_Toolbox-MATLAB/
+%
+% TECHNICAL DOCUMENTATION:
+% https://tamaskis.github.io/files/Root_Finding_Methods.pdf
+%
+% DEPENDENCIES:
+%   • Numerical Differentiation Toolbox (https://tamaskis.github.io/Numerical_Differentiation_Toolbox-MATLAB/)
+%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+% INPUT:
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%   f       - (1×1 function_handle) multivariate, vector-valued function,
+%             f(x) (f : ℝⁿ → ℝⁿ)
+%   x0      - (n×1 double) initial guess for root
+%   opts    - (OPTIONAL) (1×1 struct) solver options
+%       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
+%       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
+%                      (defaults to 200)
+%       • J          - (1×1 function_handle) Jacobian of f(x) 
+%                      (J : ℝⁿ → ℝⁿˣⁿ) (defaults to using the central
+%                      difference approximation)
+%
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% OUTPUT:
+% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%   x       - (n×1 double) root of f(x)
+%   output  - (1×1 struct) algorithm outputs
+%       • x_all   - (n×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
+%
+%==========================================================================
+function [x,output] = rootn_broyden(f,x0,opts)
+    
+    % sets tolerance (defaults to 10⁻¹⁰)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
+        TOL = 1e-10;
+    else
+        TOL = opts.TOL;
+    end
+    
+    % sets maximum number of iterations (defaults to 200)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
+        k_max = 200;
+    else
+        k_max = opts.k_max;
+    end
+    
+    % dimension of x
+    n = length(x0);
+    
+    % evaluates function at initial guess
+    f_prev = f(x0);
+    
+    % returns initial guess if it is a root of f(x)
+    if f_prev == zeros(n,1)
+        x = x0;
+        output.x_all = x;
+        output.k = 0;
+        output.f_count = 1;
+        return
+    end
+    
+    % evaluates Jacobian of function at initial guess (defaults to using 
+    % central difference approximation)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'J')
+        J0 = cjacobian(f,x0);
+        f_count_1 = 2*n;
+    else
+        J0 = opts.J(x0);
+        f_count_1 = 0;
+    end
+    
+    % inverse of the initial Jacobian
+    A = J0\eye(n);
+    
+    % Newton step
+    s = A*f_prev;
+    
+    % root estimate at first iteration
+    x_curr = x0+s;
+    
+    % preallocates array to store all intermediate solutions
+    x_all = zeros(n,k_max+1);
+    
+    % stores initial guess and root estimate at 1st iteration
+    x_all(:,1) = x0;
+    x_all(:,2) = x_curr;
+    
+    % iteration
+    for k = 2:k_max
+        
+        % evaluates function at current iteration
+        f_curr = f(x_curr);
+        
+        % updates the inverse Jacobian via the Sherman-Morrison formula
+        y = f_curr-f_prev;
+        z = -A*y;
+        p = -s.'*z;
+        uT = s.'*A;
+        A = A+((s+z)*uT)/p;
+        
+        % Newton step
+        s = -A*f_curr;
+        
+        % updates root estimate
+        x_next = x_curr+s;
+        
+        % stores updated root estimate
+        x_all(:,k+1) = x_next;
+        
+        % terminates solver if converged
+        if (norm(s) < TOL)
+            break;
+        end
+        
+        % stores updated root estimate and current function evaluation for 
+        % next iteration
+        x_curr = x_next;
+        f_prev = f_curr;
+        
+    end
+    
+    % converged root
+    x = x_next;
+    
+    % additional outputs
+    output.x_all = x_all(:,1:(k+1));
+    output.k = k;
+    output.f_count = f_count_1+k+1;
+    
+end
+##### SOURCE END #####
+--></body></html>

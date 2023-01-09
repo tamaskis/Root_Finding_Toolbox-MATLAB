@@ -117,6 +117,12 @@ x = root_brent_dekker(__,opts)
                       <td>maximum number of iterations (defaults to 200)</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>rebracket</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td><TT>true</TT> if initial bracketing interval should be updated to ensure sign change, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+                      <td style="text-align:center">1×1<BR>logical</td>
+                  </tr>
               </table>
               </td>
           <td style="text-align:center">1×1<BR>struct</td>
@@ -191,7 +197,7 @@ x =
 </pre><pre class="codeoutput error">Error using root_brent_dekker
 Too many output arguments.
 
-Error in root_brent_dekker_doc (line 173)
+Error in root_brent_dekker_doc (line 179)
 [~,~,x_all] = root_brent_dekker(f,[0,9999999],opts);
 </pre><p>Plotting the root estimates at each iteration,</p><pre class="codeinput">figure;
 plot(x_all,<span class="string">'k*'</span>,<span class="string">'MarkerSize'</span>,9,<span class="string">'LineWidth'</span>,1.5);
@@ -328,6 +334,12 @@ root3
 %                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
 %                       <td>maximum number of iterations (defaults to 200)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>rebracket</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td><TT>true</TT> if initial bracketing interval should be updated to ensure sign change, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+%                       <td style="text-align:center">1×1<BR>logical</td>
 %                   </tr>
 %               </table>
 %               </td>
