@@ -87,7 +87,7 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     
     % preallocates array to store all intermediate solutions and stores
     % initial guess
-    x_all = zeros(1,k_max+1);
+    x_all = zeros(n,k_max+1);
     x_all(:,1) = x0;
     
     % counter for number of times current root estimate is perturbed

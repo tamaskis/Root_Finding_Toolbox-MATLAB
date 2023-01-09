@@ -116,7 +116,7 @@ function [x,output] = rootn_broyden(f,x0,opts)
     x_curr = x0+s;
     
     % preallocates array to store all intermediate solutions
-    x_all = zeros(1,k_max+1);
+    x_all = zeros(n,k_max+1);
     
     % stores initial guess and root estimate at 1st iteration
     x_all(:,1) = x0;

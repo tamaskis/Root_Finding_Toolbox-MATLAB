@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>rootn_newton</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-03"><meta name="DC.source" content="rootn_newton_doc.m"><style type="text/css">
+      --><title>rootn_newton</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-08"><meta name="DC.source" content="rootn_newton_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,21 +67,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><tt>rootn_newton</tt></h1><!--introduction--><p>Newton's method for finding the root of a differentiable, multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input/Output Parameters</a></li><li><a href="#4">Example #1: Solution of a nonlinear system with a known Jacobian.</a></li><li><a href="#8">Example #2: Solution of a nonlinear system with an unknown Jacobian.</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">x = rootn_newton(f,J,x0)
+  </style></head><body><div class="content"><h1><tt>rootn_newton</tt></h1><!--introduction--><p>Newton's method for finding the root of a differentiable, multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Inputs</a></li><li><a href="#4">Outputs</a></li><li><a href="#5">Example #1: Solution of a nonlinear system with a known Jacobian.</a></li><li><a href="#9">Example #2: Solution of a nonlinear system with an unknown Jacobian.</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">x = rootn_newton(f,J,x0)
 x = rootn_newton(f,J,x0,opts)
-[x,k] = rootn_newton(__)
-[x,k,x_all] = rootn_newton(__)
-</pre><h2 id="2">Description</h2><p><tt>rootn_newton(f,J,x0)</tt> returns the root of a multivariate, vector-valued function <img src="rootn_newton_doc_eq03762135078817208834.png" alt="$\mathbf{f}:\mathbf{R}^{n}\to\mathbf{R}^{n}$" style="width:60px;height:8px;"> specified by the function handle <tt>f</tt>, where <tt>J</tt> is the Jacobian of <img src="rootn_newton_doc_eq15898890414513100043.png" alt="$\mathbf{f}$" style="width:5px;height:8px;"> with respect to <img src="rootn_newton_doc_eq00785960591862624874.png" alt="$\mathbf{x}\in\mathbf{R}^{n}$" style="width:34px;height:9px;"> (i.e. <img src="rootn_newton_doc_eq05906221514986673409.png" alt="$\mathbf{J}(\mathbf{x})=\partial\mathbf{f}/\partial\mathbf{x}$" style="width:67px;height:11px;">) and where <tt>x0</tt> (<img src="rootn_newton_doc_eq08867998257892264900.png" alt="$\mathbf{x}_{0}\in\mathbf{R}^{n}$" style="width:39px;height:10px;">) is an initial guess of the root.</p><p><tt>x = rootn_newton(f,df,x0,opts)</tt> does the same as the syntax above, but allows for the specification of optional solver parameters. <tt>opts</tt> is a structure with fields detailed in the "Input/Output Parameters" section below.</p><p><tt>[x,k] = rootn_newton(...)</tt> also returns the number of iterations (<tt>k</tt>) performed of Newton's method.</p><p><tt>[x,k,x_all] = rootn_newton(...)</tt> does the same as the previous syntaxes, but also returns an array (<tt>x_all</tt>) storing the root estimates at each iteration. This syntax requires that <tt>opts.return_all</tt> be set to <tt>true</tt>.</p><h2 id="3">Input/Output Parameters</h2><p>
-  <table border=1>
+[x,output] = rootn_newton(__)
+</pre><h2 id="2">Description</h2><p><tt>rootn_newton(f,J,x0)</tt> returns the root of a multivariate, vector-valued function <img src="rootn_newton_doc_eq03762135078817208834.png" alt="$\mathbf{f}:\mathbf{R}^{n}\to\mathbf{R}^{n}$" style="width:60px;height:8px;"> specified by the function handle <tt>f</tt>, where <tt>J</tt> is the Jacobian of <img src="rootn_newton_doc_eq15898890414513100043.png" alt="$\mathbf{f}$" style="width:5px;height:8px;"> with respect to <img src="rootn_newton_doc_eq00785960591862624874.png" alt="$\mathbf{x}\in\mathbf{R}^{n}$" style="width:34px;height:9px;"> (i.e. <img src="rootn_newton_doc_eq05906221514986673409.png" alt="$\mathbf{J}(\mathbf{x})=\partial\mathbf{f}/\partial\mathbf{x}$" style="width:67px;height:11px;">) and where <tt>x0</tt> (<img src="rootn_newton_doc_eq08867998257892264900.png" alt="$\mathbf{x}_{0}\in\mathbf{R}^{n}$" style="width:39px;height:10px;">) is an initial guess of the root.</p><p><tt>x = rootn_newton(f,df,x0,opts)</tt> does the same as the syntax above, but allows for the specification of optional solver parameters.</p><p><tt>[x,output] = rootn_newton(...)</tt> also returns a structure storing additional algorithm outputs.</p><h2 id="3">Inputs</h2><p>
+  <table>
       <tr>
-          <td></td>
           <td style="text-align:center"><b>Variable</b></td>
           <td style="text-align:center"><b>Symbol</b></td>
           <td style="text-align:center"><b>Description</b></td>
           <td style="text-align:center"><b>Format</b></td>
       </tr>
       <tr>
-          <td rowspan="4" style="text-align:center"><b>Input</b></td>
           <td style="text-align:center"><TT>f</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
           <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
@@ -102,34 +99,80 @@ x = rootn_newton(f,J,x0,opts)
       <tr>
           <td style="text-align:center"><TT>opts</TT></td>
           <td style="text-align:center">-</td>
-          <td>(OPTIONAL) solver options with fields:
-              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
-              <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
-              <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+          <td>(OPTIONAL) solver options<BR><BR>
+              <table>
+                  <tr>
+                      <td style="text-align:center"><b>Field</b></td>
+                      <td style="text-align:center"><b>Symbol</b></td>
+                      <td style="text-align:center"><b>Description</b></td>
+                      <td style="text-align:center"><b>Format</b></td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>TOL</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
+                      <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>k_max</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
+                      <td>maximum number of iterations (defaults to 200)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+              </table>
               </td>
           <td style="text-align:center">1×1<BR>struct</td>
       </tr>
+  </table>
+</p><h2 id="4">Outputs</h2><p>
+  <table>
       <tr>
-          <td rowspan="3" style="text-align:center"><b>Output</b></td>
+          <td style="text-align:center"><b>Variable</b></td>
+          <td style="text-align:center"><b>Symbol</b></td>
+          <td style="text-align:center"><b>Description</b></td>
+          <td style="text-align:center"><b>Format</b></td>
+      </tr>
+      <tr>
           <td style="text-align:center"><TT>x</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}" title="" /></td>
           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
           <td style="text-align:center">n×1<BR>double</td>
       </tr>
       <tr>
-          <td style="text-align:center"><TT>k</TT></td>
-          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
-          <td>number of solver iterations</td>
-          <td style="text-align:center">1×1<BR>double</td>
-      </tr>
-      <tr>
-          <td style="text-align:center"><TT>x_all</TT></td>
-          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
-          <td>root estimates at all iterations</td>
-          <td style="text-align:center">n×(k+1)<BR>double</td>
+          <td style="text-align:center"><TT>output</TT></td>
+          <td style="text-align:center">-</td>
+          <td>algorithm outputs<BR><BR>
+              <table>
+                  <tr>
+                      <td style="text-align:center"><b>Field</b></td>
+                      <td style="text-align:center"><b>Symbol</b></td>
+                      <td style="text-align:center"><b>Description</b></td>
+                      <td style="text-align:center"><b>Format</b></td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>x_all</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
+                      <td>root estimates at all iterations</td>
+                      <td style="text-align:center">n×(k+1)<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>k</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+                      <td>number of solver iterations</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>f_count</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+                      <td>number of function evaluations</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+              </table>
+              </td>
+          <td style="text-align:center">1×1<BR>struct</td>
       </tr>
   </table>
-</p><h2 id="4">Example #1: Solution of a nonlinear system with a known Jacobian.</h2><p><i>Solve the nonlinear system of equations</i></p><p><img src="rootn_newton_doc_eq12769423785797363804.png" alt="$$2x_{1}+x_{2}=e^{-x_{1}}$$" style="width:73px;height:10px;"></p><p><img src="rootn_newton_doc_eq08467020168964910977.png" alt="$$-x_{1}+2x_{2}=e^{-x_{2}}$$" style="width:81px;height:10px;"></p><p><i>for <img src="rootn_newton_doc_eq13265528917168105125.png" alt="$\mathbf{x}=(x_{1},x_{2})^{T}$" style="width:62px;height:13px;">.</i></p><p>First, we rearrange the equations:</p><p><img src="rootn_newton_doc_eq12936571647856729445.png" alt="$$2x_{1}+x_{2}-e^{-x_{1}}=0$$" style="width:93px;height:10px;"></p><p><img src="rootn_newton_doc_eq09031891318334526546.png" alt="$$-x_{1}+2x_{2}-e^{-x_{2}}=0$$" style="width:101px;height:10px;"></p><p>Then we can write</p><p><img src="rootn_newton_doc_eq11515302238102053623.png" alt="$$\mathbf{f}(\mathbf{x})=\mathbf{0}$$" style="width:41px;height:11px;"></p><p>where</p><p><img src="rootn_newton_doc_eq18394398937053041947.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{2x_{1}+x_{2}-e^{-x_{1}} \cr -x_{1}+2x_{2}-e^{-x_{2}}}$$" style="width:135px;height:27px;"></p><p>Finding the Jacobian of <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;">,</p><p><img src="rootn_newton_doc_eq06603305053782619159.png" alt="$$\mathbf{J}(\mathbf{x})=\pmatrix{2+e^{-x_{1}} &amp; 1 \cr -1 &amp; 2+e^{-x_{2}}}$$" style="width:142px;height:27px;"></p><p>Defining <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> and <img src="rootn_newton_doc_eq06920639922208877098.png" alt="$\mathbf{J}(\mathbf{x})$" style="width:21px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [2*x(1)+x(2)-exp(-x(1));
+</p><h2 id="5">Example #1: Solution of a nonlinear system with a known Jacobian.</h2><p><i>Solve the nonlinear system of equations</i></p><p><img src="rootn_newton_doc_eq12769423785797363804.png" alt="$$2x_{1}+x_{2}=e^{-x_{1}}$$" style="width:73px;height:10px;"></p><p><img src="rootn_newton_doc_eq08467020168964910977.png" alt="$$-x_{1}+2x_{2}=e^{-x_{2}}$$" style="width:81px;height:10px;"></p><p><i>for <img src="rootn_newton_doc_eq13265528917168105125.png" alt="$\mathbf{x}=(x_{1},x_{2})^{T}$" style="width:62px;height:13px;">.</i></p><p>First, we rearrange the equations:</p><p><img src="rootn_newton_doc_eq12936571647856729445.png" alt="$$2x_{1}+x_{2}-e^{-x_{1}}=0$$" style="width:93px;height:10px;"></p><p><img src="rootn_newton_doc_eq09031891318334526546.png" alt="$$-x_{1}+2x_{2}-e^{-x_{2}}=0$$" style="width:101px;height:10px;"></p><p>Then we can write</p><p><img src="rootn_newton_doc_eq11515302238102053623.png" alt="$$\mathbf{f}(\mathbf{x})=\mathbf{0}$$" style="width:41px;height:11px;"></p><p>where</p><p><img src="rootn_newton_doc_eq18394398937053041947.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{2x_{1}+x_{2}-e^{-x_{1}} \cr -x_{1}+2x_{2}-e^{-x_{2}}}$$" style="width:135px;height:27px;"></p><p>Finding the Jacobian of <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;">,</p><p><img src="rootn_newton_doc_eq06603305053782619159.png" alt="$$\mathbf{J}(\mathbf{x})=\pmatrix{2+e^{-x_{1}} &amp; 1 \cr -1 &amp; 2+e^{-x_{2}}}$$" style="width:142px;height:27px;"></p><p>Defining <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> and <img src="rootn_newton_doc_eq06920639922208877098.png" alt="$\mathbf{J}(\mathbf{x})$" style="width:21px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [2*x(1)+x(2)-exp(-x(1));
           -x(1)+2*x(2)-exp(-x(2))];
 J = @(x) [ 2+exp(-x(1))   1;
           -1              2+exp(-x(2))];
@@ -151,7 +194,7 @@ ans =
          0
    -0.2220
 
-</pre><p><i>This example was adapted from</i> <a href="https://www.mathworks.com/help/optim/ug/fsolve.html">https://www.mathworks.com/help/optim/ug/fsolve.html</a>.</p><h2 id="8">Example #2: Solution of a nonlinear system with an unknown Jacobian.</h2><p><i>Solve the nonlinear system of equations</i></p><p><img src="rootn_newton_doc_eq16521589506848017553.png" alt="$$e^{-e^{x_{1}+x_{2}}}=x_{2}(1+x_{1}^{2})$$" style="width:96px;height:14px;"></p><p><img src="rootn_newton_doc_eq02788477407052199104.png" alt="$$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}=\frac{1}{2}$$" style="width:113px;height:23px;"></p><p><i>for <img src="rootn_newton_doc_eq13265528917168105125.png" alt="$\mathbf{x}=(x_{1},x_{2})^{T}$" style="width:62px;height:13px;">.</i></p><p>First, we rearrange the equations:</p><p><img src="rootn_newton_doc_eq00382665128709647138.png" alt="$$e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2})=0$$" style="width:115px;height:14px;"></p><p><img src="rootn_newton_doc_eq16235977731623300962.png" alt="$$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}=0$$" style="width:133px;height:23px;"></p><p>Then we can write</p><p><img src="rootn_newton_doc_eq11515302238102053623.png" alt="$$\mathbf{f}(\mathbf{x})=\mathbf{0}$$" style="width:41px;height:11px;"></p><p>where</p><p><img src="rootn_newton_doc_eq08658437215635572675.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2}) \cr x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}}$$" style="width:165px;height:27px;"></p><p>Defining <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [exp(-exp(-(x(1)+x(2))))-x(2)*(1+x(1)^2);
+</pre><p><i>This example was adapted from</i> <a href="https://www.mathworks.com/help/optim/ug/fsolve.html">https://www.mathworks.com/help/optim/ug/fsolve.html</a>.</p><h2 id="9">Example #2: Solution of a nonlinear system with an unknown Jacobian.</h2><p><i>Solve the nonlinear system of equations</i></p><p><img src="rootn_newton_doc_eq16521589506848017553.png" alt="$$e^{-e^{x_{1}+x_{2}}}=x_{2}(1+x_{1}^{2})$$" style="width:96px;height:14px;"></p><p><img src="rootn_newton_doc_eq02788477407052199104.png" alt="$$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}=\frac{1}{2}$$" style="width:113px;height:23px;"></p><p><i>for <img src="rootn_newton_doc_eq13265528917168105125.png" alt="$\mathbf{x}=(x_{1},x_{2})^{T}$" style="width:62px;height:13px;">.</i></p><p>First, we rearrange the equations:</p><p><img src="rootn_newton_doc_eq00382665128709647138.png" alt="$$e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2})=0$$" style="width:115px;height:14px;"></p><p><img src="rootn_newton_doc_eq16235977731623300962.png" alt="$$x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}=0$$" style="width:133px;height:23px;"></p><p>Then we can write</p><p><img src="rootn_newton_doc_eq11515302238102053623.png" alt="$$\mathbf{f}(\mathbf{x})=\mathbf{0}$$" style="width:41px;height:11px;"></p><p>where</p><p><img src="rootn_newton_doc_eq08658437215635572675.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{e^{-e^{x_{1}+x_{2}}}-x_{2}(1+x_{1}^{2}) \cr x_{1}\cos{x_{2}}+x_{2}\sin{x_{1}}-\frac{1}{2}}$$" style="width:165px;height:27px;"></p><p>Defining <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [exp(-exp(-(x(1)+x(2))))-x(2)*(1+x(1)^2);
           x(1)*cos(x(2))+x(2)*sin(x(1))-0.5];
 </pre><p>While we <i>could</i> calculate the Jacobian of <img src="rootn_newton_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> quite easily, for the purposes of this example, we will assume it is unknown. Therefore, we approximate the Jacobian using the <tt>ijacobian</tt> function of the <a href="https://www.mathworks.com/matlabcentral/fileexchange/97267-numerical-differentiation-toolbox"><i>Numerical Differentiation Toolbox</i></a>.</p><pre class="codeinput">J = @(x) ijacobian(f,x);
 </pre><p>Solving for <img src="rootn_newton_doc_eq17274866754917724950.png" alt="$\mathbf{x}$" style="width:7px;height:5px;"> using Newton's method with an initial guess of <img src="rootn_newton_doc_eq10456302100254128035.png" alt="$\mathbf{x}=(0,0)^{T}$" style="width:51px;height:13px;">,</p><pre class="codeinput">x0 = [0;
@@ -182,8 +225,7 @@ ans =
 %% Syntax
 %   x = rootn_newton(f,J,x0)
 %   x = rootn_newton(f,J,x0,opts)
-%   [x,k] = rootn_newton(__)
-%   [x,k,x_all] = rootn_newton(__)
+%   [x,output] = rootn_newton(__)
 %% Description
 % |rootn_newton(f,J,x0)| returns the root of a multivariate, 
 % vector-valued function 
@@ -194,29 +236,20 @@ ans =
 % |x0| ($\mathbf{x}_{0}\in\mathbf{R}^{n}$) is an initial guess of the root.
 %
 % |x = rootn_newton(f,df,x0,opts)| does the same as the syntax above, 
-% but allows for the specification of optional solver parameters. |opts| is
-% a structure with fields detailed in the "Input/Output Parameters" section
-% below.
+% but allows for the specification of optional solver parameters.
 %
-% |[x,k] = rootn_newton(...)| also returns the number of iterations 
-% (|k|) performed of Newton's method.
-%
-% |[x,k,x_all] = rootn_newton(...)| does the same as the previous 
-% syntaxes, but also returns an array (|x_all|) storing the root estimates 
-% at each iteration. This syntax requires that |opts.return_all| be set to 
-% |true|.
-%% Input/Output Parameters
+% |[x,output] = rootn_newton(...)| also returns a structure storing 
+% additional algorithm outputs.
+%% Inputs
 % <html>
-%   <table border=1>
+%   <table>
 %       <tr>
-%           <td></td>
 %           <td style="text-align:center"><b>Variable</b></td>
 %           <td style="text-align:center"><b>Symbol</b></td>
 %           <td style="text-align:center"><b>Description</b></td>
 %           <td style="text-align:center"><b>Format</b></td>
 %       </tr>
 %       <tr>
-%           <td rowspan="4" style="text-align:center"><b>Input</b></td>
 %           <td style="text-align:center"><TT>f</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
 %           <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
@@ -237,35 +270,82 @@ ans =
 %       <tr>
 %           <td style="text-align:center"><TT>opts</TT></td>
 %           <td style="text-align:center">-</td>
-%           <td>(OPTIONAL) solver options with fields:
-%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
-%               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
-%               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+%           <td>(OPTIONAL) solver options<BR><BR>
+%               <table>
+%                   <tr>
+%                       <td style="text-align:center"><b>Field</b></td>
+%                       <td style="text-align:center"><b>Symbol</b></td>
+%                       <td style="text-align:center"><b>Description</b></td>
+%                       <td style="text-align:center"><b>Format</b></td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>TOL</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
+%                       <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>k_max</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
+%                       <td>maximum number of iterations (defaults to 200)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%               </table>
 %               </td>
 %           <td style="text-align:center">1×1<BR>struct</td>
 %       </tr>
+%   </table>
+% </html>
+%% Outputs
+% <html>
+%   <table>
 %       <tr>
-%           <td rowspan="3" style="text-align:center"><b>Output</b></td>
+%           <td style="text-align:center"><b>Variable</b></td>
+%           <td style="text-align:center"><b>Symbol</b></td>
+%           <td style="text-align:center"><b>Description</b></td>
+%           <td style="text-align:center"><b>Format</b></td>
+%       </tr>
+%       <tr>
 %           <td style="text-align:center"><TT>x</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}" title="" /></td>
 %           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
 %           <td style="text-align:center">n×1<BR>double</td>
 %       </tr>
 %       <tr>
-%           <td style="text-align:center"><TT>k</TT></td>
-%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
-%           <td>number of solver iterations</td>
-%           <td style="text-align:center">1×1<BR>double</td>
-%       </tr>
-%       <tr>
-%           <td style="text-align:center"><TT>x_all</TT></td>
-%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
-%           <td>root estimates at all iterations</td>
-%           <td style="text-align:center">n×(k+1)<BR>double</td>
+%           <td style="text-align:center"><TT>output</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>algorithm outputs<BR><BR>
+%               <table>
+%                   <tr>
+%                       <td style="text-align:center"><b>Field</b></td>
+%                       <td style="text-align:center"><b>Symbol</b></td>
+%                       <td style="text-align:center"><b>Description</b></td>
+%                       <td style="text-align:center"><b>Format</b></td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>x_all</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
+%                       <td>root estimates at all iterations</td>
+%                       <td style="text-align:center">n×(k+1)<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>k</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%                       <td>number of solver iterations</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>f_count</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+%                       <td>number of function evaluations</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%               </table>
+%               </td>
+%           <td style="text-align:center">1×1<BR>struct</td>
 %       </tr>
 %   </table>
 % </html>
-%
 %% Example #1: Solution of a nonlinear system with a known Jacobian.
 % _Solve the nonlinear system of equations_
 %
