@@ -89,6 +89,9 @@ function [a,b,f_count] = bracket_sign_change(f,x0,kappa,k_max)
         end
     end
     
+    % number of function evaluation if we have reached this point
+    f_count = 2+2*k_max;
+    
     % raise warning if interval with sign change not found
     warning('No interval was found with a sign change.');
     

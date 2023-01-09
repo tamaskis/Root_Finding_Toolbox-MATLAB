@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>fixed_point_n</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-03"><meta name="DC.source" content="fixed_point_n_doc.m"><style type="text/css">
+      --><title>fixed_point_n</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-08"><meta name="DC.source" content="fixed_point_n_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,21 +67,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><tt>fixed_point_n</tt></h1><!--introduction--><p>Fixed-point iteration for finding the fixed point of a multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Input/Output Parameters</a></li><li><a href="#4">Example</a></li><li><a href="#7">See also</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">c = fixed_point_n(f,x0)
+  </style></head><body><div class="content"><h1><tt>fixed_point_n</tt></h1><!--introduction--><p>Fixed-point iteration for finding the fixed point of a multivariate, vector-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Inputs</a></li><li><a href="#4">Outputs</a></li><li><a href="#5">Example #1: Basic example.</a></li><li><a href="#8">Example #2: Specifying solver options and returning algorithm outputs.</a></li><li><a href="#11">See also</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">c = fixed_point_n(f,x0)
 c = fixed_point_n(f,x0,opts)
-[c,k] = fixed_point_n(__)
-[c,k,x_all] = fixed_point_n(__)
-</pre><h2 id="2">Description</h2><p><tt>c = fixed_point_n(f,x0)</tt> returns the fixed point of a multivariate, vector-valued function <img src="fixed_point_n_doc_eq11842242475584194607.png" alt="$f:\mathbf{R}^{n}\to\mathbf{R}^{n}$" style="width:61px;height:10px;"> specified by the function handle <tt>f</tt>, where <tt>x0</tt> (<img src="fixed_point_n_doc_eq09376385908158516458.png" alt="$\vec{x}_{0}\in\mathbf{R}^{n}$" style="width:38px;height:10px;">) is an initial guess of the fixed point.</p><p><tt>c = fixed_point_n(f,x0,opts)</tt> does the same as the syntax above, but allows for the specification of optional solver parameters. <tt>opts</tt> is a structure with fields detailed in the "Input/Output Parameters" section below.</p><p><tt>[c,k] = fixed_point_n(...)</tt> also returns the number of iterations (<tt>k</tt>) performed of fixed-point iteration.</p><p><tt>[c,k,c_all] = fixed_point_n(...)</tt> does the same as the previous syntaxes, but also returns an array (<tt>c_all</tt>) storing the fixed point estimates at each iteration. This syntax requires that <tt>opts.return_all</tt> be set to <tt>true</tt>.</p><h2 id="3">Input/Output Parameters</h2><p>
-  <table border=1>
+[c,output] = fixed_point_n(__)
+</pre><h2 id="2">Description</h2><p><tt>c = fixed_point_n(f,x0)</tt> returns the fixed point of a multivariate, vector-valued function <img src="fixed_point_n_doc_eq03762135078817208834.png" alt="$\mathbf{f}:\mathbf{R}^{n}\to\mathbf{R}^{n}$" style="width:60px;height:8px;"> specified by the function handle <tt>f</tt>, where <tt>x0</tt> (<img src="fixed_point_n_doc_eq08867998257892264900.png" alt="$\mathbf{x}_{0}\in\mathbf{R}^{n}$" style="width:39px;height:10px;">) is an initial guess of the fixed point.</p><p><tt>c = fixed_point_n(f,x0,opts)</tt> does the same as the syntax above, but allows for the specification of optional solver parameters.</p><p><tt>[c,output] = fixed_point_n(...)</tt> also returns a structure storing additional algorithm outputs.</p><h2 id="3">Inputs</h2><p>
+  <table>
       <tr>
-          <td></td>
           <td style="text-align:center"><b>Variable</b></td>
           <td style="text-align:center"><b>Symbol</b></td>
           <td style="text-align:center"><b>Description</b></td>
           <td style="text-align:center"><b>Format</b></td>
       </tr>
       <tr>
-          <td rowspan="3" style="text-align:center"><b>Input</b></td>
           <td style="text-align:center"><TT>f</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
           <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
@@ -96,34 +93,80 @@ c = fixed_point_n(f,x0,opts)
       <tr>
           <td style="text-align:center"><TT>opts</TT></td>
           <td style="text-align:center">-</td>
-          <td>(OPTIONAL) solver options with fields:
-              <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
-              <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
-              <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+          <td>(OPTIONAL) solver options<BR><BR>
+              <table>
+                  <tr>
+                      <td style="text-align:center"><b>Field</b></td>
+                      <td style="text-align:center"><b>Symbol</b></td>
+                      <td style="text-align:center"><b>Description</b></td>
+                      <td style="text-align:center"><b>Format</b></td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>TOL</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
+                      <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>k_max</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
+                      <td>maximum number of iterations (defaults to 200)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+              </table>
               </td>
           <td style="text-align:center">1×1<BR>struct</td>
       </tr>
+  </table>
+</p><h2 id="4">Outputs</h2><p>
+  <table>
       <tr>
-          <td rowspan="3" style="text-align:center"><b>Output</b></td>
+          <td style="text-align:center"><b>Variable</b></td>
+          <td style="text-align:center"><b>Symbol</b></td>
+          <td style="text-align:center"><b>Description</b></td>
+          <td style="text-align:center"><b>Format</b></td>
+      </tr>
+      <tr>
           <td style="text-align:center"><TT>c</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{c}" title="" /></td>
           <td>fixed point of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
-          <td style="text-align:center">1×1<BR>double</td>
+          <td style="text-align:center">n×1<BR>double</td>
       </tr>
       <tr>
-          <td style="text-align:center"><TT>k</TT></td>
-          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
-          <td>number of iterations</td>
-          <td style="text-align:center">1×1<BR>double</td>
-      </tr>
-      <tr>
-          <td style="text-align:center"><TT>c_all</TT></td>
-          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{c}_{\mathrm{all}}]" title="" /></td>
-          <td>fixed point estimates at all iterations</td>
-          <td style="text-align:center">n×(k+1)<BR>double</td>
+          <td style="text-align:center"><TT>output</TT></td>
+          <td style="text-align:center">-</td>
+          <td>algorithm outputs<BR><BR>
+              <table>
+                  <tr>
+                      <td style="text-align:center"><b>Field</b></td>
+                      <td style="text-align:center"><b>Symbol</b></td>
+                      <td style="text-align:center"><b>Description</b></td>
+                      <td style="text-align:center"><b>Format</b></td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>c_all</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{c}_{\mathrm{all}}]" title="" /></td>
+                      <td>fixed point estimates at all iterations</td>
+                      <td style="text-align:center">n×(k+1)<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>k</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+                      <td>number of solver iterations</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>f_count</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+                      <td>number of function evaluations</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+              </table>
+              </td>
+          <td style="text-align:center">1×1<BR>struct</td>
       </tr>
   </table>
-</p><h2 id="4">Example</h2><p><i>Find a fixed point of the function</i></p><p><img src="fixed_point_n_doc_eq05700109045399721654.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{x_{1}^{2}-0.5 \cr x_{2}^{2}-0.5}$$" style="width:91px;height:27px;"></p><p>Defining <img src="fixed_point_n_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [x(1)^2-0.5;
+</p><h2 id="5">Example #1: Basic example.</h2><p><i>Find a fixed point of the function</i></p><p><img src="fixed_point_n_doc_eq05700109045399721654.png" alt="$$\mathbf{f}(\mathbf{x})=\pmatrix{x_{1}^{2}-0.5 \cr x_{2}^{2}-0.5}$$" style="width:91px;height:27px;"></p><p>Defining <img src="fixed_point_n_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB,</p><pre class="codeinput">f = @(x) [x(1)^2-0.5;
           x(2)^2-0.5];
 </pre><p>Solving for a fixed point of <img src="fixed_point_n_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> with an initial guess of <img src="fixed_point_n_doc_eq11232774989772967262.png" alt="$\mathbf{x}_{0}=\mathbf{0}$" style="width:32px;height:9px;">,</p><pre class="codeinput">c = fixed_point_n(f,[0;0])
 </pre><pre class="codeoutput">
@@ -141,7 +184,26 @@ ans =
     0.4230
     0.4230
 
-</pre><h2 id="7">See also</h2><p><a href="fixed_point_doc.html"><tt>fixed_point</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+</pre><h2 id="8">Example #2: Specifying solver options and returning algorithm outputs.</h2><p><i>Repeat Example #1, this time specifying a tolerance of <img src="fixed_point_n_doc_eq00496639019529426024.png" alt="$\mathrm{TOL}=10^{-14}$" style="width:63px;height:10px;">. Additionally, return the algorithm outputs.</i></p><p>First, we define <img src="fixed_point_n_doc_eq03403988016607310992.png" alt="$\mathbf{f}(\mathbf{x})$" style="width:19px;height:11px;"> in MATLAB like before.</p><pre class="codeinput">f = @(x) [x(1)^2-0.5;
+          x(2)^2-0.5];
+</pre><p>Next, let's specify the desired tolerance.</p><pre class="codeinput">opts.TOL = 1e-14;
+</pre><p>Finding the fixed point with the custom solver options and returning the algorithm outputs as well,</p><pre class="codeinput">[c,output] = fixed_point_n(f,[0;0],opts)
+</pre><pre class="codeoutput">
+c =
+
+   -0.3660
+   -0.3660
+
+
+output = 
+
+  struct with fields:
+
+      c_all: [2&times;103 double]
+          k: 102
+    f_count: 103
+
+</pre><h2 id="11">See also</h2><p><a href="fixed_point_doc.html"><tt>fixed_point</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% |fixed_point_n|
 % Fixed-point iteration for finding the fixed point of a multivariate, 
@@ -151,38 +213,29 @@ ans =
 %% Syntax
 %   c = fixed_point_n(f,x0)
 %   c = fixed_point_n(f,x0,opts)
-%   [c,k] = fixed_point_n(__)
-%   [c,k,x_all] = fixed_point_n(__)
+%   [c,output] = fixed_point_n(__)
 %% Description
 % |c = fixed_point_n(f,x0)| returns the fixed point of a multivariate, 
-% vector-valued function $f:\mathbf{R}^{n}\to\mathbf{R}^{n}$ specified by 
-% the function handle |f|, where |x0| ($\vec{x}_{0}\in\mathbf{R}^{n}$) is 
-% an initial guess of the fixed point.
+% vector-valued function $\mathbf{f}:\mathbf{R}^{n}\to\mathbf{R}^{n}$ 
+% specified by the function handle |f|, where |x0| 
+% ($\mathbf{x}_{0}\in\mathbf{R}^{n}$) is an initial guess of the fixed 
+% point.
 %
 % |c = fixed_point_n(f,x0,opts)| does the same as the syntax above, but 
-% allows for the specification of optional solver parameters. |opts| is a 
-% structure with fields detailed in the "Input/Output Parameters" section
-% below.
+% allows for the specification of optional solver parameters.
 %
-% |[c,k] = fixed_point_n(...)| also returns the number of iterations (|k|) 
-% performed of fixed-point iteration.
-%
-% |[c,k,c_all] = fixed_point_n(...)| does the same as the previous 
-% syntaxes, but also returns an array (|c_all|) storing the fixed point 
-% estimates at each iteration. This syntax requires that |opts.return_all| 
-% be set to |true|.
-%% Input/Output Parameters
+% |[c,output] = fixed_point_n(...)| also returns a structure storing 
+% additional algorithm outputs.
+%% Inputs
 % <html>
-%   <table border=1>
+%   <table>
 %       <tr>
-%           <td></td>
 %           <td style="text-align:center"><b>Variable</b></td>
 %           <td style="text-align:center"><b>Symbol</b></td>
 %           <td style="text-align:center"><b>Description</b></td>
 %           <td style="text-align:center"><b>Format</b></td>
 %       </tr>
 %       <tr>
-%           <td rowspan="3" style="text-align:center"><b>Input</b></td>
 %           <td style="text-align:center"><TT>f</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
 %           <td>multivariate, vector-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}:\mathbb{R}^{n}\rightarrow\mathbb{R}^{n}" title="" />)</td>
@@ -197,35 +250,83 @@ ans =
 %       <tr>
 %           <td style="text-align:center"><TT>opts</TT></td>
 %           <td style="text-align:center">-</td>
-%           <td>(OPTIONAL) solver options with fields:
-%               <BR>  - <TT>TOL</TT> → tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)
-%               <BR>  - <TT>k_max</TT> → maximum number of iterations (defaults to 200)
-%               <BR>  - <TT>return_all</TT> → returns estimates at all iterations if set to <TT>true</TT> (defaults to <TT>false</TT>)
+%           <td>(OPTIONAL) solver options<BR><BR>
+%               <table>
+%                   <tr>
+%                       <td style="text-align:center"><b>Field</b></td>
+%                       <td style="text-align:center"><b>Symbol</b></td>
+%                       <td style="text-align:center"><b>Description</b></td>
+%                       <td style="text-align:center"><b>Format</b></td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>TOL</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
+%                       <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>k_max</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
+%                       <td>maximum number of iterations (defaults to 200)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%               </table>
 %               </td>
 %           <td style="text-align:center">1×1<BR>struct</td>
 %       </tr>
+%   </table>
+% </html>
+%% Outputs
+% <html>
+%   <table>
 %       <tr>
-%           <td rowspan="3" style="text-align:center"><b>Output</b></td>
+%           <td style="text-align:center"><b>Variable</b></td>
+%           <td style="text-align:center"><b>Symbol</b></td>
+%           <td style="text-align:center"><b>Description</b></td>
+%           <td style="text-align:center"><b>Format</b></td>
+%       </tr>
+%       <tr>
 %           <td style="text-align:center"><TT>c</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{c}" title="" /></td>
 %           <td>fixed point of <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}(\mathbf{x})" title="" /></td>
-%           <td style="text-align:center">1×1<BR>double</td>
+%           <td style="text-align:center">n×1<BR>double</td>
 %       </tr>
 %       <tr>
-%           <td style="text-align:center"><TT>k</TT></td>
-%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
-%           <td>number of iterations</td>
-%           <td style="text-align:center">1×1<BR>double</td>
-%       </tr>
-%       <tr>
-%           <td style="text-align:center"><TT>c_all</TT></td>
-%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{c}_{\mathrm{all}}]" title="" /></td>
-%           <td>fixed point estimates at all iterations</td>
-%           <td style="text-align:center">n×(k+1)<BR>double</td>
+%           <td style="text-align:center"><TT>output</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>algorithm outputs<BR><BR>
+%               <table>
+%                   <tr>
+%                       <td style="text-align:center"><b>Field</b></td>
+%                       <td style="text-align:center"><b>Symbol</b></td>
+%                       <td style="text-align:center"><b>Description</b></td>
+%                       <td style="text-align:center"><b>Format</b></td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>c_all</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{c}_{\mathrm{all}}]" title="" /></td>
+%                       <td>fixed point estimates at all iterations</td>
+%                       <td style="text-align:center">n×(k+1)<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>k</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%                       <td>number of solver iterations</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>f_count</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+%                       <td>number of function evaluations</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%               </table>
+%               </td>
+%           <td style="text-align:center">1×1<BR>struct</td>
 %       </tr>
 %   </table>
 % </html>
-%% Example
+%% Example #1: Basic example.
 % _Find a fixed point of the function_
 %
 % $$\mathbf{f}(\mathbf{x})=\pmatrix{x_{1}^{2}-0.5 \cr x_{2}^{2}-0.5}$$
@@ -240,6 +341,20 @@ c = fixed_point_n(f,[0;0])
 %%
 % Verifying that $\mathbf{f}(\mathbf{c})=\mathbf{c}$,
 f(c)-c
+%% Example #2: Specifying solver options and returning algorithm outputs.
+% _Repeat Example #1, this time specifying a tolerance of
+% $\mathrm{TOL}=10^{-14}$. Additionally, return the algorithm outputs._
+%
+% First, we define $\mathbf{f}(\mathbf{x})$ in MATLAB like before.
+f = @(x) [x(1)^2-0.5;
+          x(2)^2-0.5];
+%%
+% Next, let's specify the desired tolerance.
+opts.TOL = 1e-14;
+%%
+% Finding the fixed point with the custom solver options and returning the
+% algorithm outputs as well,
+[c,output] = fixed_point_n(f,[0;0],opts)
 %% See also
 % <fixed_point_doc.html |fixed_point|>
 ##### SOURCE END #####

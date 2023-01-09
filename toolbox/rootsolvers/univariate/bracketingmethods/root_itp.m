@@ -30,18 +30,17 @@
 %   f       - (1×1 function_handle) univariate, scalar-valued function, 
 %             f(x) (f : ℝ → ℝ)
 %   x0      - (1×1 OR 1×2 double) two options:
-%               --> if x₀ ∈ ℝ (i.e. initial guess input), then we attempt
-%                   to use bracket_sign_change to find an initial 
-%                   bracketing interval
-%               --> if x₀ ∈ ℝ² (i.e. initial bracketing interval input), 
-%                   then a = x₁ and b = x₂
+%               1. x0 = x₀ ∈ ℝ → initial guess input, and we attempt to
+%                  find an initial bracketing interval [a,b] based on this
+%                  initial guess
+%               2. x0 = [a,b] ∈ ℝ² → initial bracketing interval input
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
 %                      (defaults to 200)
-%       • rebracket  - (1×1 double) true if initial bracket should be
-%                      updated to ensure sign change, false otherwise 
-%                      (defaults to false)
+%       • rebracket  - (1×1 logical) true if initial bracketing interval 
+%                      should be updated to ensure sign change, false 
+%                      otherwise (defaults to false)
 %       • kappa1     - (1×1 double) tuning parameter, κ₁ (defaults to 0.1)
 %                       --> NOTE: κ₁ ∈ (0,∞)
 %       • kappa2     - (1×1 double) tuning parameter, κ₂ (defaults to 
@@ -146,7 +145,7 @@ function [x,output] = root_itp(f,x0,opts)
     b_all = zeros(1,k_max+1);
     
     % stores initial guess and bracketing interval
-    x_all(1) = x0;
+    x_all(1) = c;
     a_all(1) = a;
     b_all(1) = b;
     

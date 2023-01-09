@@ -29,10 +29,9 @@
 %   f       - (1×1 function_handle) univariate, scalar-valued function, 
 %             f(x) (f : ℝ → ℝ)
 %   x0      - (1×1 OR 1×2 double) two options:
-%               --> if x₀ ∈ ℝ, then initial guess is input
-%               --> if x₀ ∈ ℝ², then initial guess (1st element of x0) and
-%                   root estimate at first iteration (2nd element of x0) 
-%                   are input
+%               1. x0 = x₀ ∈ ℝ → initial guess input
+%               2. x0 = [x₀,x₁] ∈ ℝ² → initial guess and root estimate at
+%                  first iteration input
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
