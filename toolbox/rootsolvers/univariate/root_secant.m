@@ -122,7 +122,7 @@ function [x,output] = root_secant(f,x0,opts)
         x_all(k+1) = x_next;
         
         % terminates if converged
-        if (abs(x_next-x_curr) < TOL)
+        if (f_curr == 0) || (abs(x_next-x_curr) < TOL)
             break;
         end
         

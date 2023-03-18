@@ -6,7 +6,7 @@
 %   print_solver_progress(iter,nfeval,x,f,a,b)
 %
 % Copyright © 2022 Tamas Kis
-% Last Update: 2023-02-04
+% Last Update: 2023-02-25
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -68,7 +68,7 @@ function print_solver_progress(iter,nfeval,x,f,a,b)
     
     % format for function evaluation at current iterate
     if f < 0
-        f_format = '%1.4e     ';
+        f_format = '%1.4e     \n';
     else
         f_format = ' %1.4e\n';
     end

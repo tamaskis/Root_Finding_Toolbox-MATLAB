@@ -71,7 +71,7 @@ function [x,output] = root_bisection(f,x0,opts)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'batol')
         batol = 2*eps;
     else
-        batol = max(opts.batol,2*eps);
+        batol = max(opts.batol;
     end
     
     % sets value tolerance (defaults to 0)
@@ -89,14 +89,13 @@ function [x,output] = root_bisection(f,x0,opts)
     end
     
     % determines if the initial bracketing interval should be updated
-    % (defaults to no)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'rebracket')
         rebracket = false;
     else
         rebracket = opts.rebracket;
     end
     
-    % determines if solver progress should be printed (defaults to no)
+    % determines if solver progress should be printed
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'print')
         print = false;
     else
@@ -128,7 +127,8 @@ function [x,output] = root_bisection(f,x0,opts)
     
     % updates bracketing interval if requested
     if rebracket
-        [a,b,nf,ni] = bracket_sign_change(f,[a,b]);
+        [a,b,nf,ni] = bracket_sign_change(f,...
+            [a,b]);
         n_feval = n_feval+nf;
         n_int_iter = n_int_iter+ni;
     end
@@ -150,11 +150,10 @@ function [x,output] = root_bisection(f,x0,opts)
     fc = f(c);
     n_feval = n_feval+1;
     
-    % returns initial guess if it is a root of f(x) or if the maximum
-    % number of function evaluations has already been met/exceeded
-    if (fc <= vtol) || (n_feval >= max_feval)
+    % returns initial guess if it is a root of f(x)
+    if (fc == 0) || (n_feval >= max_feval)
         x = c;
-        output.x_all = c;
+        output.x_all = x;
         output.a_all = a;
         output.b_all = b;
         output.f_all = fc;
@@ -215,7 +214,8 @@ function [x,output] = root_bisection(f,x0,opts)
             print_solver_progress(k,n_feval,c,fc)
         end
         
-        % solver termination
+        % terminates if function value satisfies value tolerance or if the
+        % maximum number of function evaluations has been reached
         if (abs(fc) <= vtol) || (n_feval >= max_feval)
             break;
         end
@@ -227,17 +227,14 @@ function [x,output] = root_bisection(f,x0,opts)
     
     % converged root
     x = c;
-
-    % number of iterations
-    n_iter = k;
     
     % additional outputs
-    output.x_all = x_all(1:(n_iter+1));
-    output.a_all = a_all(1:(n_iter+1));
-    output.b_all = b_all(1:(n_iter+1));
-    output.f_all = f_all(1:(n_iter+1));
+    output.x_all = x_all(1:(k+1));
+    output.a_all = a_all(1:(k+1));
+    output.b_all = b_all(1:(k+1));
+    output.f_all = f_all(1:(k+1));
     output.n_int_iter = n_int_iter;
-    output.n_iter = n_iter;
+    output.n_iter = k;
     output.n_feval = n_feval;
     
 end

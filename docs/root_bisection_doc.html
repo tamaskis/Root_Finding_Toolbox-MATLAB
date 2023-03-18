@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>root_bisection</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-02-02"><meta name="DC.source" content="root_bisection_doc.m"><style type="text/css">
+      --><title>root_bisection</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-18"><meta name="DC.source" content="root_bisection_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1><tt>root_bisection</tt></h1><!--introduction--><p>Bisection method for finding the root of a univariate, scalar-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Inputs</a></li><li><a href="#4">Outputs</a></li><li><a href="#5">Example #1: Root of a simple function using an initial bracketing interval.</a></li><li><a href="#7">Example #2: Root of a simple function using an initial guess.</a></li><li><a href="#10">Example #3: Plot of root estimates at each iteration.</a></li><li><a href="#13">Example #4: Intersection of two curves.</a></li><li><a href="#17">Example #5: Root of a more complicated function.</a></li><li><a href="#21">gx Function for Example #5</a></li><li><a href="#22">See also</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">x = root_bisection(f,[a,b])
+  </style></head><body><div class="content"><h1><tt>root_bisection</tt></h1><!--introduction--><p>Bisection method for finding the root of a univariate, scalar-valued function.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Inputs</a></li><li><a href="#4">Outputs</a></li><li><a href="#5">Example #1: Root of a simple function using an initial bracketing interval.</a></li><li><a href="#7">Example #2: Using an initial guess.</a></li><li><a href="#9">Example #3: Using an initial guess sometime results in failure.</a></li><li><a href="#12">Example #4: Plot of root estimates at each iteration.</a></li><li><a href="#15">Example #5: Specifying optional solver parameters.</a></li><li><a href="#19">Example #6: Intersection of two curves.</a></li><li><a href="#23">Example #7: Root of a more complicated function.</a></li><li><a href="#27">gx Function for Example #7</a></li><li><a href="#28">See also</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">x = root_bisection(f,[a,b])
 x = root_bisection(f,x0)
 x = root_bisection(__,opts)
 [x,output] = root_bisection(__)
@@ -88,13 +88,13 @@ x = root_bisection(__,opts)
       <tr>
           <td style="text-align:center"><TT>x0</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
-          <td>initial guess (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" />) or initial interval (<img src="https://latex.codecogs.com/svg.latex?\inline&space;[a,b]" title="" />)</td>
+          <td>initial guess (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" />) or initial interval (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[a,b]\in\mathbb{R}^{1\times2}" title="" />)</td>
           <td style="text-align:center">1×1 double<BR><i>OR</i><BR>1×2 double</td>
       </tr>
       <tr>
           <td style="text-align:center"><TT>opts</TT></td>
           <td style="text-align:center">-</td>
-          <td>(OPTIONAL) solver options<BR><BR>
+          <td><b>(OPTIONAL)</b> solver options<BR><BR>
               <table>
                   <tr>
                       <td style="text-align:center"><b>Field</b></td>
@@ -103,21 +103,39 @@ x = root_bisection(__,opts)
                       <td style="text-align:center"><b>Format</b></td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>TOL</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
-                      <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+                      <td style="text-align:center"><TT>batol</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>absolute bracket tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;2\varepsilon" title="" />)</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>k_max</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
-                      <td>maximum number of iterations (defaults to 200)</td>
+                      <td style="text-align:center"><TT>vtol</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>value tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;0" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_iter</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of solver iterations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{1/2}=\left\lceil\log_{2}{\left(\frac{\vert b-a\rvert}{\texttt{batol}}\right)}\right\rceil" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_feval</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of function evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
                       <td style="text-align:center"><TT>rebracket</TT></td>
                       <td style="text-align:center">-</td>
                       <td><TT>true</TT> if initial bracketing interval should be updated to ensure sign change, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+                      <td style="text-align:center">1×1<BR>logical</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>print</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td><TT>true</TT> if solver progress should be printed, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
                       <td style="text-align:center">1×1<BR>logical</td>
                   </tr>
               </table>
@@ -135,7 +153,7 @@ x = root_bisection(__,opts)
       </tr>
       <tr>
           <td style="text-align:center"><TT>x</TT></td>
-          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x" title="" /></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x^{*}" title="" /></td>
           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
           <td style="text-align:center">1×1<BR>double</td>
       </tr>
@@ -154,29 +172,41 @@ x = root_bisection(__,opts)
                       <td style="text-align:center"><TT>x_all</TT></td>
                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{\mathrm{all}}" title="" /></td>
                       <td>root estimates at all iterations</td>
-                      <td style="text-align:center">1×(k+1)<BR>double</td>
+                      <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
                   </tr>
                   <tr>
                       <td style="text-align:center"><TT>a_all</TT></td>
                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{a}_{\mathrm{all}}" title="" /></td>
                       <td>bracketing interval lower bounds at all iterations</td>
-                      <td style="text-align:center">1×(k+1)<BR>double</td>
+                      <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
                   </tr>
                   <tr>
                       <td style="text-align:center"><TT>b_all</TT></td>
                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{b}_{\mathrm{all}}" title="" /></td>
                       <td>bracketing interval upper bounds at all iterations</td>
-                      <td style="text-align:center">1×(k+1)<BR>double</td>
+                      <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>k</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+                      <td style="text-align:center"><TT>f_all</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}_{\mathrm{all}}" title="" /></td>
+                      <td>function evaluations at all iterations</td>
+                      <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>n_int_iter</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>number of iterations to find a bracketing interval</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>n_iter</TT></td>
+                      <td style="text-align:center">-</td>
                       <td>number of solver iterations</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>f_count</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+                      <td style="text-align:center"><TT>n_feval</TT></td>
+                      <td style="text-align:center">-</td>
                       <td>number of function evaluations</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
@@ -190,30 +220,82 @@ x = root_bisection(__,opts)
 </pre><pre class="codeoutput">
 x =
 
-    1.0000
+     1
 
-</pre><h2 id="7">Example #2: Root of a simple function using an initial guess.</h2><p><i>Find the root of <img src="root_bisection_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;"> that is in the interval <img src="root_bisection_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">.</i></p><p>Defining <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;">,</p><pre class="codeinput">f = @(x) x^2-1;
-</pre><p>We want a root in the interval <img src="root_bisection_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">. Therefore, we use the initial guess <img src="root_bisection_doc_eq18169654341442162581.png" alt="$x_{0}=500$" style="width:42px;height:10px;">. Finding this root using the bisection method,</p><pre class="codeinput">x = root_bisection(f,500)
+</pre><h2 id="7">Example #2: Using an initial guess.</h2><p><i>Repeat Example #1 using an initial guess of <img src="root_bisection_doc_eq05994481498499497589.png" alt="$x_{0}=4$" style="width:31px;height:10px;"> instead of an initial interval.</i></p><p>Defining <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;">,</p><pre class="codeinput">f = @(x) x^2-1;
+</pre><p>Finding the root using the bisection method with an initial guess of <img src="root_bisection_doc_eq05994481498499497589.png" alt="$x_{0}=4$" style="width:31px;height:10px;">,</p><pre class="codeinput">x = root_bisection(f,4)
+</pre><pre class="codeoutput">
+x =
+
+     1
+
+</pre><h2 id="9">Example #3: Using an initial guess sometime results in failure.</h2><p><i>Repeat Example #1 once more, this time using an initial guess of <img src="root_bisection_doc_eq18169654341442162581.png" alt="$x_{0}=500$" style="width:42px;height:10px;">.</i></p><p>Defining <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;">,</p><pre class="codeinput">f = @(x) x^2-1;
+</pre><p>Finding the root using the bisection method with an initial guess of <img src="root_bisection_doc_eq18169654341442162581.png" alt="$x_{0}=500$" style="width:42px;height:10px;">,</p><pre class="codeinput">x = root_bisection(f,500)
 </pre><pre class="codeoutput">Warning: No interval was found with a sign change. 
 
 x =
 
-   -1.0000
+     0
 
-</pre><p>Note that we did <i>not</i> obtain a root in the interval <img src="root_bisection_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">. This is because the <tt>bracket_sign_change</tt> function could not find an interval that contained a sign change, so it kept expanding the interval until a maximum number of expansions was reached. The bisection method then happened to converge on a root of -1. While this <i>is</i> a root of <img src="root_bisection_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;">, it is <i>not</i> in the interval that we were originally searching for a root on. This example serves to show that it is preferable to use an initial bracketing interval for the bisection method rather than an initial guess.</p><h2 id="10">Example #3: Plot of root estimates at each iteration.</h2><p><i>In Example #1, we found the positive root of <img src="root_bisection_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;"> using the bisection method. Now, produce a plot of all root estimates obtained by the <tt>root_bisection</tt> function during its solution procedure.</i></p><p>First, we define <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> in MATLAB like before.</p><pre class="codeinput">f = @(x) x^2-1;
-</pre><p>To obtain the root estimates at all iterations, we simply need to define the <tt>opts</tt> structure, set its <tt>return_all</tt> field to <tt>true</tt>, and pass it to the <tt>root_bisection</tt> function. (Note: we use the same initial guess for the interval as in Example #1).</p><pre class="codeinput">opts.return_all = true;
-[~,~,x_all] = root_bisection(f,[0,9999999],opts);
-</pre><pre class="codeoutput error">Error using root_bisection
-Too many output arguments.
-
-Error in root_bisection_doc (line 187)
-[~,~,x_all] = root_bisection(f,[0,9999999],opts);
+</pre><p>Note that we did <i>not</i> obtain a root in the interval <img src="root_bisection_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">. This is because the <tt>bracket_sign_change</tt> function could not find an interval that contained a sign change, so it kept expanding the interval until a maximum number of expansions was reached. The bisection method then happened to converge on a root of -1. While this <i>is</i> a root of <img src="root_bisection_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;">, it is <i>not</i> in the interval that we were originally searching for a root on. This example serves to show that it is preferable to use an initial bracketing interval for the bisection method rather than an initial guess.</p><h2 id="12">Example #4: Plot of root estimates at each iteration.</h2><p><i>In Example #1, we found the positive root of <img src="root_bisection_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;"> using the bisection method. Now, produce a plot of all root estimates obtained by the <tt>root_bisection</tt> function during its solution procedure.</i></p><p>First, we define <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> in MATLAB like before.</p><pre class="codeinput">f = @(x) x^2-1;
+</pre><p>To obtain the root estimates at all iterations, we simply need to return the <tt>output</tt> structure. (Note: we use the same initial interval as in Example #1).</p><pre class="codeinput">[~,output] = root_bisection(f,[0,9999999]);
 </pre><p>Plotting the root estimates at each iteration,</p><pre class="codeinput">figure;
-plot(x_all,<span class="string">'k*'</span>,<span class="string">'MarkerSize'</span>,9,<span class="string">'LineWidth'</span>,1.5);
+plot(output.x_all,<span class="string">'k*'</span>,<span class="string">'MarkerSize'</span>,9,<span class="string">'LineWidth'</span>,1.5);
 grid <span class="string">on</span>;
 xlabel(<span class="string">'Iteration'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 ylabel(<span class="string">'Root Estimate'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
-</pre><h2 id="13">Example #4: Intersection of two curves.</h2><p><i>Find the intersection of <img src="root_bisection_doc_eq14437859941769526577.png" alt="$y=x^{2}$" style="width:30px;height:12px;"> and <img src="root_bisection_doc_eq09821927890446224048.png" alt="$y=\cos{x}$" style="width:43px;height:8px;"> that is in the interval <img src="root_bisection_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">.</i></p><p>Defining both functions,</p><pre class="codeinput">y1 = @(x) x.^2;
+</pre><img vspace="5" hspace="5" src="root_bisection_doc_01.png" alt=""> <h2 id="15">Example #5: Specifying optional solver parameters.</h2><p><i>Repeat Example #1, this time using an absolute bracket tolerance of <img src="root_bisection_doc_eq13294766798234461073.png" alt="$\texttt{batol}=10^{-5}$" style="width:64px;height:10px;">. Additionally, print the solver progress at each iteration.</i></p><p>Defining <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;">,</p><pre class="codeinput">f = @(x) x^2-1;
+</pre><p>Setting the absolute bracket tolerance,</p><pre class="codeinput">opts.batol = 1e-5;
+</pre><p>Turning solver progress printing on,</p><pre class="codeinput">opts.print = true;
+</pre><p>Solving for the root of <img src="root_bisection_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> using the same initial interval as in Example #1,</p><pre class="codeinput">x = root_bisection(f,[0,9999999],opts)
+</pre><pre class="codeoutput">
+Iteration     Func-count               x            f(x)
+        1              3      2.5000e+06      6.2500e+12
+        2              4      1.2500e+06      1.5625e+12
+        3              5      6.2500e+05      3.9062e+11
+        4              6      3.1250e+05      9.7656e+10
+        5              7      1.5625e+05      2.4414e+10
+        6              8      7.8125e+04      6.1035e+09
+        7              9      3.9062e+04      1.5259e+09
+        8             10      1.9531e+04      3.8147e+08
+        9             11      9.7656e+03      9.5367e+07
+       10             12      4.8828e+03      2.3842e+07
+       11             13      2.4414e+03      5.9605e+06
+       12             14      1.2207e+03      1.4901e+06
+       13             15      6.1035e+02      3.7253e+05
+       14             16      3.0518e+02      9.3131e+04
+       15             17      1.5259e+02      2.3282e+04
+       16             18      7.6294e+01      5.8198e+03
+       17             19      3.8147e+01      1.4542e+03
+       18             20      1.9073e+01      3.6280e+02
+       19             21      9.5367e+00      8.9949e+01
+       20             22      4.7684e+00      2.1737e+01
+       21             23      2.3842e+00      4.6843e+00
+       22             24      1.1921e+00      4.2109e-01
+       23             25      5.9605e-01     -6.4473e-01     
+       24             26      8.9407e-01     -2.0064e-01     
+       25             27      1.0431e+00      8.8018e-02
+       26             28      9.6858e-01     -6.1862e-02     
+       27             29      1.0058e+00      1.1691e-02
+       28             30      9.8720e-01     -2.5433e-02     
+       29             31      9.9652e-01     -6.9577e-03     
+       30             32      1.0012e+00      2.3447e-03
+       31             33      9.9884e-01     -2.3119e-03     
+       32             34      1.0000e+00      1.5029e-05
+       33             35      9.9943e-01     -1.1488e-03     
+       34             36      9.9972e-01     -5.6697e-04     
+       35             37      9.9986e-01     -2.7599e-04     
+       36             38      9.9993e-01     -1.3049e-04     
+       37             39      9.9997e-01     -5.7730e-05     
+       38             40      9.9999e-01     -2.1351e-05     
+       39             41      1.0000e+00     -3.1609e-06     
+       40             42      1.0000e+00      5.9340e-06
+
+x =
+
+    1.0000
+
+</pre><h2 id="19">Example #6: Intersection of two curves.</h2><p><i>Find the intersection of <img src="root_bisection_doc_eq14437859941769526577.png" alt="$y=x^{2}$" style="width:30px;height:12px;"> and <img src="root_bisection_doc_eq09821927890446224048.png" alt="$y=\cos{x}$" style="width:43px;height:8px;"> that is in the interval <img src="root_bisection_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">.</i></p><p>Defining both functions,</p><pre class="codeinput">y1 = @(x) x.^2;
 y2 = @(x) cos(x);
 </pre><p>Let's plot both functions to see where their intersection lies.</p><pre class="codeinput"><span class="comment">% defines interval for plotting</span>
 x = 0:0.01:1.2;
@@ -229,7 +311,12 @@ xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</spa
 ylabel(<span class="string">'$y$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\cos{(x)}$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,14,<span class="keyword">...</span>
     <span class="string">'Location'</span>,<span class="string">'northwest'</span>);
-</pre><p>Finding the intersection of the two functions is equivalent to finding the root of their difference. Therefore, we can use the bisection method on <img src="root_bisection_doc_eq16350898542025216418.png" alt="$y=\cos{x}-x^{2}$" style="width:67px;height:12px;"> with an initial guess of <img src="root_bisection_doc_eq12798246781134012910.png" alt="$[a,b]=[0.75,0.85]$" style="width:84px;height:11px;"> (picked using the plot above) to find the intersection.</p><pre class="codeinput">x_int = root_bisection(@(x) y2(x)-y1(x),[0.75,0.85])
+</pre><img vspace="5" hspace="5" src="root_bisection_doc_02.png" alt=""> <p>Finding the intersection of the two functions is equivalent to finding the root of their difference. Therefore, we can use the bisection method on <img src="root_bisection_doc_eq16350898542025216418.png" alt="$y=\cos{x}-x^{2}$" style="width:67px;height:12px;"> with an initial guess of <img src="root_bisection_doc_eq12798246781134012910.png" alt="$[a,b]=[0.75,0.85]$" style="width:84px;height:11px;"> (picked using the plot above) to find the intersection.</p><pre class="codeinput">x_int = root_bisection(@(x) y2(x)-y1(x),[0.75,0.85])
+</pre><pre class="codeoutput">
+x_int =
+
+    0.8241
+
 </pre><p>Plotting to confirm that this is the true intersection,</p><pre class="codeinput">figure;
 hold <span class="string">on</span>;
 plot(x,y1(x),<span class="string">'LineWidth'</span>,1.5);
@@ -241,7 +328,7 @@ xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</spa
 ylabel(<span class="string">'$y$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\cos{(x)}$'</span>,<span class="string">'intersection'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="keyword">...</span>
     <span class="string">'FontSize'</span>,14,<span class="string">'Location'</span>,<span class="string">'northwest'</span>);
-</pre><h2 id="17">Example #5: Root of a more complicated function.</h2><p><i>Find all the roots of <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> in the interval <img src="root_bisection_doc_eq06134816077764634342.png" alt="$[0,20]$" style="width:25px;height:11px;"> where <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> is defined using the following calculation procedure:</i></p><div><ol><li><img src="root_bisection_doc_eq16341309379662547489.png" alt="$c=5x^{2}$" style="width:35px;height:10px;"></li><li><img src="root_bisection_doc_eq08181118594224696750.png" alt="$d=\sin{(c/500)}$" style="width:70px;height:11px;"></li><li><img src="root_bisection_doc_eq00077554464362095855.png" alt="$e=\cosh{d}$" style="width:48px;height:8px;"></li><li><img src="root_bisection_doc_eq14045386360584006396.png" alt="$g=5e^{2}+27e-40$" style="width:90px;height:12px;"></li></ol></div><p>First, we need to define <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">. <b>We define <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as the MATLAB function <tt>gx</tt> at the bottom of this page under "gx Function for Example #5".</b> To define <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as an anonymous function, we assign it a function handle:</p><pre class="codeinput">g = @(x) gx(x);
+</pre><img vspace="5" hspace="5" src="root_bisection_doc_03.png" alt=""> <h2 id="23">Example #7: Root of a more complicated function.</h2><p><i>Find all the roots of <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> in the interval <img src="root_bisection_doc_eq06134816077764634342.png" alt="$[0,20]$" style="width:25px;height:11px;"> where <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> is defined using the following calculation procedure:</i></p><div><ol><li><img src="root_bisection_doc_eq16341309379662547489.png" alt="$c=5x^{2}$" style="width:35px;height:10px;"></li><li><img src="root_bisection_doc_eq08181118594224696750.png" alt="$d=\sin{(c/500)}$" style="width:70px;height:11px;"></li><li><img src="root_bisection_doc_eq00077554464362095855.png" alt="$e=\cosh{d}$" style="width:48px;height:8px;"></li><li><img src="root_bisection_doc_eq14045386360584006396.png" alt="$g=5e^{2}+27e-40$" style="width:90px;height:12px;"></li></ol></div><p>First, we need to define <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">. <b>We define <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as the MATLAB function <tt>gx</tt> at the bottom of this page under "gx Function for Example #7".</b> To define <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as an anonymous function, we assign it a function handle:</p><pre class="codeinput">g = @(x) gx(x);
 </pre><p>Due to the complexity of <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">, we have no idea where its root(s) is/are. Therefore, let's first plot <img src="root_bisection_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> on <img src="root_bisection_doc_eq06134816077764634342.png" alt="$[0,20]$" style="width:25px;height:11px;"> (i.e. the interval we want to find the root(s) in).</p><pre class="codeinput"><span class="comment">% interval definition</span>
 x = 0:0.1:20;
 
@@ -257,19 +344,34 @@ hold <span class="string">off</span>;
 grid <span class="string">on</span>;
 xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 ylabel(<span class="string">'$g(x)$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
-</pre><p>Visually, we can easily identify the following intervals that contain a root:</p><p><img src="root_bisection_doc_eq04865857976100573658.png" alt="$$[8,9]$$" style="width:20px;height:11px;"></p><p><img src="root_bisection_doc_eq09743076019674208429.png" alt="$$[15,16]$$" style="width:31px;height:11px;"></p><p><img src="root_bisection_doc_eq03650188060663268435.png" alt="$$[19,20]$$" style="width:31px;height:11px;"></p><p>Solving for the corresponding roots with the bisection method,</p><pre class="codeinput">root1 = root_bisection(g,[8,9]);
+</pre><img vspace="5" hspace="5" src="root_bisection_doc_04.png" alt=""> <p>Visually, we can easily identify the following intervals that contain a root:</p><p><img src="root_bisection_doc_eq04865857976100573658.png" alt="$$[8,9]$$" style="width:20px;height:11px;"></p><p><img src="root_bisection_doc_eq09743076019674208429.png" alt="$$[15,16]$$" style="width:31px;height:11px;"></p><p><img src="root_bisection_doc_eq03650188060663268435.png" alt="$$[19,20]$$" style="width:31px;height:11px;"></p><p>Solving for the corresponding roots with the bisection method,</p><pre class="codeinput">root1 = root_bisection(g,[8,9]);
 root2 = root_bisection(g,[15,16]);
 root3 = root_bisection(g,[19,20]);
 </pre><p>Printing the roots,</p><pre class="codeinput">root1
 root2
 root3
-</pre><h2 id="21">gx Function for Example #5</h2><pre class="codeinput"><span class="keyword">function</span> g = gx(x)
+</pre><pre class="codeoutput">
+root1 =
+
+    8.3149
+
+
+root2 =
+
+   15.6532
+
+
+root3 =
+
+   19.5000
+
+</pre><h2 id="27">gx Function for Example #7</h2><pre class="codeinput"><span class="keyword">function</span> g = gx(x)
     c = 5*x.^2;
     d = sin(c/500);
     e = cosh(d);
     g = 5*e.^2+27*e-40;
 <span class="keyword">end</span>
-</pre><h2 id="22">See also</h2><p><a href="root_brent_dekker_doc.html"><tt>root_brent_dekker</tt></a> | <a href="root_iteration_doc.html"><tt>root_iteration</tt></a> | <a href="root_itp_doc.html"><tt>root_itp</tt></a> | <a href="root_newton_doc.html"><tt>root_newton</tt></a> | <a href="root_secant_doc.html"><tt>root_secant</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+</pre><h2 id="28">See also</h2><p><a href="root_brent_dekker_doc.html"><tt>root_brent_dekker</tt></a> | <a href="root_iteration_doc.html"><tt>root_iteration</tt></a> | <a href="root_itp_doc.html"><tt>root_itp</tt></a> | <a href="root_newton_doc.html"><tt>root_newton</tt></a> | <a href="root_secant_doc.html"><tt>root_secant</tt></a></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% |root_bisection|
 % Bisection method for finding the root of a univariate, scalar-valued 
@@ -315,13 +417,13 @@ root3
 %       <tr>
 %           <td style="text-align:center"><TT>x0</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
-%           <td>initial guess (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" />) or initial interval (<img src="https://latex.codecogs.com/svg.latex?\inline&space;[a,b]" title="" />)</td>
+%           <td>initial guess (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" />) or initial interval (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[a,b]\in\mathbb{R}^{1\times2}" title="" />)</td>
 %           <td style="text-align:center">1×1 double<BR><i>OR</i><BR>1×2 double</td>
 %       </tr>
 %       <tr>
 %           <td style="text-align:center"><TT>opts</TT></td>
 %           <td style="text-align:center">-</td>
-%           <td>(OPTIONAL) solver options<BR><BR>
+%           <td><b>(OPTIONAL)</b> solver options<BR><BR>
 %               <table>
 %                   <tr>
 %                       <td style="text-align:center"><b>Field</b></td>
@@ -330,21 +432,39 @@ root3
 %                       <td style="text-align:center"><b>Format</b></td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>TOL</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
-%                       <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+%                       <td style="text-align:center"><TT>batol</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>absolute bracket tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;2\varepsilon" title="" />)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>k_max</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
-%                       <td>maximum number of iterations (defaults to 200)</td>
+%                       <td style="text-align:center"><TT>vtol</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>value tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;0" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_iter</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of solver iterations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{1/2}=\left\lceil\log_{2}{\left(\frac{\vert b-a\rvert}{\texttt{batol}}\right)}\right\rceil" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_feval</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of function evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
 %                       <td style="text-align:center"><TT>rebracket</TT></td>
 %                       <td style="text-align:center">-</td>
 %                       <td><TT>true</TT> if initial bracketing interval should be updated to ensure sign change, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+%                       <td style="text-align:center">1×1<BR>logical</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>print</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td><TT>true</TT> if solver progress should be printed, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
 %                       <td style="text-align:center">1×1<BR>logical</td>
 %                   </tr>
 %               </table>
@@ -364,7 +484,7 @@ root3
 %       </tr>
 %       <tr>
 %           <td style="text-align:center"><TT>x</TT></td>
-%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x" title="" /></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x^{*}" title="" /></td>
 %           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
 %           <td style="text-align:center">1×1<BR>double</td>
 %       </tr>
@@ -383,29 +503,41 @@ root3
 %                       <td style="text-align:center"><TT>x_all</TT></td>
 %                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{\mathrm{all}}" title="" /></td>
 %                       <td>root estimates at all iterations</td>
-%                       <td style="text-align:center">1×(k+1)<BR>double</td>
+%                       <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
 %                   </tr>
 %                   <tr>
 %                       <td style="text-align:center"><TT>a_all</TT></td>
 %                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{a}_{\mathrm{all}}" title="" /></td>
 %                       <td>bracketing interval lower bounds at all iterations</td>
-%                       <td style="text-align:center">1×(k+1)<BR>double</td>
+%                       <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
 %                   </tr>
 %                   <tr>
 %                       <td style="text-align:center"><TT>b_all</TT></td>
 %                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{b}_{\mathrm{all}}" title="" /></td>
 %                       <td>bracketing interval upper bounds at all iterations</td>
-%                       <td style="text-align:center">1×(k+1)<BR>double</td>
+%                       <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>k</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%                       <td style="text-align:center"><TT>f_all</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}_{\mathrm{all}}" title="" /></td>
+%                       <td>function evaluations at all iterations</td>
+%                       <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>n_int_iter</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>number of iterations to find a bracketing interval</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>n_iter</TT></td>
+%                       <td style="text-align:center">-</td>
 %                       <td>number of solver iterations</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>f_count</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+%                       <td style="text-align:center"><TT>n_feval</TT></td>
+%                       <td style="text-align:center">-</td>
 %                       <td>number of function evaluations</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
@@ -425,14 +557,25 @@ f = @(x) x^2-1;
 % initial guess $[a,b]=[0,9999999]$. Finding this root using the bisection
 % method,
 x = root_bisection(f,[0,9999999])
-%% Example #2: Root of a simple function using an initial guess.
-% _Find the root of $f(x)=x^{2}-1$ that is in the interval $[0,\infty)$._
+%% Example #2: Using an initial guess.
+% _Repeat Example #1 using an initial guess of $x_{0}=4$ instead of an 
+% initial interval._
 %
 % Defining $f(x)$,
 f = @(x) x^2-1;
 %%
-% We want a root in the interval $[0,\infty)$. Therefore, we use the 
-% initial guess $x_{0}=500$. Finding this root using the bisection method,
+% Finding the root using the bisection method with an initial guess of 
+% $x_{0}=4$,
+x = root_bisection(f,4)
+%% Example #3: Using an initial guess sometime results in failure.
+% _Repeat Example #1 once more, this time using an initial guess of
+% $x_{0}=500$._
+%
+% Defining $f(x)$,
+f = @(x) x^2-1;
+%%
+% Finding the root using the bisection method with an initial guess of 
+% $x_{0}=500$,
 x = root_bisection(f,500)
 %%
 % Note that we did _not_ obtain a root in the interval $[0,\infty)$. This
@@ -444,7 +587,7 @@ x = root_bisection(f,500)
 % searching for a root on. This example serves to show that it is
 % preferable to use an initial bracketing interval for the bisection method
 % rather than an initial guess.
-%% Example #3: Plot of root estimates at each iteration.
+%% Example #4: Plot of root estimates at each iteration.
 % _In Example #1, we found the positive root of $f(x)=x^{2}-1$ using the
 % bisection method. Now, produce a plot of all root estimates obtained by 
 % the |root_bisection| function during its solution procedure._
@@ -452,20 +595,35 @@ x = root_bisection(f,500)
 % First, we define $f(x)$ in MATLAB like before.
 f = @(x) x^2-1;
 %%
-% To obtain the root estimates at all iterations, we simply need to define 
-% the |opts| structure, set its |return_all| field to |true|, and pass it 
-% to the |root_bisection| function. (Note: we use the same initial guess 
-% for the interval as in Example #1).
-opts.return_all = true;
-[~,~,x_all] = root_bisection(f,[0,9999999],opts);
+% To obtain the root estimates at all iterations, we simply need to return
+% the |output| structure. (Note: we use the same initial interval as in 
+% Example #1).
+[~,output] = root_bisection(f,[0,9999999]);
 %%
 % Plotting the root estimates at each iteration,
 figure;
-plot(x_all,'k*','MarkerSize',9,'LineWidth',1.5);
+plot(output.x_all,'k*','MarkerSize',9,'LineWidth',1.5);
 grid on;
 xlabel('Iteration','Interpreter','latex','FontSize',18);
 ylabel('Root Estimate','Interpreter','latex','FontSize',18);
-%% Example #4: Intersection of two curves.
+%% Example #5: Specifying optional solver parameters.
+% _Repeat Example #1, this time using an absolute bracket tolerance of
+% $\texttt{batol}=10^{-5}$. Additionally, print the solver progress at each
+% iteration._
+%
+% Defining $f(x)$,
+f = @(x) x^2-1;
+%%
+% Setting the absolute bracket tolerance,
+opts.batol = 1e-5;
+%%
+% Turning solver progress printing on,
+opts.print = true;
+%%
+% Solving for the root of $f(x)$ using the same initial interval as in
+% Example #1,
+x = root_bisection(f,[0,9999999],opts)
+%% Example #6: Intersection of two curves.
 % _Find the intersection of $y=x^{2}$ and $y=\cos{x}$ that is in the 
 % interval $[0,\infty)$._
 %
@@ -508,7 +666,7 @@ xlabel('$x$','Interpreter','latex','FontSize',18);
 ylabel('$y$','Interpreter','latex','FontSize',18);
 legend('$y=x^{2}$','$y=\cos{(x)}$','intersection','Interpreter','latex',...
     'FontSize',14,'Location','northwest');
-%% Example #5: Root of a more complicated function.
+%% Example #7: Root of a more complicated function.
 % _Find all the roots of $g(x)$ in the interval $[0,20]$ where $g(x)$ is 
 % defined using the following calculation procedure:_
 %
@@ -518,7 +676,7 @@ legend('$y=x^{2}$','$y=\cos{(x)}$','intersection','Interpreter','latex',...
 % # $g=5e^{2}+27e-40$
 %
 % First, we need to define $g(x)$. *We define $g(x)$ as the MATLAB function 
-% |gx| at the bottom of this page under "gx Function for Example #5".* To 
+% |gx| at the bottom of this page under "gx Function for Example #7".* To 
 % define $g(x)$ as an anonymous function, we assign it a function handle:
 g = @(x) gx(x);
 %%
@@ -560,7 +718,7 @@ root3 = root_bisection(g,[19,20]);
 root1
 root2
 root3
-%% gx Function for Example #5
+%% gx Function for Example #7
 function g = gx(x)
     c = 5*x.^2;
     d = sin(c/500);

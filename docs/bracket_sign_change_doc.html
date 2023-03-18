@@ -1,0 +1,226 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>bracket_sign_change</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-15"><meta name="DC.source" content="bracket_sign_change_doc.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1><tt>bracket_sign_change</tt></h1><!--introduction--><p>Find an interval in which a sign change occurs.</p><p><a href="index.html">Back to Root-Finding Toolbox Contents</a>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Inputs</a></li><li><a href="#4">Outputs</a></li></ul></div><h2 id="1">Syntax</h2><pre class="language-matlab">[a,b] = bracket_sign_change(f,x0)
+[a,b] = bracket_sign_change(f,[a,b])
+[a,b] = bracket_sign_change(__,max_iter)
+[a,b,n_iter,n_feval] = bracket_sign_change(__)
+</pre><h2 id="2">Description</h2><p><tt>[a,b] = bracket_sign_change(f,x0)</tt> returns an interval <img src="bracket_sign_change_doc_eq06833684844581234006.png" alt="$[a,b]$" style="width:19px;height:11px;"> that brackets a sign change of <img src="bracket_sign_change_doc_eq07579535136607725989.png" alt="$f:\mathbf{R}\to\mathbf{R}$" style="width:52px;height:10px;"> given an initial guess <img src="bracket_sign_change_doc_eq13422767718647610804.png" alt="$x_{0}\in\mathbf{R}$" style="width:34px;height:10px;">.</p><p><tt>[a,b] = bracket_sign_change(f,a,b)</tt> returns an interval <img src="bracket_sign_change_doc_eq06833684844581234006.png" alt="$[a,b]$" style="width:19px;height:11px;"> that brackets a sign change of <img src="bracket_sign_change_doc_eq07579535136607725989.png" alt="$f:\mathbf{R}\to\mathbf{R}$" style="width:52px;height:10px;"> given an initial interval <img src="bracket_sign_change_doc_eq06833684844581234006.png" alt="$[a,b]$" style="width:19px;height:11px;">.</p><p><tt>[a,b] = bracket_sign_change(...,max_iter)</tt> can be used with either syntax above to set the maximum number of iterations (i.e. maximum number of expansions).</p><p><tt>[a,b,n_iter,n_feval] = bracket_sign_change(...)</tt> can be used with any of the syntaxes above to also return the number of iterations (i.e. expansions) and the number of function evaluations performed.</p><h2 id="3">Inputs</h2><p>
+  <table>
+      <tr>
+          <td style="text-align:center"><b>Variable</b></td>
+          <td style="text-align:center"><b>Symbol</b></td>
+          <td style="text-align:center"><b>Description</b></td>
+          <td style="text-align:center"><b>Format</b></td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>f</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
+          <td>univariate, scalar-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;f:\mathbb{R}\rightarrow\mathbb{R}" title="" />)</td>
+          <td style="text-align:center">1×1<BR>function_handle</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>x0</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
+          <td>initial guess (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" />) or initial interval (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[a,b]\in\mathbb{R}^{1\times2}" title="" />)</td>
+          <td style="text-align:center">1×1 double<BR><i>OR</i><BR>1×2 double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>max_iter</TT></td>
+          <td style="text-align:center">-</td>
+          <td>(OPTIONAL) maximum number of iterations allowed (defaults to 200)</td>
+          <td style="text-align:center">1×1 double</td>
+      </tr>
+  </table>
+</p><h2 id="4">Outputs</h2><p>
+  <table>
+      <tr>
+          <td style="text-align:center"><b>Variable</b></td>
+          <td style="text-align:center"><b>Symbol</b></td>
+          <td style="text-align:center"><b>Description</b></td>
+          <td style="text-align:center"><b>Format</b></td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>a</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;a" title="" /></td>
+          <td>lower bound of interval containing sign change</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>b</TT></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;b" title="" /></td>
+          <td>upper bound of interval containing sign change</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>n_iter</TT></td>
+          <td style="text-align:center">-</td>
+          <td>number of iterations to find a bracketing interval</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+      <tr>
+          <td style="text-align:center"><TT>n_feval</TT></td>
+          <td style="text-align:center">-</td>
+          <td>number of function evaluations to find a bracketing interval</td>
+          <td style="text-align:center">1×1<BR>double</td>
+      </tr>
+  </table>
+</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2022a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% |bracket_sign_change|
+% Find an interval in which a sign change occurs.
+% 
+% <index.html Back to Root-Finding Toolbox Contents>.
+%% Syntax
+%   [a,b] = bracket_sign_change(f,x0)
+%   [a,b] = bracket_sign_change(f,[a,b])
+%   [a,b] = bracket_sign_change(__,max_iter)
+%   [a,b,n_iter,n_feval] = bracket_sign_change(__)
+%% Description
+% |[a,b] = bracket_sign_change(f,x0)| returns an interval $[a,b]$ that
+% brackets a sign change of $f:\mathbf{R}\to\mathbf{R}$ given an initial
+% guess $x_{0}\in\mathbf{R}$.
+%
+% |[a,b] = bracket_sign_change(f,a,b)| returns an interval $[a,b]$ that
+% brackets a sign change of $f:\mathbf{R}\to\mathbf{R}$ given an initial
+% interval $[a,b]$.
+%
+% |[a,b] = bracket_sign_change(...,max_iter)| can be used with either
+% syntax above to set the maximum number of iterations (i.e. maximum number
+% of expansions).
+%
+% |[a,b,n_iter,n_feval] = bracket_sign_change(...)| can be used with any of
+% the syntaxes above to also return the number of iterations (i.e.
+% expansions) and the number of function evaluations performed.
+%% Inputs
+% <html>
+%   <table>
+%       <tr>
+%           <td style="text-align:center"><b>Variable</b></td>
+%           <td style="text-align:center"><b>Symbol</b></td>
+%           <td style="text-align:center"><b>Description</b></td>
+%           <td style="text-align:center"><b>Format</b></td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>f</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
+%           <td>univariate, scalar-valued function (<img src="https://latex.codecogs.com/svg.latex?\inline&space;f:\mathbb{R}\rightarrow\mathbb{R}" title="" />)</td>
+%           <td style="text-align:center">1×1<BR>function_handle</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>x0</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
+%           <td>initial guess (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" />) or initial interval (<img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[a,b]\in\mathbb{R}^{1\times2}" title="" />)</td>
+%           <td style="text-align:center">1×1 double<BR><i>OR</i><BR>1×2 double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>max_iter</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>(OPTIONAL) maximum number of iterations allowed (defaults to 200)</td>
+%           <td style="text-align:center">1×1 double</td>
+%       </tr>
+%   </table>
+% </html>
+%% Outputs
+% <html>
+%   <table>
+%       <tr>
+%           <td style="text-align:center"><b>Variable</b></td>
+%           <td style="text-align:center"><b>Symbol</b></td>
+%           <td style="text-align:center"><b>Description</b></td>
+%           <td style="text-align:center"><b>Format</b></td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>a</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;a" title="" /></td>
+%           <td>lower bound of interval containing sign change</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>b</TT></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;b" title="" /></td>
+%           <td>upper bound of interval containing sign change</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>n_iter</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>number of iterations to find a bracketing interval</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%       <tr>
+%           <td style="text-align:center"><TT>n_feval</TT></td>
+%           <td style="text-align:center">-</td>
+%           <td>number of function evaluations to find a bracketing interval</td>
+%           <td style="text-align:center">1×1<BR>double</td>
+%       </tr>
+%   </table>
+% </html>
+##### SOURCE END #####
+--></body></html>

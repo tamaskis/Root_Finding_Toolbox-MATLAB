@@ -1,12 +1,12 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/INSTALL/Root-Finding Toolbox.prj" location="/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/INSTALL" name="Root-Finding Toolbox" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/INSTALL/Root-Finding Toolbox.prj" location="/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/INSTALL" name="Root-Finding Toolbox" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>Root-Finding Toolbox</param.appname>
     <param.authnamewatermark>Tamas Kis</param.authnamewatermark>
     <param.email>tamas.a.kis@outlook.com</param.email>
     <param.company />
     <param.summary>Root-finding methods for both univariate, scalar-valued functions and multivariate, vector-valued functions.</param.summary>
     <param.description>See documentation at https://github.com/tamaskis/Root_Finding_Toolbox-MATLAB.</param.description>
-    <param.screenshot>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/local/MATLAB Central File Exchange Picture.png</param.screenshot>
+    <param.screenshot />
     <param.version>1.1.1</param.version>
     <param.output>${PROJECT_ROOT}/Root-Finding Toolbox.mltbx</param.output>
     <param.products.name />
@@ -25,7 +25,11 @@
     <param.matlabpath.excludes />
     <param.javaclasspath.excludes />
     <param.exported.on.package>false</param.exported.on.package>
-    <param.required.addons />
+    <param.required.addons>
+      <requiredaddons>
+        <requiredAddOn downloadURL="" earliest="earliest" fromRepository="false" id="3a9dbddd-6f28-44fe-922d-d25a62292dc3" include="false" latest="latest">Numerical Differentiation Toolbox</requiredAddOn>
+      </requiredaddons>
+    </param.required.addons>
     <param.matlab.project.id />
     <param.matlab.project.name />
     <param.release.start />
@@ -45,6 +49,7 @@
       <param.authnamewatermark />
       <param.email />
       <param.company />
+      <param.screenshot />
       <param.output />
       <param.products.name />
       <param.products.id />
@@ -60,7 +65,6 @@
       <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
       <param.exported.on.package />
-      <param.required.addons />
       <param.matlab.project.id />
       <param.matlab.project.name />
       <param.release.start />
@@ -78,20 +82,19 @@
       <param.additional.sw.linux.url />
     </unset>
     <fileset.rootdir>
-      <file>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox</file>
+      <file>/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/bisection_method.m</file>
-      <file>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/fixed_point_iteration.m</file>
-      <file>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/newtons_method.m</file>
-      <file>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/newtons_method_n.m</file>
-      <file>/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/secant_method.m</file>
+      <file>/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/doc</file>
+      <file>/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/fixedpointiteration</file>
+      <file>/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/rootsolvers</file>
+      <file>/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/toolbox/utils</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="Root-Finding Toolbox.mltbx" optional="false">/Users/tamaskis/Documents/Code/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/INSTALL/Root-Finding Toolbox.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="Root-Finding Toolbox.mltbx" optional="false">/Users/tamaskis/Documents/Projects/MATLAB/toolboxes/Root_Finding_Toolbox-MATLAB/INSTALL/Root-Finding Toolbox.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -107,7 +110,7 @@
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>12.6</osver>
+      <osver>13.0.1</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>
