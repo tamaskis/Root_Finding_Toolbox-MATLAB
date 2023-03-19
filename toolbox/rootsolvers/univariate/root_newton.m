@@ -108,7 +108,7 @@ function [x,output] = root_newton(f,df,x0,opts)
     n_feval = 0;
     n_deval = 0;
     
-    % inititalizes current and next root estimates
+    % initializes current and next root estimates
     x_curr = x0;
     x_next = 0;
     
@@ -119,7 +119,7 @@ function [x,output] = root_newton(f,df,x0,opts)
     n_deval = n_deval+1;
     
     % returns initial guess if it is a root of f(x)
-    if f_curr <= vtol
+    if abs(f_curr) <= vtol
         x = x_curr;
         output.x_all = x_curr;
         output.f_all = f_curr;
@@ -130,13 +130,13 @@ function [x,output] = root_newton(f,df,x0,opts)
         return
     end
     
-    % preallocates arrays to store iterates, function evaluations, and
-    % derivative evaluations
+    % preallocates arrays to store root estimates, function evaluations,
+    % and derivative evaluations
     x_all = zeros(1,max_iter+1);
     f_all = zeros(1,max_iter+1);
     df_all = zeros(1,max_iter+1);
     
-    % stores initial guess and function evaluation
+    % stores initial guess, function evaluation, and derivative evaluation
     x_all(1) = x_curr;
     f_all(1) = f_curr;
     df_all(1) = df_curr;
@@ -166,7 +166,7 @@ function [x,output] = root_newton(f,df,x0,opts)
         n_feval = n_feval+1;
         n_deval = n_deval+1;
         
-        % stores kth iterate, and function evaluation, and derivative
+        % stores kth root estimate, function evaluation, and derivative
         % evaluation
         x_all(k+1) = x_next;
         f_all(k+1) = f_next;

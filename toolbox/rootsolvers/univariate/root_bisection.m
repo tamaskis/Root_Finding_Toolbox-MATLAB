@@ -152,7 +152,7 @@ function [x,output] = root_bisection(f,x0,opts)
     
     % returns initial guess if it is a root of f(x) or if the maximum
     % number of function evaluations has already been met/exceeded
-    if (fc <= vtol) || (n_feval >= max_feval)
+    if (abs(fc) <= vtol) || (n_feval >= max_feval)
         x = c;
         output.x_all = c;
         output.a_all = a;
@@ -168,8 +168,8 @@ function [x,output] = root_bisection(f,x0,opts)
     fa = f(a);
     n_feval = n_feval+1;
     
-    % preallocates arrays to store iterates, bracketing intervals, and
-    % function evaluations
+    % preallocates arrays to store root estimates, bracketing intervals,
+    % and function evaluations
     x_all = zeros(1,max_iter+1);
     a_all = zeros(1,max_iter+1);
     b_all = zeros(1,max_iter+1);
@@ -204,7 +204,8 @@ function [x,output] = root_bisection(f,x0,opts)
         fc = f(c);
         n_feval = n_feval+1;
         
-        % stores kth iterate, bracketing interval, and function evaluation
+        % stores kth root estimate, bracketing interval, and function
+        % evaluation
         x_all(k+1) = c;
         a_all(k+1) = a;
         b_all(k+1) = b;

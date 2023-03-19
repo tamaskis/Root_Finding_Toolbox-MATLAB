@@ -35,8 +35,8 @@
 %                      allowed (defaults to 200)
 %       • max_feval  - (1×1 double) maximimum number of function
 %                      evaluations allowed (defaults to 200n TODO)
-%       • max_jeval  - (1×1 double) maximimum number of Jacobian
-%                      evaluations allowed (defaults to 200) TODO
+%       • max_deval  - (1×1 double) maximimum number of derivative
+%                      evaluations allowed (defaults to 200)
 %       • print      - (1×1 logical) true if solver progress should be
 %                      printed, false otherwise (defaults to false)
 %
@@ -57,6 +57,9 @@
 %
 %==========================================================================
 function [x,output] = rootn_newton(f,J,x0,opts)
+    
+    % turns singular matrix warning into error
+    s = warning('error','MATLAB:singularMatrix');
     
     % TODO: shouldn't need 200n, just 200
     % dimension of x
@@ -131,8 +134,8 @@ function [x,output] = rootn_newton(f,J,x0,opts)
         return
     end
     
-    % preallocates arrays to store root estimates, function evaluations,
-    % and Jacobian evaluations
+    % preallocates arrays to store iterates, function evaluations, and
+    % Jacobian evaluations
     x_all = zeros(n,max_iter+1);
     f_all = zeros(n,max_iter+1);
     J_all = zeros(n,n,max_iter+1);
@@ -150,69 +153,79 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     % iteration
     for k = 1:max_iter
         
-        % handles case where Jacobian is singular
-        if rank(J_curr) ~= n
+        % solves for y assuming Jacobian is nonsingular
+        try
+            y = J_curr\(-f_curr);
             
-            % perturbs current root estimate
-            x_curr = perturb_iterate(x_curr);
+        % catch any error when solving linear system
+        catch ME
             
-            % evaluates function and Jacobian at perturbed root estimate
-            f_curr = f(x_curr);
-            J_curr = J(x_curr);
-            n_feval = n_feval+1;
-            n_jeval = n_jeval+1;
-            
+            % perturbs the initial guess if exception was due to Jacobian
+            % singularity
+            if strcmpi(ME.identifier,'MATLAB:singularMatrix')
+                
+                % stores unperturbed current root estimate in case we need
+                % to return it
+                x_curr_unperturbed = x_curr;
+                
+                % perturbs current root estimate
+                x_curr = perturb_iterate(x_curr);
+                
+                % evaluates function and Jacobian at perturbed root
+                % estimate
+                f_curr = f(x_curr);
+                J_curr = J(x_curr);
+                n_feval = n_feval+1;
+                n_jeval = n_jeval+1;
+                
+                % tries to solve system at perturbed root estimate
+                try
+                    y = J_curr\(-f_curr);
+                    
+                % if solution of perturbed system fails, check whether the
+                % function evaluation at unperturbed system is near 0 
+                % (occasionally the Jacobian will be singular at the root)
+                catch ME
+                    if f_curr <= vtol
+                        x_next = x_curr_unperturbed;
+                        break;
+                    else
+                        rethrow(ME);
+                    end
+                    
+                end
+                
+            else
+                rethrow(ME);
+            end
         end
-        
-        % solves for y
-        y = J_curr\(-f_curr);
         
         % updates root estimate
         x_next = x_curr+y;
         
-        % updates function and Jacobian evaluations for next iteration
-        f_next = f(x_next);
-        J_next = J(x_next);
-        n_feval = n_feval+1;
-        n_jeval = n_jeval+1;
-        
-        % stores kth root estimate, function evaluation, and Jacobian
-        % evaluation
+        % stores updated root estimate
         x_all(:,k+1) = x_next;
-        f_all(:,k+1) = f_next;
-        J_all(:,:,k+1) = J_next;
         
-        % prints solver progress TODO
-%         if print
-%             print_solver_progress(k,n_feval,x_next,f_next)
-%         end
-        
-        % terminates solver if criteria met
-        % solver termination
-        if (abs(f_next) < vtol) || (norm(y) <= xatol) ||...
-                (n_feval >= max_feval) || (n_jeval) >= max_jeval
+        % terminates solver if converged
+        if (norm(y) < xatol)
             break;
         end
         
-        % stores updated values for next iteration
+        % stores updated root estimate for next iteration
         x_curr = x_next;
-        f_curr = f_next;
-        J_curr = J_next;
         
     end
     
     % converged root
     x = x_next;
     
-    % number of iterations
-    n_iter = k;
-    
     % additional outputs
-    output.x_all = x_all(:,1:(n_iter+1));
-    output.f_all = f_all(:,1:(n_iter+1));
-    output.J_all = J_all(:,:,1:(n_iter+1));
-    output.n_iter = n_iter;
-    output.n_feval = n_feval;
-    output.n_jeval = n_jeval;
+    output.x_all = x_all(:,1:(k+1));
+    output.k = k;
+    output.f_count = k+n_perturb+1;
+    output.J_count = k+n_perturb;
+    
+    % resets singular matrix error to warning
+    warning(s);
     
 end
