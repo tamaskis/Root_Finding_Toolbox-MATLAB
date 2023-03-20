@@ -3,9 +3,10 @@
 % perturb_iterate  Perturb an iterate.
 %
 %   xp = perturb_iterate(x)
+%   xp = perturb_iterate(x,h)
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-03-03
+% Last Update: 2023-03-19
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -21,6 +22,7 @@
 % INPUT:
 % ------
 %   x       - (n×1 double) iterate
+%   h       - (OPTIONAL) (1×1 double) relative step size (defaults to 100ε)
 %
 % -------
 % OUTPUT:
@@ -28,16 +30,14 @@
 %   xp      - (n×1 double) perturbed iterate
 %
 %==========================================================================
-function xp = perturb_iterate(x)
+function xp = perturb_iterate(x,h)
     
-    % iterate dimension
-    n = length(x);
+    % defaults relative step size to 100ε if not input
+    if (nargin < 2) || isempty(h)
+        h = 100*eps;
+    end
     
     % perturbs iterate
-    if x ~= zeros(n,1)
-        xp = x*(1+max(100*eps,eps*norm(x)));
-    else
-        xp = 100*eps*ones(n,1);
-    end
+    xp = x+h*(1+abs(x));
     
 end

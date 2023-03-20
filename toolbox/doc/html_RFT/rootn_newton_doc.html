@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>rootn_newton</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-08"><meta name="DC.source" content="rootn_newton_doc.m"><style type="text/css">
+      --><title>rootn_newton</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-19"><meta name="DC.source" content="rootn_newton_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -108,16 +108,40 @@ x = rootn_newton(f,J,x0,opts)
                       <td style="text-align:center"><b>Format</b></td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>TOL</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
-                      <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+                      <td style="text-align:center"><TT>xatol</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>absolute step tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>k_max</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
-                      <td>maximum number of iterations (defaults to 200)</td>
+                      <td style="text-align:center"><TT>vtol</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>value tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;0" title="" />)</td>
                       <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_iter</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of solver iterations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_feval</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of function evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_jeval</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of Jacobian evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>print</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td><TT>true</TT> if solver progress should be printed, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+                      <td style="text-align:center">1×1<BR>logical</td>
                   </tr>
               </table>
               </td>
@@ -153,18 +177,36 @@ x = rootn_newton(f,J,x0,opts)
                       <td style="text-align:center"><TT>x_all</TT></td>
                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
                       <td>root estimates at all iterations</td>
-                      <td style="text-align:center">n×(k+1)<BR>double</td>
+                      <td style="text-align:center">n×(<TT>n_iter</TT>+1)<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>k</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+                      <td style="text-align:center"><TT>f_all</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{f}_{\mathrm{all}}]" title="" /></td>
+                      <td>function evaluations at all iterations</td>
+                      <td style="text-align:center">n×(<TT>n_iter</TT>+1)<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>J_all</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{J}_{\mathrm{all}}]" title="" /></td>
+                      <td>Jacobian evaluations at all iterations</td>
+                      <td style="text-align:center">n×n×(<TT>n_iter</TT>+1)<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>n_iter</TT></td>
+                      <td style="text-align:center">-</td>
                       <td>number of solver iterations</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>f_count</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+                      <td style="text-align:center"><TT>n_feval</TT></td>
+                      <td style="text-align:center">-</td>
                       <td>number of function evaluations</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>n_jeval</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>number of Jacobian evaluations</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
               </table>
@@ -278,16 +320,40 @@ ans =
 %                       <td style="text-align:center"><b>Format</b></td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>TOL</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
-%                       <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+%                       <td style="text-align:center"><TT>xatol</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>absolute step tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>k_max</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
-%                       <td>maximum number of iterations (defaults to 200)</td>
+%                       <td style="text-align:center"><TT>vtol</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>value tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;0" title="" />)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_iter</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of solver iterations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_feval</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of function evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_jeval</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of Jacobian evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>print</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td><TT>true</TT> if solver progress should be printed, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+%                       <td style="text-align:center">1×1<BR>logical</td>
 %                   </tr>
 %               </table>
 %               </td>
@@ -325,18 +391,36 @@ ans =
 %                       <td style="text-align:center"><TT>x_all</TT></td>
 %                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{x}_{\mathrm{all}}]" title="" /></td>
 %                       <td>root estimates at all iterations</td>
-%                       <td style="text-align:center">n×(k+1)<BR>double</td>
+%                       <td style="text-align:center">n×(<TT>n_iter</TT>+1)<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>k</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%                       <td style="text-align:center"><TT>f_all</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{f}_{\mathrm{all}}]" title="" /></td>
+%                       <td>function evaluations at all iterations</td>
+%                       <td style="text-align:center">n×(<TT>n_iter</TT>+1)<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>J_all</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;[\mathbf{J}_{\mathrm{all}}]" title="" /></td>
+%                       <td>Jacobian evaluations at all iterations</td>
+%                       <td style="text-align:center">n×n×(<TT>n_iter</TT>+1)<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>n_iter</TT></td>
+%                       <td style="text-align:center">-</td>
 %                       <td>number of solver iterations</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>f_count</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+%                       <td style="text-align:center"><TT>n_feval</TT></td>
+%                       <td style="text-align:center">-</td>
 %                       <td>number of function evaluations</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>n_jeval</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>number of Jacobian evaluations</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %               </table>

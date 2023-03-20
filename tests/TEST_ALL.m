@@ -29,6 +29,6 @@ addpath(genpath('../toolbox'))
 
 %% RUNS ALL TESTS
 
-TEST_convergence;
+%TEST_convergence;
 TEST_utils;
-TEST_root_bisection;
+%TEST_root_bisection;

@@ -30,7 +30,7 @@
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • xatol      - (1×1 double) absolute step tolerance (defaults to 
 %                      10⁻¹⁰)
-%       • vtol       - (1×1 double) value tolerance (defaults to 0)
+%       • vtol       - (n×1 double) value tolerance (defaults to 0ₙ)
 %       • max_iter   - (1×1 double) maximimum number solver of iterations
 %                      allowed (defaults to 200)
 %       • max_feval  - (1×1 double) maximimum number of function
@@ -45,9 +45,9 @@
 % -------
 %   x       - (n×1 double) root of f(x)
 %   output  - (1×1 struct) algorithm outputs
-%       • x_all      - (1×(n_iter+1) double) root estimates at all 
+%       • x_all      - (n×(n_iter+1) double) root estimates at all 
 %                      iterations
-%       • f_all      - (1×(n_iter+1) double) function evaluations at all
+%       • f_all      - (n×(n_iter+1) double) function evaluations at all
 %                      iterations
 %       • J_all      - (n×n×(n_iter+1) double) Jacobian evaluations at all
 %                      iterations
@@ -84,7 +84,7 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     end
     
     % sets maximum number of function evaluations allowed (defaults to 
-    % 200n)
+    % 200n) TODO
     if (nargin < 4) || isempty(opts) || ~isfield(opts,'max_feval')
         max_feval = 200*n;
     else
@@ -111,7 +111,7 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     
     % initializes current and next root estimates
     x_curr = x0;
-    x_next = 0;
+    x_next = zeros(n,1);
     
     % evaluates function and Jacobian at initial guess
     f_curr = f(x_curr);
@@ -150,18 +150,14 @@ function [x,output] = rootn_newton(f,J,x0,opts)
     % iteration
     for k = 1:max_iter
         
-        % handles case where Jacobian is singular
+        % perturbs current root estimate if Jacobian is singular and 
+        % re-evaluates function and its Jacobian at perturbed root estimate
         if rank(J_curr) ~= n
-            
-            % perturbs current root estimate
             x_curr = perturb_iterate(x_curr);
-            
-            % evaluates function and Jacobian at perturbed root estimate
             f_curr = f(x_curr);
             J_curr = J(x_curr);
             n_feval = n_feval+1;
             n_jeval = n_jeval+1;
-            
         end
         
         % solves for y
@@ -170,14 +166,14 @@ function [x,output] = rootn_newton(f,J,x0,opts)
         % updates root estimate
         x_next = x_curr+y;
         
-        % updates function and Jacobian evaluations for next iteration
+        % evaluates function and its Jacobian at updated root estimated
         f_next = f(x_next);
         J_next = J(x_next);
         n_feval = n_feval+1;
         n_jeval = n_jeval+1;
         
-        % stores kth root estimate, function evaluation, and Jacobian
-        % evaluation
+        % stores kth root estimate and its corresponding function and
+        % Jacobian evaluations
         x_all(:,k+1) = x_next;
         f_all(:,k+1) = f_next;
         J_all(:,:,k+1) = J_next;
@@ -187,10 +183,13 @@ function [x,output] = rootn_newton(f,J,x0,opts)
 %             print_solver_progress(k,n_feval,x_next,f_next)
 %         end
         
-        % terminates solver if criteria met
-        % solver termination
-        if (abs(f_next) < vtol) || (norm(y) <= xatol) ||...
-                (n_feval >= max_feval) || (n_jeval) >= max_jeval
+        % solver termination on convergence criteria
+        if all(abs(f_next) < vtol) || (norm(y) <= xatol)
+            break;
+        end
+        
+        % solver termination on timeout criteria
+        if (n_feval >= max_feval) || (n_jeval >= max_jeval)
             break;
         end
         

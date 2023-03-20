@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>root_secant</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-01-08"><meta name="DC.source" content="root_secant_doc.m"><style type="text/css">
+      --><title>root_secant</title><meta name="generator" content="MATLAB 9.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2023-03-19"><meta name="DC.source" content="root_secant_doc.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -88,9 +88,8 @@ x = root_secant(f,x0,opts)
           <td style="text-align:center"><TT>x0</TT></td>
           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
           <td>two options:
-              <BR>  - <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" /> → initial guess input
-              <BR>  - <img
-              src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[x_{0},x_{1}]\in\mathbb{R}^{2}" title="" /> → initial guess and root estimate at first iteration input
+              <BR>  1. <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" /> → initial guess input
+              <BR>  2. <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[x_{0},x_{1}]\in\mathbb{R}^{2}" title="" /> → initial guess and root estimate at first iteration input
               </td>
           <td style="text-align:center">1×1 double<BR><i>OR</i><BR>1×2 double</td>
       </tr>
@@ -106,16 +105,34 @@ x = root_secant(f,x0,opts)
                       <td style="text-align:center"><b>Format</b></td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>TOL</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
-                      <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+                      <td style="text-align:center"><TT>xatol</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>absolute step tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>k_max</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
-                      <td>maximum number of iterations (defaults to 200)</td>
+                      <td style="text-align:center"><TT>vtol</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>value tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;0" title="" />)</td>
                       <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_iter</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of solver iterations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>max_feval</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td>maximum number of function evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+                      <td style="text-align:center">1×1<BR>double</td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:center"><TT>print</TT></td>
+                      <td style="text-align:center">-</td>
+                      <td><TT>true</TT> if solver progress should be printed, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+                      <td style="text-align:center">1×1<BR>logical</td>
                   </tr>
               </table>
               </td>
@@ -132,7 +149,7 @@ x = root_secant(f,x0,opts)
       </tr>
       <tr>
           <td style="text-align:center"><TT>x</TT></td>
-          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x" title="" /></td>
+          <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x^{*}" title="" /></td>
           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
           <td style="text-align:center">1×1<BR>double</td>
       </tr>
@@ -151,29 +168,23 @@ x = root_secant(f,x0,opts)
                       <td style="text-align:center"><TT>x_all</TT></td>
                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{\mathrm{all}}" title="" /></td>
                       <td>root estimates at all iterations</td>
-                      <td style="text-align:center">1×(k+1)<BR>double</td>
+                      <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>a_all</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{a}_{\mathrm{all}}" title="" /></td>
-                      <td>bracketing interval lower bounds at all iterations</td>
-                      <td style="text-align:center">1×(k+1)<BR>double</td>
+                      <td style="text-align:center"><TT>f_all</TT></td>
+                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}_{\mathrm{all}}" title="" /></td>
+                      <td>function evaluations at all iterations</td>
+                      <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>b_all</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{b}_{\mathrm{all}}" title="" /></td>
-                      <td>bracketing interval upper bounds at all iterations</td>
-                      <td style="text-align:center">1×(k+1)<BR>double</td>
-                  </tr>
-                  <tr>
-                      <td style="text-align:center"><TT>k</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+                      <td style="text-align:center"><TT>n_iter</TT></td>
+                      <td style="text-align:center">-</td>
                       <td>number of solver iterations</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
                   <tr>
-                      <td style="text-align:center"><TT>f_count</TT></td>
-                      <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+                      <td style="text-align:center"><TT>n_feval</TT></td>
+                      <td style="text-align:center">-</td>
                       <td>number of function evaluations</td>
                       <td style="text-align:center">1×1<BR>double</td>
                   </tr>
@@ -190,19 +201,13 @@ x =
      1
 
 </pre><h2 id="7">Example #2: Plot of root estimates at each iteration.</h2><p><i>In Example #1, we found the positive root of <img src="root_secant_doc_eq12141978683720303882.png" alt="$f(x)=x^{2}-1$" style="width:65px;height:12px;"> using the secant method. Now, produce a plot of all root estimates obtained by the <tt>root_secant</tt> function during its solution procedure.</i></p><p>First, we define <img src="root_secant_doc_eq01058714691934937683.png" alt="$f(x)$" style="width:20px;height:11px;"> in MATLAB like before.</p><pre class="codeinput">f = @(x) x^2-1;
-</pre><p>To obtain the root estimates at all iterations, we simply need to define the <tt>opts</tt> structure, set its <tt>return_all</tt> field to <tt>true</tt>, and pass it to the <tt>root_secant</tt> function. (Note: we use the same initial guess as in Example #1).</p><pre class="codeinput">opts.return_all = true;
-[~,~,x_all] = root_secant(f,5,opts);
-</pre><pre class="codeoutput error">Error using root_secant
-Too many output arguments.
-
-Error in root_secant_doc (line 158)
-[~,~,x_all] = root_secant(f,5,opts);
+</pre><p>To obtain the root estimates at all iterations, we simply need to return the <tt>output</tt> structure. (Note: we use the same initial guess as in Example #1).</p><pre class="codeinput">[~,output] = root_secant(f,5);
 </pre><p>Plotting the root estimates at each iteration,</p><pre class="codeinput">figure;
-plot(x_all,<span class="string">'k*'</span>,<span class="string">'MarkerSize'</span>,9,<span class="string">'LineWidth'</span>,1.5);
+plot(0:output.n_iter,output.x_all,<span class="string">'k*'</span>,<span class="string">'MarkerSize'</span>,9,<span class="string">'LineWidth'</span>,1.5);
 grid <span class="string">on</span>;
 xlabel(<span class="string">'Iteration'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 ylabel(<span class="string">'Root Estimate'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
-</pre><h2 id="10">Example #3: Intersection of two curves.</h2><p><i>Find the intersection of <img src="root_secant_doc_eq14437859941769526577.png" alt="$y=x^{2}$" style="width:30px;height:12px;"> and <img src="root_secant_doc_eq09821927890446224048.png" alt="$y=\cos{x}$" style="width:43px;height:8px;"> that is in the interval <img src="root_secant_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">.</i></p><p>Defining both functions,</p><pre class="codeinput">y1 = @(x) x.^2;
+</pre><img vspace="5" hspace="5" src="root_secant_doc_01.png" alt=""> <h2 id="10">Example #3: Intersection of two curves.</h2><p><i>Find the intersection of <img src="root_secant_doc_eq14437859941769526577.png" alt="$y=x^{2}$" style="width:30px;height:12px;"> and <img src="root_secant_doc_eq09821927890446224048.png" alt="$y=\cos{x}$" style="width:43px;height:8px;"> that is in the interval <img src="root_secant_doc_eq05681874421349654113.png" alt="$[0,\infty)$" style="width:27px;height:11px;">.</i></p><p>Defining both functions,</p><pre class="codeinput">y1 = @(x) x.^2;
 y2 = @(x) cos(x);
 </pre><p>Let's plot both functions to see where their intersection lies.</p><pre class="codeinput"><span class="comment">% defines interval for plotting</span>
 x = 0:0.01:1.2;
@@ -218,7 +223,12 @@ xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</spa
 ylabel(<span class="string">'$y$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\cos{(x)}$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,14,<span class="keyword">...</span>
     <span class="string">'Location'</span>,<span class="string">'northwest'</span>);
-</pre><p>Finding the intersection of the two functions is equivalent to finding the root of their difference. Therefore, we can use the secant method on <img src="root_secant_doc_eq16350898542025216418.png" alt="$y=\cos{x}-x^{2}$" style="width:67px;height:12px;"> with an initial guess of <img src="root_secant_doc_eq02423912343679602649.png" alt="$x_{0}=0.8$" style="width:39px;height:10px;"> (picked using the plot above) to find the intersection.</p><pre class="codeinput">x_int = root_secant(@(x) y2(x)-y1(x),0.8)
+</pre><img vspace="5" hspace="5" src="root_secant_doc_02.png" alt=""> <p>Finding the intersection of the two functions is equivalent to finding the root of their difference. Therefore, we can use the secant method on <img src="root_secant_doc_eq16350898542025216418.png" alt="$y=\cos{x}-x^{2}$" style="width:67px;height:12px;"> with an initial guess of <img src="root_secant_doc_eq02423912343679602649.png" alt="$x_{0}=0.8$" style="width:39px;height:10px;"> (picked using the plot above) to find the intersection.</p><pre class="codeinput">x_int = root_secant(@(x) y2(x)-y1(x),0.8)
+</pre><pre class="codeoutput">
+x_int =
+
+   0.824132312302522
+
 </pre><p>Plotting to confirm that this is the true intersection,</p><pre class="codeinput">figure;
 hold <span class="string">on</span>;
 plot(x,y1(x),<span class="string">'LineWidth'</span>,1.5);
@@ -230,7 +240,7 @@ xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</spa
 ylabel(<span class="string">'$y$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 legend(<span class="string">'$y=x^{2}$'</span>,<span class="string">'$y=\cos{(x)}$'</span>,<span class="string">'intersection'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="keyword">...</span>
     <span class="string">'FontSize'</span>,14,<span class="string">'Location'</span>,<span class="string">'northwest'</span>);
-</pre><h2 id="14">Example #4: Root of a more complicated function.</h2><p><i>Find all the roots of <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> in the interval <img src="root_secant_doc_eq06134816077764634342.png" alt="$[0,20]$" style="width:25px;height:11px;"> where <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> is defined using the following calculation procedure:</i></p><div><ol><li><img src="root_secant_doc_eq16341309379662547489.png" alt="$c=5x^{2}$" style="width:35px;height:10px;"></li><li><img src="root_secant_doc_eq08181118594224696750.png" alt="$d=\sin{(c/500)}$" style="width:70px;height:11px;"></li><li><img src="root_secant_doc_eq00077554464362095855.png" alt="$e=\cosh{d}$" style="width:48px;height:8px;"></li><li><img src="root_secant_doc_eq14045386360584006396.png" alt="$g=5e^{2}+27e-40$" style="width:90px;height:12px;"></li></ol></div><p>First, we need to define <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">. <b>We define <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as the MATLAB function <tt>gx</tt> at the bottom of this page under "gx Function for Example #4".</b> To define <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as an anonymous function, we assign it a function handle:</p><pre class="codeinput">g = @(x) gx(x);
+</pre><img vspace="5" hspace="5" src="root_secant_doc_03.png" alt=""> <h2 id="14">Example #4: Root of a more complicated function.</h2><p><i>Find all the roots of <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> in the interval <img src="root_secant_doc_eq06134816077764634342.png" alt="$[0,20]$" style="width:25px;height:11px;"> where <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> is defined using the following calculation procedure:</i></p><div><ol><li><img src="root_secant_doc_eq16341309379662547489.png" alt="$c=5x^{2}$" style="width:35px;height:10px;"></li><li><img src="root_secant_doc_eq08181118594224696750.png" alt="$d=\sin{(c/500)}$" style="width:70px;height:11px;"></li><li><img src="root_secant_doc_eq00077554464362095855.png" alt="$e=\cosh{d}$" style="width:48px;height:8px;"></li><li><img src="root_secant_doc_eq14045386360584006396.png" alt="$g=5e^{2}+27e-40$" style="width:90px;height:12px;"></li></ol></div><p>First, we need to define <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">. <b>We define <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as the MATLAB function <tt>gx</tt> at the bottom of this page under "gx Function for Example #4".</b> To define <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> as an anonymous function, we assign it a function handle:</p><pre class="codeinput">g = @(x) gx(x);
 </pre><p>Due to the complexity of <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;">, we have no idea where its root(s) is/are. Therefore, let's first plot <img src="root_secant_doc_eq02821769067091651211.png" alt="$g(x)$" style="width:20px;height:11px;"> on <img src="root_secant_doc_eq06134816077764634342.png" alt="$[0,20]$" style="width:25px;height:11px;"> (i.e. the interval we want to find the root(s) in).</p><pre class="codeinput"><span class="comment">% interval definition</span>
 x = 0:0.1:20;
 
@@ -246,12 +256,27 @@ hold <span class="string">off</span>;
 grid <span class="string">on</span>;
 xlabel(<span class="string">'$x$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
 ylabel(<span class="string">'$g(x)$'</span>,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>,<span class="string">'FontSize'</span>,18);
-</pre><p>Visually, we can easily identify the following intervals that contain a root:</p><p><img src="root_secant_doc_eq04865857976100573658.png" alt="$$[8,9]$$" style="width:20px;height:11px;"></p><p><img src="root_secant_doc_eq09743076019674208429.png" alt="$$[15,16]$$" style="width:31px;height:11px;"></p><p><img src="root_secant_doc_eq03650188060663268435.png" alt="$$[19,20]$$" style="width:31px;height:11px;"></p><p>Solving for the corresponding roots with the secant method, using the midpoints of the above intervals as initial guesses,</p><pre class="codeinput">root1 = root_secant(g,8.5);
+</pre><img vspace="5" hspace="5" src="root_secant_doc_04.png" alt=""> <p>Visually, we can easily identify the following intervals that contain a root:</p><p><img src="root_secant_doc_eq04865857976100573658.png" alt="$$[8,9]$$" style="width:20px;height:11px;"></p><p><img src="root_secant_doc_eq09743076019674208429.png" alt="$$[15,16]$$" style="width:31px;height:11px;"></p><p><img src="root_secant_doc_eq03650188060663268435.png" alt="$$[19,20]$$" style="width:31px;height:11px;"></p><p>Solving for the corresponding roots with the secant method, using the midpoints of the above intervals as initial guesses,</p><pre class="codeinput">root1 = root_secant(g,8.5);
 root2 = root_secant(g,15.5);
 root3 = root_secant(g,19.5);
 </pre><p>Printing the roots,</p><pre class="codeinput">root1
 root2
 root3
+</pre><pre class="codeoutput">
+root1 =
+
+   8.314871772034319
+
+
+root2 =
+
+  15.653184109746046
+
+
+root3 =
+
+  19.577955918439301
+
 </pre><h2 id="18">gx Function for Example #4</h2><pre class="codeinput"><span class="keyword">function</span> g = gx(x)
     c = 5*x.^2;
     d = sin(c/500);
@@ -298,9 +323,8 @@ root3
 %           <td style="text-align:center"><TT>x0</TT></td>
 %           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}" title="" /></td>
 %           <td>two options:
-%               <BR>  - <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" /> → initial guess input
-%               <BR>  - <img
-%               src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[x_{0},x_{1}]\in\mathbb{R}^{2}" title="" /> → initial guess and root estimate at first iteration input
+%               <BR>  1. <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=x_{0}\in\mathbb{R}" title="" /> → initial guess input
+%               <BR>  2. <img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{0}=[x_{0},x_{1}]\in\mathbb{R}^{2}" title="" /> → initial guess and root estimate at first iteration input
 %               </td>
 %           <td style="text-align:center">1×1 double<BR><i>OR</i><BR>1×2 double</td>
 %       </tr>
@@ -316,16 +340,34 @@ root3
 %                       <td style="text-align:center"><b>Format</b></td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>TOL</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathrm{TOL}" title="" /></td>
-%                       <td>tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
+%                       <td style="text-align:center"><TT>xatol</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>absolute step tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;10^{-10}" title="" />)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>k_max</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k_{\mathrm{max}}" title="" /></td>
-%                       <td>maximum number of iterations (defaults to 200)</td>
+%                       <td style="text-align:center"><TT>vtol</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>value tolerance (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;0" title="" />)</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_iter</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of solver iterations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>max_feval</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td>maximum number of function evaluations allowed (defaults to <img src="https://latex.codecogs.com/svg.latex?\inline&space;200" title="" />)</td>
+%                       <td style="text-align:center">1×1<BR>double</td>
+%                   </tr>
+%                   <tr>
+%                       <td style="text-align:center"><TT>print</TT></td>
+%                       <td style="text-align:center">-</td>
+%                       <td><TT>true</TT> if solver progress should be printed, <TT>false</TT> otherwise (defaults to <TT>false</TT>)</td>
+%                       <td style="text-align:center">1×1<BR>logical</td>
 %                   </tr>
 %               </table>
 %               </td>
@@ -344,7 +386,7 @@ root3
 %       </tr>
 %       <tr>
 %           <td style="text-align:center"><TT>x</TT></td>
-%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x" title="" /></td>
+%           <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;x^{*}" title="" /></td>
 %           <td>root of <img src="https://latex.codecogs.com/svg.latex?\inline&space;f(x)" title="" /></td>
 %           <td style="text-align:center">1×1<BR>double</td>
 %       </tr>
@@ -363,29 +405,23 @@ root3
 %                       <td style="text-align:center"><TT>x_all</TT></td>
 %                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{x}_{\mathrm{all}}" title="" /></td>
 %                       <td>root estimates at all iterations</td>
-%                       <td style="text-align:center">1×(k+1)<BR>double</td>
+%                       <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>a_all</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{a}_{\mathrm{all}}" title="" /></td>
-%                       <td>bracketing interval lower bounds at all iterations</td>
-%                       <td style="text-align:center">1×(k+1)<BR>double</td>
+%                       <td style="text-align:center"><TT>f_all</TT></td>
+%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{f}_{\mathrm{all}}" title="" /></td>
+%                       <td>function evaluations at all iterations</td>
+%                       <td style="text-align:center">1×(<TT>n_iter</TT>+1)<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>b_all</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;\mathbf{b}_{\mathrm{all}}" title="" /></td>
-%                       <td>bracketing interval upper bounds at all iterations</td>
-%                       <td style="text-align:center">1×(k+1)<BR>double</td>
-%                   </tr>
-%                   <tr>
-%                       <td style="text-align:center"><TT>k</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;k" title="" /></td>
+%                       <td style="text-align:center"><TT>n_iter</TT></td>
+%                       <td style="text-align:center">-</td>
 %                       <td>number of solver iterations</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
 %                   <tr>
-%                       <td style="text-align:center"><TT>f_count</TT></td>
-%                       <td style="text-align:center"><img src="https://latex.codecogs.com/svg.latex?\inline&space;f_{\mathrm{count}}" title="" /></td>
+%                       <td style="text-align:center"><TT>n_feval</TT></td>
+%                       <td style="text-align:center">-</td>
 %                       <td>number of function evaluations</td>
 %                       <td style="text-align:center">1×1<BR>double</td>
 %                   </tr>
@@ -412,16 +448,14 @@ x = root_secant(f,5)
 % First, we define $f(x)$ in MATLAB like before.
 f = @(x) x^2-1;
 %%
-% To obtain the root estimates at all iterations, we simply need to define 
-% the |opts| structure, set its |return_all| field to |true|, and pass it 
-% to the |root_secant| function. (Note: we use the same initial guess as
-% in Example #1).
-opts.return_all = true;
-[~,~,x_all] = root_secant(f,5,opts);
+% To obtain the root estimates at all iterations, we simply need to return
+% the |output| structure. (Note: we use the same initial guess as in
+% Example #1).
+[~,output] = root_secant(f,5);
 %%
 % Plotting the root estimates at each iteration,
 figure;
-plot(x_all,'k*','MarkerSize',9,'LineWidth',1.5);
+plot(0:output.n_iter,output.x_all,'k*','MarkerSize',9,'LineWidth',1.5);
 grid on;
 xlabel('Iteration','Interpreter','latex','FontSize',18);
 ylabel('Root Estimate','Interpreter','latex','FontSize',18);

@@ -30,11 +30,11 @@ test_suite = TestSuite('utils tests',false);
 %% perturb_iterate
 
 test_suite.add_test(TestEqual(perturb_iterate(0),100*eps,'perturb x = 0'));
-test_suite.add_test(TestEqual(perturb_iterate(1),1.000000000000022,'perturb x = 1',15));
-test_suite.add_test(TestEqual(perturb_iterate(99999),99999.00000222040,'perturb x = 1',11));
+test_suite.add_test(TestEqual(perturb_iterate(1),1.000000000000044,'perturb x = 1',14));
+test_suite.add_test(TestEqual(perturb_iterate(99999),99999.00000000223,'perturb x = 99999',16));
 test_suite.add_test(TestEqual(perturb_iterate([0;0]),[100*eps;100*eps],'perturb x = (0,0)ᵀ'));
-test_suite.add_test(TestEqual(perturb_iterate([100;100]),[100.0000000000031;100.0000000000031],'perturb x = (0,0)ᵀ',13));
-test_suite.add_test(TestEqual(perturb_iterate([1e5;5e3]),[100000.0000022232;5000.0000001112],'perturb x = (0,0)ᵀ',10));
+test_suite.add_test(TestEqual(perturb_iterate([100;100]),[100.0000000000022;100.0000000000022],'perturb x = (100,100)ᵀ',12));
+test_suite.add_test(TestEqual(perturb_iterate([1e5;5e3]),[100000.0000000022;5000.0000000001],'perturb x = (10⁵,5✕10³)ᵀ',10));
 
 
 

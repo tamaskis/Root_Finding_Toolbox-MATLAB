@@ -136,7 +136,8 @@ function [x,output] = root_newton(f,df,x0,opts)
     f_all = zeros(1,max_iter+1);
     df_all = zeros(1,max_iter+1);
     
-    % stores initial guess, function evaluation, and derivative evaluation
+    % stores initial guess and its corresponding function and derivative
+    % evaluations
     x_all(1) = x_curr;
     f_all(1) = f_curr;
     df_all(1) = df_curr;
@@ -149,25 +150,28 @@ function [x,output] = root_newton(f,df,x0,opts)
     % iteration
     for k = 1:max_iter
         
-        % perturbs current root estimate if derivative is 0 and
-        % re-evaluates derivative at perturbed root estimate
+        % perturbs current root estimate if derivative is 0 and 
+        % re-evaluates function and its derivative at perturbed root 
+        % estimate
         if df_curr == 0
             x_curr = perturb_iterate(x_curr);
+            f_curr = f(x_curr);
             df_curr = df(x_curr);
+            n_feval = n_feval+1;
             n_deval = n_deval+1;
         end
         
         % updates root estimate
         x_next = x_curr-f_curr/df_curr;
         
-        % updates function and derivative evaluations for next iteration
+        % evaluates function and its derivative at updated root estimate
         f_next = f(x_next);
         df_next = df(x_next);
         n_feval = n_feval+1;
         n_deval = n_deval+1;
         
-        % stores kth root estimate, function evaluation, and derivative
-        % evaluation
+        % stores kth root estimate and its corresponding function and
+        % derivative evaluations
         x_all(k+1) = x_next;
         f_all(k+1) = f_next;
         df_all(k+1) = df_next;
@@ -177,9 +181,13 @@ function [x,output] = root_newton(f,df,x0,opts)
             print_solver_progress(k,n_feval,x_next,f_next)
         end
         
-        % solver termination
-        if (abs(f_next) < vtol) || (abs(x_next-x_curr) <= xatol) ||...
-                (n_feval >= max_feval) || (n_deval) >= max_deval
+        % solver termination on convergence criteria
+        if (abs(f_next) < vtol) || (abs(x_next-x_curr) <= xatol)
+            break;
+        end
+        
+        % solver termination on timeout criteria
+        if (n_feval >= max_feval) || (n_deval >= max_deval)
             break;
         end
         
