@@ -1,13 +1,13 @@
 %==========================================================================
 %
-% fixed_point  Fixed-point iteration for finding the fixed point of a 
-% univariate, scalar-valued function.
+% fixedpointn_iteration  Fixed-point iteration for finding the fixed point
+% of a multivariate, vector-valued function.
 %
-%   c = fixed_point(f,x0)
-%   c = fixed_point(f,x0,opts)
-%   [c,output] = fixed_point(__)
+%   c = fixedpointn_iteration(f,x0)
+%   c = fixedpointn_iteration(f,x0,opts)
+%   [c,output] = fixedpointn_iteration(__)
 %
-% See also fixed_point_n.
+% See also fixed_point.
 %
 % Copyright © 2021 Tamas Kis
 % Last Update: 2023-01-07
@@ -25,9 +25,9 @@
 % ------
 % INPUT:
 % ------
-%   f       - (1×1 function_handle) univariate, scalar-valued function, 
-%             f(x) (f : ℝ → ℝ)
-%   x0      - (1×1 double) initial guess for fixed point
+%   f       - (1×1 function_handle) multivariate, vector-valued function, 
+%             f(x) (f : ℝⁿ → ℝⁿ)
+%   x0      - (n×1 double) initial guess for fixed point
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
 %       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
@@ -36,22 +36,15 @@
 % -------
 % OUTPUT:
 % -------
-%   c       - (1×1 double) fixed point of f(x)
+%   c       - (n×1 double) fixed point of f(x)
 %   output  - (1×1 struct) algorithm outputs
-%       • c_all   - (1×(k+1) double) fixed point estimates at all 
+%       • c_all   - (n×(k+1) double) fixed point estimates at all 
 %                   iterations
 %       • k       - (1×1 double) number of solver iterations
 %       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [c,output] = fixed_point(f,x0,opts)
-    
-    % sets maximum number of iterations (defaults to 200)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
-        k_max = 200;
-    else
-        k_max = opts.k_max;
-    end
+function [c,output] = fixedpointn_iteration(f,x0,opts)
     
     % sets tolerance (defaults to 10⁻¹⁰)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
@@ -60,8 +53,15 @@ function [c,output] = fixed_point(f,x0,opts)
         TOL = opts.TOL;
     end
     
+    % sets maximum number of iterations (defaults to 200)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
+        k_max = 200;
+    else
+        k_max = opts.k_max;
+    end
+    
     % returns initial guess if it is a fixed point of f(x)
-    if abs(f(x0)-x0) < TOL
+    if norm(f(x0)-x0) < TOL
         c = x0;
         output.c_all = c;
         output.k = 0;
@@ -69,14 +69,17 @@ function [c,output] = fixed_point(f,x0,opts)
         return
     end
     
+    % dimension of x
+    n = length(x0);
+    
     % initializes current and next fixed point estimates
     x_curr = x0;
-    x_next = 0;
+    x_next = zeros(n,1);
     
     % preallocates array to store all intermediate solutions and stores
     % initial guess
-    c_all = zeros(1,k_max);
-    c_all(1) = x0;
+    c_all = zeros(n,k_max+1);
+    c_all(:,1) = x0;
     
     % iteration
     for k = 1:k_max
@@ -85,10 +88,10 @@ function [c,output] = fixed_point(f,x0,opts)
         x_next = f(x_curr);
         
         % stores updated fixed point estimate
-        c_all(k+1) = x_next;
+        c_all(:,k+1) = x_next;
         
         % terminates if converged
-        if (abs(x_next-x_curr) < TOL)
+        if (norm(x_next-x_curr) < TOL)
             break;
         end
         
@@ -97,11 +100,14 @@ function [c,output] = fixed_point(f,x0,opts)
         
     end
     
+    % prints blank line after last line of solver progress printouts
+    if print, fprintf(''); end
+    
     % converged fixed point
     c = x_next;
     
     % additional outputs
-    output.c_all = c_all(1:(k+1));
+    output.c_all = c_all(:,1:(k+1));
     output.k = k;
     output.f_count = k+1;
     

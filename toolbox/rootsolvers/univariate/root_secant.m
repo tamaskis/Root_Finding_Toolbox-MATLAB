@@ -190,6 +190,9 @@ function [x,output] = root_secant(f,x0,opts)
         
     end
     
+    % prints blank line after last line of solver progress printouts
+    if print, fprintf(''); end
+    
     % converged root
     x = x_next;
     

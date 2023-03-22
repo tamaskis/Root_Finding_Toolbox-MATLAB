@@ -1,18 +1,18 @@
 %==========================================================================
 %
-% root_bisection  Bisection method for finding the root of a univariate, 
-% scalar-valued function.
+% root_brent_dekker  Brent-Dekker method for finding the root of a 
+% univariate, scalar-valued function.
 %
-%   x = root_bisection(f,[a,b])
-%   x = root_bisection(f,x0)
-%   x = root_bisection(__,opts)
-%   [x,output] = root_bisection(__)
+%   x = root_brent_dekker(f,[a,b])
+%   x = root_brent_dekker(f,x0)
+%   x = root_brent_dekker(__,opts)
+%   [x,output] = root_brent_dekker(__)
 %
 % See also root_brent_dekker, root_iteration, root_itp, root_newton, 
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-03-16
+% Last Update: 2023-03-20
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -29,14 +29,17 @@
 % ------
 %   f       - (1×1 function_handle) univariate, scalar-valued function, 
 %             f(x) (f : ℝ → ℝ)
-%   x0      - (1×1 OR 1×2 double) initial guess (x0 = x₀ ∈ ℝ) or initial 
-%             interval (x0 = [a,b] ∈ ℝ¹ˣ²)
+%   x0      - (1×1 OR 1×2 double) two options:
+%               1. x0 = x₀ ∈ ℝ → initial guess input, and we attempt to
+%                  find an initial bracketing interval [a,b] based on this
+%                  initial guess
+%               2. x0 = [a,b] ∈ ℝ² → initial bracketing interval input
 %   opts    - (OPTIONAL) (1×1 struct) solver options
 %       • batol      - (1×1 double) absolute bracket tolerance (defaults to
 %                      2ε)
 %       • vtol       - (1×1 double) value tolerance (defaults to 0)
 %       • max_iter   - (1×1 double) maximimum number solver of iterations
-%                      allowed (defaults to k₁⸝₂ = ⌈log₂((b-a)/batol)⌉)
+%                      allowed (defaults to 200)
 %       • max_feval  - (1×1 double) maximimum number of function
 %                      evaluations allowed (defaults to 200)
 %       • rebracket  - (1×1 logical) true if initial bracketing interval 
@@ -50,29 +53,18 @@
 % -------
 %   x       - (1×1 double) root of f(x)
 %   output  - (1×1 struct) algorithm outputs
-%       • x_all      - (1×(n_iter+1) double) root estimates at all 
-%                      iterations
-%       • a_all      - (1×(n_iter+1) double) bracketing interval lower 
-%                      bounds at all iterations
-%       • b_all      - (1×(n_iter+1) double) bracketing interval upper 
-%                      bounds at at all iterations
-%       • f_all      - (1×(n_iter+1) double) function evaluations at all
-%                      iterations
-%       • n_int_iter - (1×1 double) number of iterations to find a 
-%                      bracketing interval
-%       • n_iter     - (1×1 double) number of solver iterations
-%       • n_feval    - (1×1 double) number of function evaluations
+%       • x_all   - (1×(k+1) double) root estimates at all iterations
+%       • k       - (1×1 double) number of solver iterations
+%       • f_count - (1×1 double) number of function evaluations
 %
 %==========================================================================
-function [x,output] = root_bisection(f,x0,opts)
+function [x,output] = root_brent_dekker(f,x0,opts)
     
     % sets absolute bracket tolerance (defaults to 2ε)
-    %   TODO: do we need this restriction?
-    %   • note that we do not allow bracket tolerances below 2ε
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'batol')
         batol = 2*eps;
     else
-        batol = max(opts.batol,2*eps);
+        batol = opts.batol;
     end
     
     % sets value tolerance (defaults to 0)
@@ -80,6 +72,13 @@ function [x,output] = root_bisection(f,x0,opts)
         vtol = 0;
     else
         vtol = opts.vtol;
+    end
+    
+    % sets maximum number of iterations allowed (defaults to 200)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'max_iter')
+        max_iter = 200;
+    else
+        max_iter = opts.max_iter;
     end
     
     % sets maximum number of function evaluations allowed (defaults to 200)
@@ -134,31 +133,18 @@ function [x,output] = root_bisection(f,x0,opts)
         n_int_iter = n_int_iter+ni;
     end
     
-    % determines k₁⸝₂
-    k_12 = ceil(log2(abs(b-a)/batol));
+    % evaluates function at upper bound of initial bracketing interval
+    fb = f(b);
     
-    % sets maximum number of iterations allowed
-    if (nargin == 3) && ~isempty(opts) && isfield(opts,'max_iter')
-        max_iter = min(opts.max_iter,k_12);
-    else
-        max_iter = k_12;
-    end
-    
-    % initial guess
-    c = (a+b)/2;
-    
-    % evaluates function at initial guess
-    fc = f(c);
-    n_feval = n_feval+1;
-    
-    % returns initial guess if it is a root of f(x) or if the maximum
-    % number of function evaluations has already been met/exceeded
-    if (abs(fc) <= vtol) || (n_feval >= max_feval)
-        x = c;
-        output.x_all = c;
+    % returns upper bound of initial bracketing interval if it is a root of
+    % f(x) or if the maximum number of function evaluations has already 
+    % been met/exceeded
+    if (abs(fb) <= vtol) || (n_feval >= max_feval)
+        x = b;
+        output.x_all = b;
         output.a_all = a;
         output.b_all = b;
-        output.f_all = fc;
+        output.f_all = fb;
         output.n_int_iter = n_int_iter;
         output.n_iter = 0;
         output.n_feval = n_feval;
@@ -169,6 +155,9 @@ function [x,output] = root_bisection(f,x0,opts)
     fa = f(a);
     n_feval = n_feval+1;
     
+    % initializes function evaluation at previous root estimate
+    fc = fb;
+    
     % preallocates arrays to store root estimates, bracketing intervals,
     % and function evaluations
     x_all = zeros(1,max_iter+1);
@@ -177,74 +166,119 @@ function [x,output] = root_bisection(f,x0,opts)
     f_all = zeros(1,max_iter+1);
     
     % stores initial guess, bracketing interval, and function evaluation
-    x_all(1) = c;
+    x_all(1) = b;
     a_all(1) = a;
     b_all(1) = b;
-    f_all(1) = fc;
+    f_all(1) = fb;
     
     % prints header for solver progress
     if print
-        print_solver_header(true);
+        print_solver_header;
     end
     
     % iteration
     for k = 1:max_iter
         
+        % auxiliary parameters
+        if (k == 1) || ((fb > 0) == (fc > 0))
+            c = a;
+            fc = fa;
+            d = b-a;
+            e = d;
+        end
+        
         % updates interval
-        if (fa*fc > 0)
-            a = c;
-            fa = fc;
-        else
+        if abs(fc) < abs(fb)
+            a = b;
             b = c;
+            c = a;
+            fa = fb;
+            fb = fc;
+            fc = fa;
+        end
+        
+        % algorithm tolerance
+        delta = 2*eps*abs(b)+tol;
+        
+        % auxiliary parameter used for termination, bisection, and 
+        % interpolation
+        m = 0.5*(c-b);
+        
+        % terminates if converged
+        if (abs(m) < delta) || (fb == 0)
+            break;
+        end
+        
+        % performs bisection
+        if (abs(e) < delta) || (abs(fa) < abs(fb))
+            d = m;
+            e = m;
+            
+        % performs interpolation
+        else
+            
+            % auxiliary parameter for interpolation
+            s = fb/fa;
+            
+            % linear interpolation
+            if a == c
+                p = 2*m*s;
+                q = 1-s;
+                
+            % inverse quadratic interpolation
+            else
+                q = fa/fc;
+                r = fb/fc;
+                p = s*(2*m*q*(q-r)-(b-a)*(r-1));
+                q = (q-1)*(r-1)*(s-1);
+                
+            end
+            
+            % adjusts sign of p and q
+            if p > 0
+                q = -q;
+            else
+                p = -p;
+            end
+            
+        end
+        
+        % determines whether to keep results of interpolation or to revert
+        % to performing bisection instead
+        s = e;
+        e = d;
+        if (2*p < (3*m*q-abs(delta*q))) || (p < abs(0.5*s*q))
+            d = p/q;
+        else
+            d = m;
+            e = m;
         end
         
         % updates root estimate
-        c = (a+b)/2;
+        a = b;
+        fa = fb;
+        if abs(d) > delta
+            b = b+d;
+        elseif m > 0
+            b = b+delta;
+        else
+            b = b-delta;
+        end
+        
+        % stores updated root estimate
+        x_all(k+1) = b;
         
         % evaluates function at updated root estimate
-        fc = f(c);
-        n_feval = n_feval+1;
-        
-        % stores kth root estimate, bracketing interval, and function
-        % evaluation
-        x_all(k+1) = c;
-        a_all(k+1) = a;
-        b_all(k+1) = b;
-        f_all(k+1) = fc;
-        
-        % prints solver progress
-        if print
-            print_solver_progress(k,n_feval,c,fc,a,b)
-        end
-        
-        % solver termination on convergence criteria
-        if (abs(fc) <= vtol)
-            break;
-        end
-        
-        % solver termination on timeout criteria
-        if (n_feval >= max_feval)
-            break;
-        end
+        fb = f(b);
         
     end
     
-    % prints blank line after last line of solver progress printouts
-    if print, fprintf(''); end
-    
     % converged root
-    x = c;
-
-    % number of iterations
-    n_iter = k;
+    x = b;
     
     % additional outputs
-    output.x_all = x_all(1:(n_iter+1));
-    output.a_all = a_all(1:(n_iter+1));
-    output.b_all = b_all(1:(n_iter+1));
-    output.f_all = f_all(1:(n_iter+1));
-    output.n_int_iter = n_int_iter;
-    output.n_iter = n_iter;
-    output.n_feval = n_feval;
+    output.x_all = x_all(1:(k+1));
+    output.k = k;
+    output.f_count = f_count_1+f_count_2+2+k;
     
 end

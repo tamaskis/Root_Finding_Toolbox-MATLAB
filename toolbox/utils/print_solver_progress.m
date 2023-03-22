@@ -2,6 +2,7 @@
 %
 % print_solver_progress  Print the progress of an iterative solver.
 %
+%   print_solver_progress(iter,nfeval,x)
 %   print_solver_progress(iter,nfeval,x,f)
 %   print_solver_progress(iter,nfeval,x,f,a,b)
 %
@@ -24,14 +25,16 @@
 %   iter    - (1×1 double) iteration number
 %   nfeval  - (1×1 double) number of function evaluations
 %   x       - (1×1 double) current iterate
-%   f       - (1×1 double) function evaluation at current iterate
+%   f       - (OPTIONAL) (1×1 double) function evaluation at current
+%             iterate
 %   a       - (OPTIONAL) (1×1 double) lower bound of current interval
 %   b       - (OPTIONAL) (1×1 double) upper bound of current interval
 %
 %==========================================================================
 function print_solver_progress(iter,nfeval,x,f,a,b)
     
-    % determines if intervals are provided
+    % determines if function evaluations and intervals are provided
+    f_input = (nargin >= 4) && ~isempty(f);
     a_input = (nargin >= 5) && ~isempty(a);
     b_input = (nargin == 6) && ~isempty(b);
     
@@ -65,6 +68,9 @@ function print_solver_progress(iter,nfeval,x,f,a,b)
     else
         x_format = ' %1.4e     ';
     end
+    if ~f_input
+        x_format = [x_format,'\n'];
+    end
     
     % format for function evaluation at current iterate
     if f < 0
@@ -74,13 +80,25 @@ function print_solver_progress(iter,nfeval,x,f,a,b)
     end
     
     % prints solver progress
-    if a_input && b_input
-        progress_format = [iter_format,nfeval_format,a_format,b_format,...
-            x_format,f_format];
-        fprintf(progress_format,iter,nfeval,a,b,x,f);
+    if f_input
+        if a_input && b_input
+            progress_format = [iter_format,nfeval_format,a_format,...
+                b_format,x_format,f_format];
+            fprintf(progress_format,iter,nfeval,a,b,x,f);
+        else
+            progress_format = [iter_format,nfeval_format,x_format,...
+                f_format];
+            fprintf(progress_format,iter,nfeval,x,f);
+        end
     else
-        progress_format = [iter_format,nfeval_format,x_format,f_format];
-        fprintf(progress_format,iter,nfeval,x,f);
+        if a_input && b_input
+            progress_format = [iter_format,nfeval_format,a_format,...
+                b_format,x_format];
+            fprintf(progress_format,iter,nfeval,a,b,x);
+        else
+            progress_format = [iter_format,nfeval_format,x_format];
+            fprintf(progress_format,iter,nfeval,x);
+        end
     end
     
 end

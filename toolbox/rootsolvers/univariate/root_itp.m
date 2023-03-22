@@ -12,7 +12,7 @@
 % root_secant.
 %
 % Copyright © 2021 Tamas Kis
-% Last Update: 2023-01-07
+% Last Update: 2023-03-20
 % Website: https://tamaskis.github.io
 % Contact: tamas.a.kis@outlook.com
 %
@@ -29,18 +29,20 @@
 % ------
 %   f       - (1×1 function_handle) univariate, scalar-valued function, 
 %             f(x) (f : ℝ → ℝ)
-%   x0      - (1×1 OR 1×2 double) two options:
-%               1. x0 = x₀ ∈ ℝ → initial guess input, and we attempt to
-%                  find an initial bracketing interval [a,b] based on this
-%                  initial guess
-%               2. x0 = [a,b] ∈ ℝ² → initial bracketing interval input
+%   x0      - (1×1 OR 1×2 double) initial guess (x0 = x₀ ∈ ℝ) or initial 
+%             interval (x0 = [a,b] ∈ ℝ¹ˣ²)
 %   opts    - (OPTIONAL) (1×1 struct) solver options
-%       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
-%       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
-%                      (defaults to 200)
+%       • batol      - (1×1 double) absolute bracket tolerance (defaults to
+%                      2ε)
+%       • max_iter   - (1×1 double) maximimum number solver of iterations
+%                      allowed (defaults to 200)
+%       • max_feval  - (1×1 double) maximimum number of function
+%                      evaluations allowed (defaults to 200)
 %       • rebracket  - (1×1 logical) true if initial bracketing interval 
 %                      should be updated to ensure sign change, false 
 %                      otherwise (defaults to false)
+%       • print      - (1×1 logical) true if solver progress should be
+%                      printed, false otherwise (defaults to false)
 %       • kappa1     - (1×1 double) tuning parameter, κ₁ (defaults to 0.1)
 %                       --> NOTE: κ₁ ∈ (0,∞)
 %       • kappa2     - (1×1 double) tuning parameter, κ₂ (defaults to 
@@ -54,37 +56,19 @@
 % -------
 %   x       - (1×1 double) root of f(x)
 %   output  - (1×1 struct) algorithm outputs
-%       • x_all   - (1×(k+1) double) root estimates at all iterations
-%       • a_all   - (1×(k+1) double) bracketing interval lower bounds at 
-%                   all iterations
-%       • b_all   - (1×(k+1) double) bracketing interval upper bounds at 
-%                   all iterations
-%       • k       - (1×1 double) number of solver iterations
-%       • f_count - (1×1 double) number of function evaluations
+%       • x_all      - (1×(n_iter+1) double) root estimates at all 
+%                      iterations
+%       • a_all      - (1×(n_iter+1) double) bracketing interval lower 
+%                      bounds at all iterations
+%       • b_all      - (1×(n_iter+1) double) bracketing interval upper 
+%                      bounds at at all iterations
+%       • n_int_iter - (1×1 double) number of iterations to find a 
+%                      bracketing interval
+%       • n_iter     - (1×1 double) number of solver iterations
+%       • n_feval    - (1×1 double) number of function evaluations
 %
 %==========================================================================
 function [x,output] = root_itp(f,x0,opts)
-    
-    % sets tolerance (defaults to 10⁻¹⁰)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'TOL')
-        TOL = 1e-10;
-    else
-        TOL = opts.TOL;
-    end
-    
-    % sets maximum number of iterations (defaults to 200)
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'k_max')
-        k_max = 200;
-    else
-        k_max = opts.k_max;
-    end
-    
-    % determines if the initial bracketing interval should be updated
-    if (nargin < 3) || isempty(opts) || ~isfield(opts,'rebracket')
-        rebracket = false;
-    else
-        rebracket = opts.rebracket;
-    end
     
     % sets κ₁ (defaults to 0.1)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'kappa1')
@@ -107,51 +91,99 @@ function [x,output] = root_itp(f,x0,opts)
         n0 = opts.n0;
     end
     
+    % sets absolute bracket tolerance (defaults to 2ε)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'batol')
+        batol = 2*eps;
+    else
+        batol = opts.batol;
+    end
+    
+    % sets maximum number of iterations allowed (defaults to 200)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'max_iter')
+        max_iter = 200;
+    else
+        max_iter = opts.max_iter;
+    end
+    
+    % sets maximum number of function evaluations allowed (defaults to 200)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'max_feval')
+        max_feval = 200;
+    else
+        max_feval = opts.max_feval;
+    end
+    
+    % determines if the initial bracketing interval should be updated
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'rebracket')
+        rebracket = false;
+    else
+        rebracket = opts.rebracket;
+    end
+    
+    % determines if solver progress should be printed (defaults to no)
+    if (nargin < 3) || isempty(opts) || ~isfield(opts,'print')
+        print = false;
+    else
+        print = opts.print;
+    end
+    
+    % starts counting function evaluations and number of iterations for
+    % finding an initial bracketing interval
+    n_feval = 0;
+    n_int_iter = 0;
+    
     % obtains bracketing interval
     if length(x0) == 1
-        [a,b,f_count_1] = bracket_sign_change(f,x0);
+        [a,b,nf,ni] = bracket_sign_change(f,x0);
+        n_feval = n_feval+nf;
+        n_int_iter = n_int_iter+ni;
         rebracket = false;
     else
         a = x0(1);
         b = x0(2);
-        f_count_1 = 0;
+    end
+    
+    % ensures that a < b
+    if (a > b)
+        a_old = a;
+        a = b;
+        b = a_old;
     end
     
     % updates bracketing interval if requested
     if rebracket
-        [a,b,f_count_2] = bracket_sign_change(f,[a,b]);
-    else
-        f_count_2 = 0;
+        [a,b,nf,ni] = bracket_sign_change(f,[a,b]);
+        n_feval = n_feval+nf;
+        n_int_iter = n_int_iter+ni;
     end
     
-    % root estimate at first iteration
+    % auxiliary parameter
+    n_max = n0+ceil(log2((b-a)/batol));
+    
+    % initial guess
     c = (a+b)/2;
     
-    % returns root estimate at first iteration if it is a root of f(x)
-    if f(c) == 0
+    % evaluates function at initial guess
+    fc = f(c);
+    n_feval = n_feval+1;
+    
+    % returns initial guess if it is a root of f(x) or if the maximum
+    % number of function evaluations has already been met/exceeded
+    if (fc == 0) || (n_feval >= max_feval)
         x = c;
-        output.x_all = x;
+        output.x_all = c;
         output.a_all = a;
         output.b_all = b;
-        output.k = 0;
-        output.f_count = f_count_1+f_count_2+1;
+        output.f_all = fc;
+        output.n_int_iter = n_int_iter;
+        output.n_iter = 0;
+        output.n_feval = n_feval;
         return
     end
-    
-    % preallocates arrays to store all intermediate solutions and
-    % bracketing intervals
-    x_all = zeros(1,k_max+1);
-    a_all = zeros(1,k_max+1);
-    b_all = zeros(1,k_max+1);
-    
-    % stores initial guess and bracketing interval
-    x_all(1) = c;
-    a_all(1) = a;
-    b_all(1) = b;
     
     % evaluates function at bounds of initial bracketing interval
     ya = f(a);
     yb = f(b);
+    n_feval = n_feval+2;
     
     % flips sign on function if f(a) > f(b)
     if ya > yb
@@ -160,11 +192,24 @@ function [x,output] = root_itp(f,x0,opts)
         yb = -yb;
     end
     
-    % auxiliary parameter
-    n_max = n0+ceil(log2((b-a)/TOL));
+    % preallocates arrays to store root estimates, bracketing intervals,
+    % and function evaluations
+    x_all = zeros(1,max_iter+1);
+    a_all = zeros(1,max_iter+1);
+    b_all = zeros(1,max_iter+1);
+    
+    % stores initial guess, bracketing interval, and function evaluation
+    x_all(1) = c;
+    a_all(1) = a;
+    b_all(1) = b;
+    
+    % prints header for solver progress
+    if print
+        print_solver_header(true,false);
+    end
     
     % iteration
-    for k = 1:k_max
+    for k = 1:max_iter
         
         % interpolation
         xf = (yb*a-ya*b)/(yb-ya);
@@ -179,7 +224,7 @@ function [x,output] = root_itp(f,x0,opts)
         end
         
         % projection
-        r = (TOL/2)*2^(n_max-k+1)-(b-a)/2;
+        r = (batol/2)*2^(n_max-k+1)-(b-a)/2;
         if abs(xt-c) <= r
             x_itp = xt;
         else
@@ -188,6 +233,7 @@ function [x,output] = root_itp(f,x0,opts)
         
         % updates interval
         y_itp = f(x_itp);
+        n_feval = n_feval+1;
         if y_itp > 0
             b = x_itp;
             yb = y_itp;
@@ -202,26 +248,44 @@ function [x,output] = root_itp(f,x0,opts)
         % updates root estimate
         c = (a+b)/2;
         
-        % stores updated root estimate and bracketing interval
+        % stores kth root estimate, bracketing interval, and function
+        % evaluation
         x_all(k+1) = c;
         a_all(k+1) = a;
         b_all(k+1) = b;
         
-        % terminates if converged
-        if ((b-a) < TOL)
+        % prints solver progress
+        if print
+            print_solver_progress(k,n_feval,c,[],a,b)
+        end
+        
+        % solver termination on convergence criteria
+        if (abs(b-a) <= batol)
+            break;
+        end
+        
+        % solver termination on timeout criteria
+        if (n_feval >= max_feval)
             break;
         end
         
     end
     
+    % prints blank line after last line of solver progress printouts
+    if print, fprintf(''); end
+    
     % converged root
     x = c;
     
+    % number of iterations
+    n_iter = k;
+    
     % additional outputs
-    output.x_all = x_all(1:(k+1));
-    output.a_all = a_all(1:(k+1));
-    output.b_all = b_all(1:(k+1));
-    output.k = k;
-    output.f_count = f_count_1+f_count_2+3+k;
+    output.x_all = x_all(1:(n_iter+1));
+    output.a_all = a_all(1:(n_iter+1));
+    output.b_all = b_all(1:(n_iter+1));
+    output.n_int_iter = n_int_iter;
+    output.n_iter = n_iter;
+    output.n_feval = n_feval;
     
 end

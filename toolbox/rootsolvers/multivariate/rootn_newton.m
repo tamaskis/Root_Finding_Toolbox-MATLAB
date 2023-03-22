@@ -200,6 +200,9 @@ function [x,output] = rootn_newton(f,J,x0,opts)
         
     end
     
+    % prints blank line after last line of solver progress printouts
+    if print, fprintf(''); end
+    
     % converged root
     x = x_next;
     
