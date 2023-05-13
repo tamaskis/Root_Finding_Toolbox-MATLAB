@@ -57,14 +57,14 @@ function [x,output] = fixedpoint_iteration(f,x0,opts)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'xatol')
         xatol = 1e-10;
     else
-        xatol = opts.TOL;
+        xatol = opts.xatol;
     end
     
     % sets maximum number of iterations allowed (defaults to 200)
     if (nargin < 3) || isempty(opts) || ~isfield(opts,'max_iter')
         max_iter = 200;
     else
-        max_iter = opts.k_max;
+        max_iter = opts.max_iter;
     end
     
     % sets maximum number of function evaluations allowed (defaults to 200)

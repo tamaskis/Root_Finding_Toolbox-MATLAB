@@ -29,9 +29,14 @@
 %             f(x) (f : ℝⁿ → ℝⁿ)
 %   x0      - (n×1 double) initial guess for fixed point
 %   opts    - (OPTIONAL) (1×1 struct) solver options
-%       • TOL        - (1×1 double) tolerance (defaults to 10⁻¹⁰)
-%       • k_max      - (1×1 double) maximimum number of iterations, kₘₐₓ
-%                      (defaults to 200)
+%       • xatol      - (1×1 double) absolute step tolerance (defaults to 
+%                      10⁻¹⁰)
+%       • max_iter   - (1×1 double) maximimum number solver of iterations
+%                      allowed (defaults to 200)
+%       • max_feval  - (1×1 double) maximimum number of function
+%                      evaluations allowed (defaults to 200)
+%       • print      - (1×1 logical) true if solver progress should be
+%                      printed, false otherwise (defaults to false)
 %
 % -------
 % OUTPUT:
